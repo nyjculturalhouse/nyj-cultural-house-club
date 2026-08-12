@@ -1,177 +1,126 @@
+/*
+ * Design philosophy: Monochrome Gazette — content stays verbatim from the supplied source;
+ * black/white only, no rounded corners, editorial grid, Gothic A1 and quiet motion.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --font-sans: 'Gothic A1', sans-serif;
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-primary: #000000;
+  --color-primary-foreground: #ffffff;
+  --color-border: #000000;
 }
 
 :root {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-600);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --radius: 0.65rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.235 0.015 65);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.235 0.015 65);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.235 0.015 65);
-  --secondary: oklch(0.98 0.001 286.375);
-  --secondary-foreground: oklch(0.4 0.015 65);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.141 0.005 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.623 0.214 259.815);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.235 0.015 65);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.623 0.214 259.815);
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+  --border: #000000;
+  --radius: 0px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.dark {
-  --primary: var(--color-blue-700);
-  --primary-foreground: var(--color-blue-50);
-  --sidebar-primary: var(--color-blue-500);
-  --sidebar-primary-foreground: var(--color-blue-50);
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.85 0.005 65);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.85 0.005 65);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.85 0.005 65);
-  --secondary: oklch(0.24 0.006 286.033);
-  --secondary-foreground: oklch(0.7 0.005 65);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground:  oklch(0.92 0.005 65);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.488 0.243 264.376);
-  --chart-1: var(--color-blue-300);
-  --chart-2: var(--color-blue-500);
-  --chart-3: var(--color-blue-600);
-  --chart-4: var(--color-blue-700);
-  --chart-5: var(--color-blue-800);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.85 0.005 65);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground:  oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.488 0.243 264.376);
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #000000;
+  font-family: 'Gothic A1', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
-  a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
-    @apply cursor-pointer;
-  }
+a { color: inherit; text-decoration: none; }
+
+.page-width { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+
+.skip-link {
+  position: fixed;
+  top: -56px;
+  left: 16px;
+  z-index: 100;
+  border: 1px solid #ffffff;
+  background: #000000;
+  color: #ffffff;
+  padding: 10px 13px;
+  font-size: 13px;
+  font-weight: 800;
+  transition: top 160ms var(--ease-out);
+}
+.skip-link:focus { top: 16px; }
+
+.brand-mark { position: relative; display: grid; height: 34px; width: 34px; place-items: center; overflow: hidden; border: 1px solid #000000; background: #000000; }
+.brand-mark img { position: absolute; inset: 3px; width: 26px; height: 26px; object-fit: contain; opacity: 0.28; filter: grayscale(1) contrast(1000%) invert(1); }
+.brand-mark__letter { position: relative; z-index: 1; color: #ffffff; font-size: 18px; font-weight: 900; letter-spacing: -0.12em; line-height: 1; }
+
+.micro-rule { display: block; width: 34px; height: 2px; background: #000000; }
+
+.hero-layout { display: grid; grid-template-columns: minmax(0, 0.94fr) minmax(360px, 0.94fr); align-items: center; gap: clamp(38px, 6vw, 92px); }
+.hero-art { position: relative; min-height: 430px; border: 1px solid #000000; overflow: hidden; }
+.hero-art > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.4) grayscale(1); }
+.hero-art__panel { position: absolute; left: 10%; bottom: 10%; width: 28%; height: 32%; display: grid; align-content: end; gap: 8px; padding: 12px; background: #000000; }
+.hero-art__line { display: block; height: 1px; background: #ffffff; }
+.hero-art__line:nth-child(2) { width: 74%; }
+.hero-art__line:nth-child(3) { width: 42%; }
+
+.service-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid #000000; }
+.service-tile { position: relative; min-height: 320px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; padding: 26px; border-right: 1px solid #000000; transition: background 180ms var(--ease-out), color 180ms var(--ease-out); }
+.service-tile:last-child { border-right: 0; }
+.service-tile--dark { background: #000000; color: #ffffff; }
+.service-tile--light { background: #ffffff; color: #000000; }
+.service-tile--light:hover { background: #000000; color: #ffffff; }
+.service-topline { display: flex; align-items: flex-start; justify-content: space-between; }
+.service-number { font-size: 12px; font-weight: 900; letter-spacing: 0.11em; }
+.service-icon { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid currentColor; }
+.service-tile h3 { margin: 0; font-size: clamp(1.45rem, 2.15vw, 1.8rem); font-weight: 900; letter-spacing: -0.075em; }
+.service-tile p { max-width: 16rem; margin: 10px 0 19px; font-size: 14px; font-weight: 600; line-height: 1.65; letter-spacing: -0.045em; opacity: 0.84; }
+.tile-action { display: inline-flex; align-items: center; gap: 7px; border-bottom: 1px solid currentColor; padding-bottom: 3px; font-size: 13px; font-weight: 800; }
+.service-pattern { position: absolute; right: -48px; top: -34px; width: 180px; opacity: 0.12; pointer-events: none; }
+.service-pattern img { width: 100%; height: auto; filter: contrast(2); }
+.service-tile--light:hover .service-pattern { filter: invert(1); opacity: 0.2; }
+
+.utility-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; border: 1px solid #000000; }
+.utility-link, .calendar-link { min-height: 148px; display: flex; align-items: center; gap: 15px; padding: 24px; font-size: 16px; font-weight: 900; letter-spacing: -0.06em; transition: background 180ms var(--ease-out), color 180ms var(--ease-out); }
+.utility-link { border-right: 1px solid #000000; }
+.utility-link:hover { background: #000000; color: #ffffff; }
+.utility-link__icon { display: grid; width: 46px; height: 46px; place-items: center; border: 1px solid currentColor; }
+.calendar-link { position: relative; overflow: hidden; background: #000000; color: #ffffff; }
+.calendar-link:hover { background: #ffffff; color: #000000; }
+.calendar-link__art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; mix-blend-mode: screen; filter: grayscale(1) contrast(1000%) brightness(1.8); }
+.calendar-link:hover .calendar-link__art { mix-blend-mode: multiply; filter: grayscale(1) contrast(1000%) brightness(0.2); }
+.admin-link { border-bottom: 1px solid #000000; padding-bottom: 3px; font-size: 12px; font-weight: 800; letter-spacing: -0.04em; }
+.admin-link:hover { background: #000000; color: #ffffff; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-copy, .hero-art, .service-tile, .utility-grid { animation: enter 460ms var(--ease-out) both; }
+  .hero-art { animation-delay: 70ms; }
+  .service-tile:nth-child(2) { animation-delay: 60ms; }
+  .service-tile:nth-child(3) { animation-delay: 120ms; }
 }
 
-@layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   *
-   * This overrides Tailwind's default container behavior to:
-   * - Auto-center content (mx-auto)
-   * - Add responsive horizontal padding
-   * - Set max-width for large screens
-   *
-   * Usage: <div className="container">...</div>
-   *
-   * For custom widths, use max-w-* utilities directly:
-   * <div className="max-w-6xl mx-auto px-4">...</div>
-   */
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem; /* 16px - mobile padding */
-    padding-right: 1rem;
-  }
+@keyframes enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
+@media (max-width: 860px) {
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-art { min-height: 360px; }
+}
 
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem; /* 24px - tablet padding */
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem; /* 32px - desktop padding */
-      padding-right: 2rem;
-      max-width: 1280px; /* Standard content width */
-    }
-  }
+@media (max-width: 680px) {
+  .page-width { width: min(100% - 32px, 1180px); }
+  .service-grid, .utility-grid { grid-template-columns: 1fr; }
+  .service-tile { min-height: 240px; border-right: 0; border-bottom: 1px solid #000000; }
+  .service-tile:last-child { border-bottom: 0; }
+  .utility-link { min-height: 108px; border-right: 0; border-bottom: 1px solid #000000; }
+  .calendar-link { min-height: 118px; }
+  .hero-art { min-height: 290px; }
 }
