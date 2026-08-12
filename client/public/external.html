@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta name="description" content="동아리 외부 활동 소식을 등록하고 공유하는 페이지입니다."/>
+    <title>외부활동 공유 - 남양주시 문화의집</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/monochrome.css" />
+
+    <script src="js/theme.js"></script>
+    <style>
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #111111 !important;
+            box-shadow: 0 0 0 4px rgba(17,17,17,0.05) !important;
+        }
+        .hero { background: #111111; }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased">
+
+<a href="#main-content" class="skip-link">본문 바로가기</a>
+
+<header class="bg-[#F4F4F3] border-b border-outline sticky top-0 z-50">
+    <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+        <h1 class="magazine-title text-primary text-xl">남양주시 문화의집</h1>
+        <a href="index.html" class="p-2 rounded-full hover:bg-white/50 transition text-primary" aria-label="메인으로 이동">
+            <span class="material-symbols-outlined" aria-hidden="true">home_app_logo</span>
+        </a>
+    </div>
+</header>
+
+<main id="main-content" class="flex-grow max-w-[1200px] mx-auto w-full px-6 py-10 flex flex-col justify-center">
+
+    <div class="mb-8">
+        <h2 class="magazine-title text-3xl text-primary">외부활동 공유하기</h2>
+        <p class="text-gray-500 mt-2 text-sm font-medium">동아리 활동을 등록하고 공유하세요</p>
+    </div>
+
+    <div class="glass rounded-2xl shadow-soft overflow-hidden">
+
+        <div class="hero px-6 py-4 text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-xl" aria-hidden="true">info</span>
+            <span class="magazine-title text-sm tracking-wide uppercase">행사 기본 정보 입력</span>
+        </div>
+
+        <form id="ext-form" class="p-6 space-y-5" onsubmit="return false;" novalidate>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label for="e_club" class="field-label">동아리 이름 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+                    <input id="e_club" name="e_club"
+                        class="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm h-11"
+                        placeholder="동아리 명을 입력하세요"
+                        required
+                        type="text"/>
+                </div>
+
+                <div>
+                    <label for="e_phone" class="field-label">연락처 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+                    <input id="e_phone" name="e_phone"
+                        class="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm h-11"
+                        placeholder="010-0000-0000"
+                        maxlength="13"
+                        required
+                        inputmode="numeric"
+                        autocomplete="tel"
+                        type="tel"/>
+                </div>
+            </div>
+
+            <div>
+                <label for="e_event" class="field-label">행사명 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+                <input id="e_event" name="e_event"
+                    class="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm h-11"
+                    placeholder="행사 제목을 입력하세요"
+                    required
+                    type="text"/>
+            </div>
+
+            <div>
+                <label for="e_content" class="field-label">상세 내용 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+                <textarea id="e_content" name="e_content"
+                    class="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm"
+                    rows="4"
+                    placeholder="상세 정보를 입력하세요"
+                    required></textarea>
+            </div>
+
+            <div>
+                <label for="e_date" class="field-label">행사 일시 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+                <input id="e_date" name="e_date"
+                    class="mt-2 w-full rounded-xl border border-gray-200 px-4 py-3 text-sm h-11"
+                    type="datetime-local"
+                    required/>
+            </div>
+
+            <p id="ext-form-error" class="text-sm text-accent-bg font-semibold hidden" role="alert"></p>
+
+            <input type="text" id="honeypot" name="honeypot" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <div class="pt-4">
+                <button type="button"
+                        id="btn-submit-ext"
+                        onclick="sendPost('submitExternal')"
+                        class="w-full bg-accent-bg text-white py-4 rounded-xl font-bold hover:bg-accent-hover transition shadow-sm text-sm">
+                    공유하기
+                </button>
+            </div>
+
+        </form>
+    </div>
+
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+
+<script>
+bindPhoneAutoFormat(document.getElementById('e_phone'));
+
+function showExtFormError(message) {
+    const el = document.getElementById('ext-form-error');
+    el.textContent = message;
+    el.classList.toggle('hidden', !message);
+}
+
+async function sendPost(mode) {
+    if (mode !== 'submitExternal') return;
+
+    const honeypot = document.getElementById('honeypot').value;
+    if (honeypot) return;
+
+    const club = document.getElementById('e_club').value.trim();
+    const phone = document.getElementById('e_phone').value.trim();
+    const eventName = document.getElementById('e_event').value.trim();
+    const content = document.getElementById('e_content').value.trim();
+    const dateTime = document.getElementById('e_date').value;
+
+    if (!club || !phone || !eventName || !content || !dateTime) {
+        showExtFormError("동아리 이름, 연락처, 행사명, 상세 내용, 행사 일시는 모두 기입해 주셔야 합니다.");
+        return;
+    }
+
+    if (phone.length < 12) {
+        showExtFormError("연락처를 정확한 형식(010-0000-0000)으로 기입해 주세요.");
+        return;
+    }
+
+    showExtFormError("");
+
+    const btn = document.getElementById('btn-submit-ext');
+    btn.textContent = "공유 처리 중...";
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+
+    const res = await apiPost({
+        mode: mode,
+        club: club,
+        phone: phone,
+        eventName: eventName,
+        event: eventName,
+        title: eventName,
+        content: content,
+        dateTime: dateTime,
+        uid: getOrCreateUID()
+    });
+
+    btn.textContent = "공유하기";
+    btn.disabled = false;
+    btn.removeAttribute('aria-busy');
+
+    if (!res) {
+        showExtFormError("서버 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        return;
+    }
+
+    if (res.error) {
+        showExtFormError(res.error);
+        return;
+    }
+
+    alert("등록이 완료되었습니다.");
+
+    document.getElementById('e_club').value = "";
+    document.getElementById('e_phone').value = "";
+    document.getElementById('e_event').value = "";
+    document.getElementById('e_content').value = "";
+    document.getElementById('e_date').value = "";
+}
+</script>
+
+</body>
+</html>

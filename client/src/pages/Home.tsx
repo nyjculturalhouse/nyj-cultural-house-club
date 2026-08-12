@@ -20,16 +20,16 @@ const CalendarArtwork = "/manus-storage/nyj-calendar-graphic_b00eb01a.png";
 function PreviewLink({
   className,
   children,
+  href = "#main-content",
+  target,
 }: {
   className?: string;
   children: React.ReactNode;
+  href?: string;
+  target?: string;
 }) {
   return (
-    <a
-      className={className}
-      href="#main-content"
-      onClick={(event) => event.preventDefault()}
-    >
+    <a className={className} href={href} target={target} rel={target === "_blank" ? "noopener noreferrer" : undefined}>
       {children}
     </a>
   );
@@ -85,7 +85,7 @@ export default function Home() {
             <div className="border-b border-black" />
 
             <nav className="service-grid mt-0" aria-label="주요 기능">
-              <PreviewLink className="service-tile service-tile--dark">
+              <PreviewLink className="service-tile service-tile--dark" href="/attendance.html">
                 <div className="service-topline"><span /><span className="service-icon" aria-hidden="true"><CheckCircle2 size={26} strokeWidth={1.65} /></span></div>
                 <div>
                   <h3>동아리 출석부</h3>
@@ -93,7 +93,7 @@ export default function Home() {
                 </div>
               </PreviewLink>
 
-              <PreviewLink className="service-tile service-tile--light">
+              <PreviewLink className="service-tile service-tile--light" href="/booking.html">
                 <span className="service-pattern" aria-hidden="true">
                   <img src={PatternArtwork} alt="" />
                 </span>
@@ -105,7 +105,7 @@ export default function Home() {
                 </div>
               </PreviewLink>
 
-              <PreviewLink className="service-tile service-tile--light">
+              <PreviewLink className="service-tile service-tile--light" href="/external.html">
                 <div className="service-topline"><span /><span className="service-icon" aria-hidden="true"><Share2 size={26} strokeWidth={1.65} /></span></div>
                 <div>
                   <h3>외부활동 공유</h3>
@@ -119,7 +119,7 @@ export default function Home() {
 
         <section className="page-width py-12 sm:py-16">
           <div className="utility-grid">
-            <PreviewLink className="utility-link">
+            <PreviewLink className="utility-link" href="https://www.nyjcf.or.kr/www/1" target="_blank">
               <span className="utility-link__icon" aria-hidden="true">
                 <HomeIcon size={24} strokeWidth={1.65} />
               </span>
@@ -127,7 +127,7 @@ export default function Home() {
               <ExternalLink className="ml-auto" size={18} strokeWidth={1.65} aria-hidden="true" />
             </PreviewLink>
 
-            <PreviewLink className="calendar-link">
+            <PreviewLink className="calendar-link" href="/calendar.html">
               <img className="calendar-link__art" src={CalendarArtwork} alt="" aria-hidden="true" />
               <span className="relative z-10 flex h-10 w-10 items-center justify-center border border-white" aria-hidden="true">
                 <CalendarDays size={20} strokeWidth={1.65} />
@@ -138,7 +138,7 @@ export default function Home() {
           </div>
 
           <div className="mt-10 flex justify-center">
-            <PreviewLink className="admin-link">관리자 페이지</PreviewLink>
+            <PreviewLink className="admin-link" href="/admin.html">관리자 페이지</PreviewLink>
           </div>
         </section>
       </main>

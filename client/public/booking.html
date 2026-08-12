@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="문화의집 공간 대관 신청, 시간표 확인, 캘린더 확인을 할 수 있는 페이지입니다.">
+<title>대관 신청 | 문화의집 대관</title>
+
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/monochrome.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="js/theme.js"></script>
+</head>
+
+<body class="text-gray-900 min-h-screen antialiased relative">
+
+<a href="#main-content" class="skip-link">본문 바로가기</a>
+
+<div id="toast" class="toast" role="status" aria-live="polite">제출 완료 ✅</div>
+
+<header class="bg-[#F4F4F3] border-b border-outline sticky top-0 z-50">
+    <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+        <h1 class="magazine-title text-primary text-xl">남양주시 문화의집</h1>
+        <div class="flex items-center gap-3 text-sm text-gray-500">
+            <a href="index.html" class="p-2 rounded-full hover:bg-white/50 transition text-primary" aria-label="메인으로 이동">
+                <span class="material-symbols-outlined" aria-hidden="true">home_app_logo</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<main id="main-content" class="max-w-[1200px] mx-auto px-6 py-10">
+
+<div class="mb-8">
+    <h2 class="magazine-title text-3xl text-primary">대관 신청</h2>
+    <p class="text-gray-500 mt-2 text-sm font-medium">공간 예약 및 일정 확인 시스템</p>
+</div>
+
+<div class="flex border-b border-outline mb-8 gap-6 text-[17px] font-medium" role="tablist" aria-label="대관 신청 메뉴">
+    <button id="tab-form-btn" role="tab" aria-selected="true" aria-controls="booking-form-section" onclick="showBookingTab('form')" class="py-3 tab-active">신청서</button>
+    <button id="tab-schedule-btn" role="tab" aria-selected="false" aria-controls="booking-schedule-section" onclick="showBookingTab('schedule')" class="py-3 text-gray-500 hover:text-primary transition">시간표</button>
+    <button id="tab-calendar-btn" role="tab" aria-selected="false" aria-controls="booking-calendar-section" onclick="showBookingTab('calendar')" class="py-3 text-gray-500 hover:text-primary transition">캘린더</button>
+</div>
+
+<section id="booking-form-section" role="tabpanel" aria-labelledby="tab-form-btn" class="bg-white rounded-2xl border border-outline shadow-soft p-8">
+
+    <h3 class="magazine-title text-xl mb-6 flex items-center gap-2 text-primary">
+        <span class="material-symbols-outlined text-primary text-2xl" aria-hidden="true">edit_calendar</span>
+        대관 신청서
+    </h3>
+
+    <form id="booking-form" novalidate>
+    <div class="grid md:grid-cols-2 gap-6">
+
+        <div>
+            <label for="b_name" class="field-label">신청자 이름 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+            <input id="b_name" class="mt-2 w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-sm h-11" placeholder="이름" required>
+        </div>
+
+        <div>
+            <label for="b_phone" class="field-label">전화번호 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+            <input id="b_phone" type="tel" inputmode="numeric" autocomplete="tel" maxlength="13" class="mt-2 w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-sm h-11" placeholder="010-0000-0000" required>
+        </div>
+
+        <div class="md:col-span-2">
+    <label for="b_space" class="field-label">공간 선택</label>
+    <select id="b_space" class="mt-2 w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-[17px] h-11">
+        <option value="어울림방">어울림방</option>
+        <option value="댄스실">댄스실</option>
+        <option value="음악실">음악실</option>
+        <option value="동아리방">동아리방</option>
+    </select>
+</div>
+
+        <div>
+            <label for="b_date" class="field-label">사용 일시 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+            <input id="b_date" type="datetime-local" required
+                class="mt-2 w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-sm h-11">
+            <p class="text-xs text-gray-500 mt-1">* 대관 신청은 최소 3일 이후부터 가능합니다.</p>
+        </div>
+
+        <div>
+            <label for="b_hours" class="field-label">사용 시간(시간) <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+            <input id="b_hours" type="number" min="1" max="3" value="1" required
+            class="mt-2 w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-sm h-11">
+        </div>
+
+        <div class="md:col-span-2">
+            <label for="b_count" class="field-label">예상 참여 인원 <span class="required-mark" aria-hidden="true">*</span><span class="sr-only">(필수)</span></label>
+            <div class="relative mt-2">
+                <input id="b_count" type="number" min="1" placeholder="0" required
+                    class="w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-sm h-11 pr-12">
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium" aria-hidden="true">명</span>
+            </div>
+        </div>
+
+        <div class="md:col-span-2">
+            <label for="b_content" class="field-label">대관 사유</label>
+            <textarea id="b_content"
+                class="mt-2 w-full rounded-xl border-gray-200 focus:border-primary focus:ring-primary text-sm"
+                rows="3"
+                placeholder="사용 목적을 입력하세요"></textarea>
+        </div>
+
+        <fieldset class="md:col-span-2 border-t border-outline pt-6 mt-2 space-y-4">
+            <legend class="magazine-title text-base text-gray-900 mb-2">이용 동의문 및 약관</legend>
+            <div class="bg-gray-50 rounded-xl p-6 border border-outline space-y-6">
+
+                <div class="flex items-start gap-3">
+                    <input id="b_agree1" type="checkbox" required class="mt-1 rounded text-primary focus:ring-primary border-gray-300"/>
+                    <label for="b_agree1" class="text-sm">
+                        <span class="block mb-1 text-gray-700 font-medium">남양주시 문화의집 시설을 이용함에 있어 이용수칙과 허가 조건을 준수하고 대관 기간 동안 안전 및 시설 관리에 유의하며 대관자로서의 책임을 성실히 이행하겠습니다.</span>
+                        <span class="text-accent-bg font-semibold text-xs">* 필수 동의 사항</span>
+                    </label>
+                </div>
+
+                <div class="p-4 bg-white rounded-xl border border-outline text-gray-500 text-xs leading-relaxed space-y-2 max-h-32 overflow-y-auto custom-scrollbar" tabindex="0" role="region" aria-label="이용수칙 상세">
+                    <p>① 사전 승인되지 않은 물품 및 장비는 반입하지 않으며 이로 인해 발생하는 사항에 대해서는 책임을 지겠습니다.</p>
+                    <p>② 대관시설 내에서는 취사 및 음식물 반입을 하지 않겠습니다.</p>
+                    <p>③ 정치 종교 활동이나 유료 강습, 특강 등 영리 목적의 시설 사용은 하지 않겠으며 이를 위반할 경우 사용 승인 취소 및 이용 제한 조치에 동의합니다.</p>
+                    <p>④ 시설 이용 후에는 원상복구를 원칙으로 하며, 파손 시 배상 책임을 지겠습니다.</p>
+                </div>
+
+                <div class="flex items-start gap-3 pt-4 border-t border-outline">
+                    <input id="b_agree2" type="checkbox" required class="mt-1 rounded text-primary focus:ring-primary border-gray-300"/>
+                    <label for="b_agree2" class="text-sm">
+                        <span class="block mb-1 text-gray-700 font-bold">개인정보 수집 및 이용 동의</span>
+                        <span class="block text-gray-600 text-xs space-y-1 leading-relaxed mb-2">
+                            <span class="block">• <strong>수집 항목:</strong> 신청자 이름, 연락처(전화번호)</span>
+                            <span class="block">• <strong>수집 및 이용 목적:</strong> 문화의집 공간 대관 예약 확인, 이용 스케줄 관리, 긴급 연락 및 안내 문자 발송</span>
+                            <span class="block">• <strong>보유 및 이용 기간:</strong> <span class="text-primary font-bold">대관 신청일로부터 1년간 저장 및 보관</span> 후 안전하게 파기됩니다.</span>
+                            <span class="block">• 귀하는 개인정보 수집 및 이용에 동의하지 않을 권리가 있으나, 동의 거부 시 대관 시스템 예약 서비스 이용이 제한됩니다.</span>
+                        </span>
+                        <span class="text-accent-bg font-semibold text-xs">* 필수 동의 사항</span>
+                    </label>
+                </div>
+
+            </div>
+        </fieldset>
+
+        <p id="booking-form-error" class="md:col-span-2 text-sm text-accent-bg font-semibold hidden" role="alert"></p>
+
+        <input type="text" id="honeypot" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <div class="md:col-span-2 mt-4">
+            <button id="btn-submit-book" type="button"
+                onclick="sendPost('submitBooking')"
+                class="w-full bg-accent-bg text-white font-bold py-4 rounded-xl hover:bg-accent-hover transition shadow-sm text-sm">
+                대관 신청하기
+            </button>
+        </div>
+
+    </div>
+    </form>
+</section>
+
+<section id="booking-schedule-section" role="tabpanel" aria-labelledby="tab-schedule-btn" class="hidden space-y-4">
+
+    <div class="flex flex-wrap gap-2" role="group" aria-label="시간표를 확인할 공간 선택">
+        <button id="btn-sched-dance" type="button" aria-pressed="true" onclick="showSchedule('dance')" class="px-4 py-2 text-xs font-bold rounded-xl bg-primary text-white border border-outline transition">댄스실</button>
+        <button id="btn-sched-music" type="button" aria-pressed="false" onclick="showSchedule('music')" class="px-4 py-2 text-xs font-bold rounded-xl bg-white text-gray-600 border border-outline hover:bg-primary hover:text-white transition">음악실</button>
+        <button id="btn-sched-clubroom" type="button" aria-pressed="false" onclick="showSchedule('clubroom')" class="px-4 py-2 text-xs font-bold rounded-xl bg-white text-gray-600 border border-outline hover:bg-primary hover:text-white transition">동아리방</button>
+        <button id="btn-sched-harmony" type="button" aria-pressed="false" onclick="showSchedule('harmony')" class="px-4 py-2 text-xs font-bold rounded-xl bg-white text-gray-600 border border-outline hover:bg-primary hover:text-white transition">어울림방</button>
+    </div>
+
+    <div class="bg-white rounded-2xl border border-outline shadow-soft p-6 overflow-x-auto custom-scrollbar">
+        <div id="timetable-view-container" class="min-w-[1100px]" role="img" aria-label="선택한 공간의 요일별 이용 시간표"></div>
+    </div>
+
+</section>
+
+<section id="booking-calendar-section" role="tabpanel" aria-labelledby="tab-calendar-btn" class="hidden">
+    <div class="bg-white rounded-2xl border border-outline shadow-soft p-4 md:p-6">
+        <div id="calendar" aria-label="대관 캘린더"></div>
+    </div>
+</section>
+
+</main>
+
+<div id="booking-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-booking-title" onclick="if(event.target===this) closeBookingModal()">
+    <div class="modal-panel">
+        <div id="modal-top-bar" class="h-1.5 w-full bg-primary" aria-hidden="true"></div>
+
+        <div class="p-6 md:p-8">
+            <div class="flex justify-between items-start gap-4 mb-6">
+                <div>
+                    <span id="modal-space-badge" class="inline-block px-2.5 py-1 text-xs font-bold rounded-md text-white tracking-wide mb-2">공간명</span>
+                    <h2 id="modal-booking-title" class="magazine-title text-2xl text-primary leading-snug">예약자 정보</h2>
+                </div>
+                <button type="button" onclick="closeBookingModal()" class="p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-primary transition" aria-label="닫기">
+                    <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
+                </button>
+            </div>
+
+            <div class="space-y-4 border-t border-outline pt-6 text-sm">
+                <div class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-gray-400 mt-0.5" aria-hidden="true">schedule</span>
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">이용 시간</p>
+                        <p id="modal-booking-time" class="text-primary font-medium mt-0.5">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <button type="button" onclick="closeBookingModal()" class="w-full bg-[#111111] text-white font-bold py-3.5 rounded-xl hover:bg-[#222222] transition shadow-sm text-sm">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="w-full py-8 text-center text-xs text-gray-400 font-medium tracking-wider border-t border-outline/40">
+    <p>© 2026 Culture Connect. All rights reserved.</p>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script>
+    window.showBookingTab = showBookingTab;
+    window.showSchedule = showSchedule;
+    window.closeBookingModal = closeBookingModal;
+    window.sendPost = sendPost;
+
+    let calendar = null;
+    bindPhoneAutoFormat(document.getElementById('b_phone'));
+
+    // 💡 [추가] 3일 이후 날짜부터 선택 가능하도록 datetime-local 최소값(min) 설정
+    function setMinBookingDate() {
+        const dateInput = document.getElementById('b_date');
+        if (!dateInput) return;
+
+        const now = new Date();
+        now.setDate(now.getDate() + 3); // 현재 시간 기준 3일 뒤
+
+        // yyyy-MM-ddTHH:mm 형식으로 변환
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+
+        dateInput.min = `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+    setMinBookingDate();
+
+    function openBookingModal(spaceName, titleText, rawStart) {
+        const badge = document.getElementById('modal-space-badge');
+        const topBar = document.getElementById('modal-top-bar');
+
+        badge.textContent = spaceName || "공간 미지정";
+        document.getElementById('modal-booking-title').textContent = titleText || "대관 정보 없음";
+        document.getElementById('modal-booking-time').textContent = formatKoreanDateTime(rawStart);
+
+        const color = getSpaceColor(spaceName);
+        badge.style.backgroundColor = color;
+        topBar.style.backgroundColor = color;
+
+        KRDSModal.open('booking-modal');
+    }
+
+    function closeBookingModal() {
+        KRDSModal.close('booking-modal');
+    }
+
+    function showBookingTab(tab) {
+        document.getElementById('booking-form-section').classList.toggle('hidden', tab !== 'form');
+        document.getElementById('booking-schedule-section').classList.toggle('hidden', tab !== 'schedule');
+        document.getElementById('booking-calendar-section').classList.toggle('hidden', tab !== 'calendar');
+
+        const tabs = { form: 'tab-form-btn', schedule: 'tab-schedule-btn', calendar: 'tab-calendar-btn' };
+        Object.entries(tabs).forEach(([key, id]) => {
+            const btn = document.getElementById(id);
+            const isActive = key === tab;
+            btn.className = isActive ? 'py-3 tab-active' : 'py-3 text-gray-500 hover:text-primary transition';
+            btn.setAttribute('aria-selected', String(isActive));
+        });
+
+        if (tab === 'schedule') {
+            showSchedule('dance');
+        }
+
+        if (tab === 'calendar') {
+            if (!calendar) {
+                initFullCalendar();
+            } else {
+                calendar.updateSize();
+            }
+        }
+    }
+
+    const fixedSchedules = {
+        dance: {
+            title: "댄스실 시간표",
+            colorClass: "bg-orange-50 border-orange-400 text-orange-900",
+            data: [
+                { day: "화", records: [{ name: "천하제일", time: "10:00~14:00" }, { name: "나래예술단", time: "14:00~16:00" }, { name: "아사모", time: "16:00~18:00" }] },
+                { day: "수", records: [{ name: "소리마루", time: "10:00~12:00" }, { name: "훌라센스", time: "12:00~14:00" }, { name: "라인나와유", time: "14:00~16:00" }, { name: "개나리라인댄스", time: "16:00~18:00" }, { name: "라니훌라", time: "18:30~19:30" }] },
+                { day: "목", records: [{ name: "라니훌라", time: "10:00~11:30" }, { name: "나래예술단", time: "11:30~13:30" }, { name: "아코가락", time: "14:00~16:00" }, { name: "해피하모니", time: "16:00~18:00" }, { name: "훌라센스", time: "18:30~19:30" }] },
+                { day: "금", records: [{ name: "타울림", time: "10:00~13:00" }, { name: "라인나와유", time: "13:30~15:30" }, { name: "해피하모니", time: "15:30~17:00" }, { name: "덩더쿵사가지", time: "17:00~19:30" }] },
+                { day: "토", records: [{ name: "훌라센스", time: "12:00~14:00" }] },
+                { day: "일", records: [{ name: "궁채와열채사이", time: "10:00~13:00" }, { name: "소리노리", time: "13:00~15:00" }] }
+            ]
+        },
+        music: {
+            title: "음악실 시간표",
+            colorClass: "bg-blue-50 border-blue-400 text-blue-900",
+            data: [
+                { day: "화", records: [] },
+                { day: "수", records: [{ name: "기타동동", time: "10:00~13:00" }, { name: "바람소리앙상블", time: "14:00~16:30" }] },
+                { day: "목", records: [{ name: "* 오롯이 (1,3주)", time: "10:00~13:00" }] },
+                { day: "금", records: [{ name: "버킷피아노", time: "11:30~13:00" }, { name: "여섯줄사랑", time: "13:00~17:00" }] },
+                { day: "토", records: [{ name: "오쏠리", time: "10:00~14:00" }] },
+                { day: "일", records: [] }
+            ]
+        },
+        clubroom: {
+            title: "동아리방 시간표",
+            colorClass: "bg-green-50 border-green-400 text-green-900",
+            data: [
+                { day: "화", records: [{ name: "힐링만화", time: "10:00~12:00" }, { name: "엣지", time: "15:00~17:00" }] },
+                { day: "수", records: [{ name: "꼼지락", time: "10:00~13:00" }, { name: "새로이음", time: "13:30~17:30" }] },
+                { day: "목", records: [{ name: "그림향기", time: "10:00~13:00" }, { name: "깨알 레알 잉글리쉬", time: "14:00~16:00" }, { name: "재미방", time: "18:00~19:30" }] },
+                { day: "금", records: [{ name: "묵향", time: "10:00~14:00" }, { name: "꽃길명리", time: "15:00~17:30" }] },
+                { day: "토", records: [] },
+                { day: "일", records: [] }
+            ]
+        },
+        harmony: {
+            title: "어울림방(커뮤니티) 시간표",
+            colorClass: "bg-purple-50 border-purple-400 text-purple-900",
+            data: [
+                { day: "화", records: [{ name: "한지나래", time: "10:00~14:00" }, { name: "* 글낭 (2,4주)", time: "16:00~18:00" }] },
+                { day: "수", records: [{ name: "캘리하랑", time: "10:00~12:00" }, { name: "하오하오", time: "12:30~14:30" }] },
+                { day: "목", records: [{ name: "* 뿌리채포레 (2,4주)", time: "10:30~12:30" }, { name: "우아한미술", time: "13:00~17:00" }, { name: "업:써", time: "18:00~19:30" }] },
+                { day: "금", records: [{ name: "상록수", time: "10:00~11:30" }, { name: "우쿨오하나", time: "12:00~13:00" }, { name: "코인마술동아리", time: "14:00~18:00" }] },
+                { day: "토", records: [] },
+                { day: "일", records: [{ name: "소리노리", time: "11:00~13:00" }] }
+            ]
+        }
+    };
+
+    function showSchedule(type) {
+        const container = document.getElementById('timetable-view-container');
+        const schedule = fixedSchedules[type];
+        if (!schedule) return;
+
+        container.setAttribute('aria-label', `${schedule.title} - 요일별 이용 시간표`);
+
+        const types = ['dance', 'music', 'clubroom', 'harmony'];
+        types.forEach(t => {
+            const btn = document.getElementById(`btn-sched-${t}`);
+            if (btn) {
+                const isActive = t === type;
+                btn.setAttribute('aria-pressed', String(isActive));
+                btn.className = isActive
+                    ? "px-4 py-2 text-xs font-bold rounded-xl bg-primary text-white border border-outline transition"
+                    : "px-4 py-2 text-xs font-bold rounded-xl bg-white text-gray-600 border border-outline hover:bg-primary hover:text-white transition";
+            }
+        });
+
+        const times = [
+            '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00',
+            '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'
+        ];
+
+        let hoursHeader = '';
+times.forEach(t => {
+    const isHour = t.endsWith(':00');
+    hoursHeader += `<div class="grid-cell-header text-[13px] font-semibold py-2.5 text-gray-500 bg-gray-50/80 flex items-center justify-center border-b border-outline" style="grid-column: span 1;">${isHour ? t : ''}</div>`;
+});
+
+        let gridHtml = `
+            <div class="mb-4 flex items-center justify-between" style="width: 100%; max-width: 1200px; box-sizing: border-box;">
+                <h3 class="magazine-title text-lg text-primary font-bold">${schedule.title}</h3>
+                <span class="text-[15px] text-gray-500 font-medium">* 주말(토, 일)은 15:00 이후 미운영합니다.</span>
+            </div>
+            <div class="timetable-grid text-sm text-center border-t border-l border-r border-outline"
+                 style="width: 100%; max-width: 1200px; box-sizing: border-box; display: grid; grid-template-columns: 60px repeat(19, minmax(0, 1fr));">
+                <div class="grid-cell-header text-xs font-bold py-2.5 text-gray-600 bg-gray-50/80 border-b border-r border-outline flex items-center justify-center">요일</div>
+                ${hoursHeader}
+        `;
+
+        function timeToColumnIndex(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            const baseIndex = 2;
+            const diffMinutes = (h - 10) * 60 + m;
+            return baseIndex + Math.floor(diffMinutes / 30);
+        }
+
+        let rowIdx = 2;
+
+        schedule.data.forEach(row => {
+            const isWeekend = (row.day === "토" || row.day === "일");
+
+            gridHtml += `
+                <div class="flex items-center justify-center font-bold bg-gray-50/50 border-r border-b border-outline py-4 text-sm"
+                     style="grid-column: 1; grid-row: ${rowIdx}; min-height: 84px;">${row.day}</div>
+            `;
+
+            for (let j = 0; j < 19; j++) {
+                if (isWeekend && j >= 10) {
+                    gridHtml += `<div class="border-b border-outline bg-gray-100/60" style="grid-column: ${2 + j}; grid-row: ${rowIdx}; pointer-events-none"></div>`;
+                } else {
+                    gridHtml += `<div class="border-b border-outline bg-white" style="grid-column: ${2 + j}; grid-row: ${rowIdx}; pointer-events-none"></div>`;
+                }
+            }
+
+            if (isWeekend) {
+                gridHtml += `
+    <div class="text-[15px] font-bold text-gray-400 flex items-center justify-center tracking-wider pointer-events-none overflow-hidden whitespace-nowrap"
+         style="grid-column: 12 / 21; grid-row: ${rowIdx}; z-index: 5;">
+        15:00 이후 미운영
+    </div>
+`;
+            }
+
+            row.records.forEach(ev => {
+                const [startStr, endStr] = ev.time.split('~');
+                const startCol = timeToColumnIndex(startStr);
+                const endCol = timeToColumnIndex(endStr);
+
+                gridHtml += `
+                    <div class="p-1 flex flex-col justify-center"
+                         style="grid-column: ${startCol} / ${endCol}; grid-row: ${rowIdx}; z-index: 10;">
+                        <div class="event px-2 py-1.5 rounded border-l-4 text-left shadow-sm transition hover:scale-[1.02] ${schedule.colorClass} flex flex-col justify-center overflow-hidden h-full">
+                            <strong class="font-bold text-[15px] text-gray-900 tracking-tight truncate" title="${ev.name}">${ev.name}</strong>
+                            <span class="text-[13px] font-mono font-medium opacity-80 mt-0.5 whitespace-nowrap overflow-hidden">${ev.time}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (!isWeekend && row.records.length === 0) {
+                gridHtml += `
+                    <div class="text-xs text-gray-300 flex items-center justify-start pl-4 pointer-events-none overflow-hidden whitespace-nowrap"
+                         style="grid-column: 2 / 21; grid-row: ${rowIdx};">
+                        일정 없음
+                    </div>
+                `;
+            } else if (isWeekend && row.records.length === 0) {
+                gridHtml += `
+                    <div class="text-xs text-gray-300 flex items-center justify-start pl-4 pointer-events-none overflow-hidden whitespace-nowrap"
+                         style="grid-column: 2 / 12; grid-row: ${rowIdx};">
+                        일정 없음
+                    </div>
+                `;
+            }
+
+            rowIdx++;
+        });
+
+        gridHtml += `</div>`;
+        container.innerHTML = gridHtml;
+
+        const scrollWrapper = container.closest('.overflow-x-auto');
+        if (scrollWrapper) scrollWrapper.scrollLeft = 0;
+    }
+
+    function initFullCalendar() {
+        const calendarEl = document.getElementById('calendar');
+        if (!calendarEl) return;
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'ko',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            buttonText: {
+                today: '오늘',
+                month: '월',
+                week: '주',
+                list: '목록'
+            },
+            editable: false,
+            selectable: true,
+
+            eventClick: function(info) {
+                const props = info.event.extendedProps;
+                openBookingModal(props.space, info.event.title, props.rawStart);
+            },
+
+            events: async function(info, successCallback, failureCallback) {
+                try {
+                    const bookingData = await apiGet("getBookings");
+
+                    if (!bookingData || bookingData.error || !Array.isArray(bookingData)) {
+                        successCallback([]);
+                        return;
+                    }
+
+                    const events = bookingData.map(item => {
+                        return {
+                            title: item.title,
+                            start: item.start,
+                            color: getSpaceColor(item.space),
+                            extendedProps: {
+                                space: item.space,
+                                rawStart: item.start
+                            }
+                        };
+                    });
+
+                    successCallback(events);
+                } catch (error) {
+                    console.error("Calendar data fetch error:", error);
+                    failureCallback(error);
+                }
+            }
+        });
+        calendar.render();
+    }
+
+    function getSpaceColor(space) {
+        switch(space) {
+            case '댄스실': return '#FF5A36';
+            case '음악실': return '#2563EB';
+            case '동아리방': return '#16A34A';
+            case '어울림방': return '#7C3AED';
+            default: return '#111111';
+        }
+    }
+
+    function showBookingFormError(message) {
+        const el = document.getElementById('booking-form-error');
+        el.textContent = message;
+        el.classList.toggle('hidden', !message);
+    }
+
+    async function sendPost(mode) {
+        if (mode !== 'submitBooking') return;
+
+        const name = document.getElementById('b_name').value.trim();
+        const phone = document.getElementById('b_phone').value.trim();
+        const space = document.getElementById('b_space').value;
+        const dateTime = document.getElementById('b_date').value;
+        const hours = document.getElementById('b_hours').value;
+        const count = document.getElementById('b_count').value;
+        const content = document.getElementById('b_content').value.trim();
+
+        const agree1Checked = document.getElementById('b_agree1').checked;
+        const agree2Checked = document.getElementById('b_agree2').checked;
+
+        if (!name || !phone || !dateTime || !hours || !count) {
+            showBookingFormError("필수 입력 항목을 모두 채워주세요.");
+            return;
+        }
+
+        // 💡 [추가] 프론트엔드 전송 전 3일 이후 여부 검증
+        const bookingDate = new Date(dateTime);
+        const minDate = new Date();
+        minDate.setDate(minDate.getDate() + 3);
+
+        if (bookingDate < minDate) {
+            showBookingFormError("대관 신청은 최소 3일 이후부터 가능합니다.");
+            return;
+        }
+
+        if (!agree1Checked || !agree2Checked) {
+            showBookingFormError("필수 약관 및 동의 사항에 동의해야 합니다.");
+            return;
+        }
+
+        showBookingFormError("");
+
+        const payload = {
+            mode: "submitBooking",
+            uid: getOrCreateUID(),
+            name,
+            phone,
+            space,
+            dateTime,
+            hours,
+            count,
+            content,
+            agree1: agree1Checked ? "동의" : "비동의",
+            agree2: agree2Checked ? "동의" : "비동의"
+        };
+
+        const btn = document.getElementById('btn-submit-book');
+        btn.disabled = true;
+        btn.setAttribute('aria-busy', 'true');
+        btn.textContent = "처리 중...";
+
+        const res = await apiPost(payload);
+        btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+        btn.textContent = "대관 신청하기";
+
+        if (res && !res.error) {
+            KRDSToast.show("제출 완료 ✅");
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            showBookingFormError(res.error || "대관 신청 중 오류가 발생했습니다.");
+        }
+    }
+</script>
+</body>
+</html>
