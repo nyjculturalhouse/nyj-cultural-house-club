@@ -25,7 +25,7 @@ html {
 }
 
 body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+    font-family: 'SUIT', sans-serif;
     -webkit-font-smoothing: antialiased;
     background: #F4F4F3;
     color: #111111;
@@ -384,7 +384,7 @@ select:focus-visible,
 /* -----------------------------
    11. FullCalendar 커스텀
 ------------------------------ */
-.fc { font-family: 'Pretendard', sans-serif; }
+.fc { font-family: 'SUIT', sans-serif; }
 .fc .fc-button-primary { background-color: #111111 !important; border-color: #111111 !important; }
 .fc .fc-button-primary:hover { background-color: #222222 !important; border-color: #222222 !important; }
 .fc .fc-button-primary:disabled { background-color: #cccccc !important; border-color: #cccccc !important; }

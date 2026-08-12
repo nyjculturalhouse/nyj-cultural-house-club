@@ -11,6 +11,9 @@
 window.KRDS_TAILWIND_THEME = {
     theme: {
         extend: {
+            fontFamily: {
+                sans: ["SUIT", "sans-serif"]
+            },
             colors: {
                 primary: {
                     DEFAULT: "#000000",
@@ -35,4 +38,32 @@ window.KRDS_TAILWIND_THEME = {
 
 if (window.tailwind) {
     window.tailwind.config = window.KRDS_TAILWIND_THEME;
+}
+
+function applySuitTypography() {
+    document.documentElement.style.setProperty('font-size', '16px', 'important');
+    document.body.style.setProperty('font-family', 'SUIT, sans-serif', 'important');
+
+    const clampFontSize = (element) => {
+        if (!(element instanceof HTMLElement) || element.classList.contains('material-symbols-outlined')) return;
+        const fontSize = Number.parseFloat(window.getComputedStyle(element).fontSize);
+        if (Number.isFinite(fontSize) && fontSize < 10) {
+            element.style.setProperty('font-size', '10px', 'important');
+        }
+    };
+
+    document.body.querySelectorAll('*').forEach(clampFontSize);
+    new MutationObserver((records) => {
+        records.forEach((record) => record.addedNodes.forEach((node) => {
+            if (!(node instanceof HTMLElement)) return;
+            clampFontSize(node);
+            node.querySelectorAll('*').forEach(clampFontSize);
+        }));
+    }).observe(document.body, { childList: true, subtree: true });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applySuitTypography, { once: true });
+} else {
+    applySuitTypography();
 }

@@ -1,12 +1,12 @@
 /* Design philosophy: reference-matched monochrome cultural-house editorial system; no gradients, rounded corners or decorative color. */
-@import url('https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;600;700;800;900&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@theme inline { --font-sans: 'Gothic A1', sans-serif; --color-background: #fff; --color-foreground: #000; }
+@theme inline { --font-sans: 'SUIT', sans-serif; --color-background: #fff; --color-foreground: #000; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; color: #000; background: #fff; font-family: 'Gothic A1', sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; color: #000; background: #fff; font-family: 'SUIT', sans-serif; font-size: 16px; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 .reference-width { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
@@ -20,7 +20,7 @@ button { font: inherit; }
 .reference-brand__mark img { position: absolute; inset: 2px; width: 28px; height: 28px; opacity: .18; filter: grayscale(1) contrast(1000%) invert(1); }
 .reference-brand__mark b { position: relative; z-index: 1; font-size: 17px; line-height: 1; letter-spacing: -.12em; }
 .reference-brand strong { display: block; font-size: 14px; font-weight: 900; letter-spacing: -.065em; }
-.reference-brand small { display: block; margin-top: 1px; font-size: 7px; font-weight: 800; letter-spacing: .105em; }
+.reference-brand small { display: block; margin-top: 1px; font-size: 10px; font-weight: 800; letter-spacing: .105em; }
 .reference-nav { display: flex; align-items: center; gap: 19px; font-size: 12px; font-weight: 800; }
 .reference-nav a { display: inline-flex; align-items: center; gap: 4px; }
 .reference-nav__admin { padding: 10px 13px; color: #fff; background: #000; }
@@ -40,16 +40,16 @@ button { font: inherit; }
 .reference-art__grid { position: absolute; inset: 0; opacity: .54; background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg,#000 1px,transparent 1px); background-size: 24px 24px; mask-image: linear-gradient(to right, transparent, #000 16%, #000 88%, transparent); }
 .reference-art__texture { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .09; filter: grayscale(1) contrast(1000%); mix-blend-mode: multiply; }
 .reference-art__black-card { position: absolute; top: 35px; right: 52px; width: min(306px, 60%); min-height: 275px; padding: 19px; color: #fff; background: #000; }
-.reference-art__black-card > div { display: flex; justify-content: space-between; font-size: 8px; font-weight: 800; letter-spacing: .1em; }
+.reference-art__black-card > div { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; letter-spacing: .1em; }
 .reference-art__black-card i { position: absolute; right: 28px; top: 106px; color: #fff; font-size: 34px; font-style: normal; }
 .reference-art__black-card strong { position: absolute; left: 20px; bottom: 35px; font-size: 26px; font-weight: 800; letter-spacing: -.08em; line-height: 1.16; }
 .reference-art__black-card em { position: absolute; right: 18px; bottom: 18px; left: 18px; height: 1px; background: #fff; }
 .reference-art__schedule,.reference-art__archive { position: absolute; display: grid; gap: 4px; padding: 13px; border: 1px solid #000; background: #fff; font-size: 11px; font-style: normal; }
 .reference-art__schedule { top: 92px; left: 10px; width: 132px; }
 .reference-art__schedule b,.reference-art__archive b { font-size: 11px; letter-spacing: -.05em; }
-.reference-art__schedule small { font-size: 8px; font-weight: 600; }
+.reference-art__schedule small { font-size: 10px; font-weight: 600; }
 .reference-art__archive { right: 8px; bottom: 14px; width: 144px; }
-.reference-art > p { position: absolute; bottom: 9px; left: 37px; margin: 0; font-size: 9px; font-weight: 900; letter-spacing: .08em; line-height: 1.16; }
+.reference-art > p { position: absolute; bottom: 9px; left: 37px; margin: 0; font-size: 10px; font-weight: 900; letter-spacing: .08em; line-height: 1.16; }
 
 .reference-monthly { border-top: 1px solid #000; border-bottom: 1px solid #000; background: #fff; }
 .reference-monthly__inner { display: grid; grid-template-columns: .65fr 1.35fr; gap: 40px; padding: 36px 0; }
@@ -84,4 +84,4 @@ button { font: inherit; }
 .reference-footer { height: 46px; background: #000; }
 
 @media (max-width: 850px) { .reference-hero { grid-template-columns: 1fr; gap: 38px; } .reference-art { max-width: 570px; width: 100%; margin-left: auto; } .reference-monthly__inner { grid-template-columns: 1fr; gap: 22px; } }
-@media (max-width: 640px) { .reference-width { width: min(100% - 32px, 1180px); } .reference-header { height: 64px; } .reference-nav a:not(.reference-nav__admin) { display: none; } .reference-nav__admin { padding: 8px 10px; font-size: 11px; } .reference-hero { min-height: auto; padding: 48px 0 56px; } .reference-hero h1 { font-size: 46px; } .reference-hero__description { font-size: 14px; } .reference-hero__actions { align-items: flex-start; flex-direction: column; } .reference-hero__benefits { gap: 9px 12px; font-size: 9px; } .reference-art { min-height: 285px; } .reference-art__black-card { top: 25px; right: 30px; min-height: 210px; width: 195px; padding: 13px; } .reference-art__black-card i { top: 77px; right: 21px; font-size: 25px; } .reference-art__black-card strong { left: 14px; bottom: 29px; font-size: 18px; } .reference-art__schedule { top: 68px; width: 110px; left: 0; } .reference-art__archive { right: 0; bottom: 0; width: 117px; } .reference-art > p { display: none; } .reference-monthly__inner { padding: 30px 0; } .week-status-grid { grid-template-columns: 1fr; } .week-status { border-right: 0; border-bottom: 1px solid #000; } .week-status:last-child { border-bottom: 0; } .reference-services { padding: 62px 0; } .reference-services__heading { align-items: flex-start; flex-direction: column; gap: 17px; padding-bottom: 24px; } .reference-services__heading > p { text-align: left; font-size: 12px; } .reference-service-grid,.reference-utilities { grid-template-columns: 1fr; } .reference-service { min-height: 230px; border-right: 0; border-bottom: 1px solid #000; } .reference-service:last-child { border-bottom: 0; } .reference-utilities a { min-height: 88px; border-right: 0; border-bottom: 1px solid #000; } .reference-utilities a:last-child { border-bottom: 0; } }
+@media (max-width: 640px) { .reference-width { width: min(100% - 32px, 1180px); } .reference-header { height: 64px; } .reference-nav a:not(.reference-nav__admin) { display: none; } .reference-nav__admin { padding: 8px 10px; font-size: 11px; } .reference-hero { min-height: auto; padding: 48px 0 56px; } .reference-hero h1 { font-size: 46px; } .reference-hero__description { font-size: 14px; } .reference-hero__actions { align-items: flex-start; flex-direction: column; } .reference-hero__benefits { gap: 9px 12px; font-size: 10px; } .reference-art { min-height: 285px; } .reference-art__black-card { top: 25px; right: 30px; min-height: 210px; width: 195px; padding: 13px; } .reference-art__black-card i { top: 77px; right: 21px; font-size: 25px; } .reference-art__black-card strong { left: 14px; bottom: 29px; font-size: 18px; } .reference-art__schedule { top: 68px; width: 110px; left: 0; } .reference-art__archive { right: 0; bottom: 0; width: 117px; } .reference-art > p { display: none; } .reference-monthly__inner { padding: 30px 0; } .week-status-grid { grid-template-columns: 1fr; } .week-status { border-right: 0; border-bottom: 1px solid #000; } .week-status:last-child { border-bottom: 0; } .reference-services { padding: 62px 0; } .reference-services__heading { align-items: flex-start; flex-direction: column; gap: 17px; padding-bottom: 24px; } .reference-services__heading > p { text-align: left; font-size: 12px; } .reference-service-grid,.reference-utilities { grid-template-columns: 1fr; } .reference-service { min-height: 230px; border-right: 0; border-bottom: 1px solid #000; } .reference-service:last-child { border-bottom: 0; } .reference-utilities a { min-height: 88px; border-right: 0; border-bottom: 1px solid #000; } .reference-utilities a:last-child { border-bottom: 0; } }
