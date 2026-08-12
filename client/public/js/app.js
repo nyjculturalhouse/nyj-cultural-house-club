@@ -7,6 +7,7 @@ const AttendanceApp = (() => {
 
     let state = {
         day: '',
+        week: '',
         club: '',
         members: []
     };
@@ -78,6 +79,18 @@ const AttendanceApp = (() => {
     }
 
     function init() {
+        const selectedWeek = new URLSearchParams(window.location.search).get('week');
+        state.week = selectedWeek || '';
+        const context = document.getElementById('attendance-week-context');
+        const label = document.getElementById('attendance-week-label');
+        if (context && label && selectedWeek) {
+            const date = new Date(`${selectedWeek}T00:00:00`);
+            const formatted = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' }).format(date);
+            label.textContent = `${formatted} 시작 주차 출석체크`;
+            context.classList.remove('hidden');
+        } else if (context) {
+            context.classList.add('hidden');
+        }
         showStep("step-days");
         renderDays();
     }
@@ -242,7 +255,8 @@ const AttendanceApp = (() => {
         }
 
         const today = new Date().toISOString().split('T')[0];
-        const hasSubmitted = localStorage.getItem(`attendance_${today}`);
+        const attendanceKey = state.week || today;
+        const hasSubmitted = localStorage.getItem(`attendance_${attendanceKey}`);
 
         if (hasSubmitted) {
             showModal(true);
@@ -266,6 +280,7 @@ const AttendanceApp = (() => {
             clubName: state.club,
             attendees: state.members,
             day: state.day,
+            attendanceWeek: state.week,
             uid: window.getOrCreateUID ? window.getOrCreateUID() : ''
         });
 
@@ -279,7 +294,7 @@ const AttendanceApp = (() => {
             return;
         }
 
-        localStorage.setItem(`attendance_${today}`, 'true');
+        localStorage.setItem(`attendance_${attendanceKey}`, 'true');
         showModal(false);
 
         state.members = [];
