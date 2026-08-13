@@ -3,14 +3,17 @@
 
 :root { --mono-black: #000000; --mono-white: #ffffff; }
 
-html { background: var(--mono-white); font-size: 16px !important; }
-body { background: var(--mono-white) !important; color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-size: 16px !important; }
+html { background: var(--mono-white); font-size: 100% !important; }
+body { background: var(--mono-white) !important; color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-size: 1rem !important; font-weight: 500; letter-spacing: -0.01em; line-height: 1.6; }
 body * { border-radius: 0 !important; box-shadow: none !important; }
 header { background: var(--mono-white) !important; border-color: var(--mono-black) !important; }
-header h1, header h2 { display: flex; align-items: center; gap: 10px; color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-weight: 900 !important; letter-spacing: -0.065em !important; }
+header h1, header h2 { display: flex; align-items: center; gap: 10px; color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-weight: 800 !important; letter-spacing: -0.04em !important; line-height: 1.25 !important; }
 header h1::before, header h2::before { content: 'N'; display: inline-grid; width: 28px; height: 28px; place-items: center; background: var(--mono-black); color: var(--mono-white); font-size: 14px; font-weight: 900; letter-spacing: -0.12em; }
-h1, h2, h3, h4, .magazine-title { font-family: 'SUIT', sans-serif !important; color: var(--mono-black) !important; font-weight: 900 !important; letter-spacing: -0.07em !important; }
+h1, h2, h3, h4, .magazine-title { font-family: 'SUIT', sans-serif !important; color: var(--mono-black) !important; font-weight: 800 !important; letter-spacing: -0.04em !important; line-height: 1.25 !important; }
 body :not(.material-symbols-outlined) { font-family: 'SUIT', sans-serif !important; }
+body p, body li, body label, body input, body select, body textarea, body button { line-height: 1.6 !important; letter-spacing: -0.01em !important; }
+body .text-xs, body .text-sm { font-size: .875rem !important; line-height: 1.5 !important; }
+body .text-lg { font-size: 1.125rem !important; line-height: 1.5 !important; }
 .bg-primary, .bg-accent-bg, .btn.selected, .tab-active, .step-indicator li.done .step-num { background: var(--mono-black) !important; color: var(--mono-white) !important; }
 .bg-primary *, .bg-accent-bg *, .btn.selected *, .tab-active * { color: var(--mono-white) !important; }
 .text-primary, .text-accent-bg, .text-accent-text { color: var(--mono-black) !important; }

@@ -14,59 +14,42 @@ import {
   Share2,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { getMonthWeekIndex, getMonthWeeks, type MonthWeek } from "@/lib/monthWeeks";
 
 const HeroArtwork = "/manus-storage/nyj-hero-grid_89a9d994.png";
 const MarkArtwork = "/manus-storage/nyj-mark_454f3ed0.png";
 
-type WeekStatus = { key: "previous" | "current"; label: string; pendingCount: number; weekStart: string };
-type ClubWeekStatus = { label: string; weekStart: string; completed: boolean };
-type ClubAttendanceStatus = { club: string; pendingCount: number; weeks: ClubWeekStatus[] };
-
-function formatWeekStart(date: Date) {
-  return new Intl.DateTimeFormat("ko-KR", { month: "long", day: "numeric" }).format(date);
-}
-
-function startOfAttendanceWeek(date: Date) {
-  const copy = new Date(date);
-  const daysSinceSaturday = (copy.getDay() + 1) % 7;
-  copy.setDate(copy.getDate() - daysSinceSaturday);
-  copy.setHours(0, 0, 0, 0);
-  return copy;
-}
-
-function toLocalDateString(date: Date) {
-  const offset = date.getTimezoneOffset() * 60_000;
-  return new Date(date.getTime() - offset).toISOString().slice(0, 10);
-}
+type ClubWeekState = "complete" | "pending" | "waiting";
+type ClubWeekStatus = MonthWeek & { state: ClubWeekState };
+type ClubAttendanceStatus = { club: string; pendingCount: number; waitingCount: number; complete: boolean; weeks: ClubWeekStatus[] };
 
 export default function Home() {
   const monthlyPanelRef = useRef<HTMLElement>(null);
-  const [expandedClub, setExpandedClub] = useState<string | null>(null);
+  const [expandedClub, setExpandedClub] = useState<string | null>(() => new URLSearchParams(window.location.search).get("club"));
+  const loadMonthlyFromLink = useMemo(() => new URLSearchParams(window.location.search).get("monthly") === "1", []);
   const monthlyQuery = trpc.attendance.status.useQuery(undefined, {
-    enabled: false,
+    enabled: loadMonthlyFromLink,
     retry: false,
     refetchOnWindowFocus: false,
   });
-  const weeks = useMemo<WeekStatus[]>(() => {
-    if (!monthlyQuery.data) return [];
-    const current = startOfAttendanceWeek(new Date());
-    const previous = new Date(current);
-    previous.setDate(previous.getDate() - 7);
-    return [
-      { key: "previous", label: `${formatWeekStart(previous)} 시작 주차`, pendingCount: monthlyQuery.data.filter((item) => !item.lastWeek).length, weekStart: toLocalDateString(previous) },
-      { key: "current", label: `${formatWeekStart(current)} 시작 주차`, pendingCount: monthlyQuery.data.filter((item) => !item.thisWeek).length, weekStart: toLocalDateString(current) },
-    ];
-  }, [monthlyQuery.data]);
+  const monthWeeks = useMemo(() => getMonthWeeks(new Date()), []);
   const clubs = useMemo<ClubAttendanceStatus[]>(() => {
-    if (!monthlyQuery.data || weeks.length === 0) return [];
+    if (!monthlyQuery.data || monthWeeks.length === 0) return [];
+    const currentWeekIndex = getMonthWeekIndex(new Date());
+    const lastWeekDate = new Date();
+    lastWeekDate.setDate(lastWeekDate.getDate() - 7);
+    const lastWeekIndex = getMonthWeekIndex(lastWeekDate);
     return monthlyQuery.data.map((item) => {
-      const clubWeeks = [
-        { label: weeks[0].label, weekStart: weeks[0].weekStart, completed: item.lastWeek },
-        { label: weeks[1].label, weekStart: weeks[1].weekStart, completed: item.thisWeek },
-      ];
-      return { club: item.club, pendingCount: clubWeeks.filter((week) => !week.completed).length, weeks: clubWeeks };
-    }).sort((first, second) => second.pendingCount - first.pendingCount || first.club.localeCompare(second.club, "ko"));
-  }, [monthlyQuery.data, weeks]);
+      const clubWeeks = monthWeeks.map((week): ClubWeekStatus => {
+        if (week.index === currentWeekIndex) return { ...week, state: item.thisWeek ? "complete" : "pending" };
+        if (week.index === lastWeekIndex) return { ...week, state: item.lastWeek ? "complete" : "pending" };
+        return { ...week, state: "waiting" };
+      });
+      const pendingCount = clubWeeks.filter((week) => week.state === "pending").length;
+      const waitingCount = clubWeeks.filter((week) => week.state === "waiting").length;
+      return { club: item.club, pendingCount, waitingCount, complete: clubWeeks.every((week) => week.state === "complete"), weeks: clubWeeks };
+    }).filter((club) => !club.complete).sort((first, second) => second.pendingCount - first.pendingCount || first.waitingCount - second.waitingCount || first.club.localeCompare(second.club, "ko"));
+  }, [monthlyQuery.data, monthWeeks]);
 
   const loadMonthlyAttendance = async () => {
     monthlyPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -130,7 +113,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section ref={monthlyPanelRef} className="reference-monthly" aria-live="polite">
+        <section id="monthly-attendance" ref={monthlyPanelRef} className="reference-monthly" aria-live="polite">
           <div className="reference-width reference-monthly__inner">
             <div><p className="reference-label"><span />이번 달 출석</p><h2>동아리별 출석 확인</h2></div>
             <div className="reference-monthly__content">
@@ -138,25 +121,27 @@ export default function Home() {
               {monthlyQuery.isFetching && <p>출석 현황을 확인하는 중입니다.</p>}
               {monthlyQuery.error && <p>출석 현황을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>}
               {clubs.length > 0 && <>
-                <div className="monthly-attendance-summary"><strong>미출석 동아리 {clubs.filter((club) => club.pendingCount > 0).length}개</strong><span>미출석 동아리부터 확인해 주세요.</span></div>
-                <div className="club-attendance-list" aria-label="동아리별 이번 달 출석 현황">
+                <div className="monthly-attendance-summary"><strong>출석 확인이 필요한 동아리 {clubs.length}개</strong><span>출석을 모두 완료한 동아리는 목록에서 제외합니다.</span></div>
+                <div className="monthly-attendance-legend" aria-label="출석 상태 안내"><span className="monthly-attendance-legend__pending">출석 필요</span><span className="monthly-attendance-legend__complete">출석 완료</span><span className="monthly-attendance-legend__waiting">이력 연동 대기</span></div>
+                {clubs.length > 0 ? <div className="club-attendance-list" aria-label="동아리별 이번 달 출석 현황">
                   {clubs.map((club) => {
                     const isExpanded = expandedClub === club.club;
                     return <article className={`club-attendance-item ${club.pendingCount > 0 ? "club-attendance-item--pending" : ""}`} key={club.club}>
                       <button className="club-attendance-toggle" type="button" aria-expanded={isExpanded} onClick={() => setExpandedClub(isExpanded ? null : club.club)}>
                         <span className="club-attendance-name">{club.club}</span>
-                        <span className="club-attendance-state">{club.pendingCount > 0 ? `미출석 ${club.pendingCount}주` : "출석 완료"}</span>
+                        <span className="club-attendance-state">{club.pendingCount > 0 ? `출석 필요 ${club.pendingCount}주` : `이력 확인 ${club.waitingCount}주`}</span>
                         <ChevronDown className={isExpanded ? "club-attendance-chevron club-attendance-chevron--open" : "club-attendance-chevron"} size={18} strokeWidth={1.7} />
                       </button>
                       {isExpanded && <div className="club-week-drilldown" aria-label={`${club.club} 주차별 출석 현황`}>
-                        {club.weeks.map((week) => <button className={week.completed ? "club-week-button" : "club-week-button club-week-button--pending"} key={week.weekStart} type="button" onClick={() => openAttendance(week.weekStart, club.club)}>
-                          <span>{week.label}</span><strong>{week.completed ? "출석 완료" : "출석하기"}</strong><ArrowRight size={15} strokeWidth={1.8} />
+                        {club.weeks.map((week) => <button className={`club-week-button club-week-button--${week.state}`} key={week.weekStart} type="button" disabled={week.state === "waiting"} onClick={() => openAttendance(week.weekStart, club.club)}>
+                          <span>{week.label}</span><strong>{week.state === "complete" ? "출석 완료" : week.state === "pending" ? "출석하기" : "이력 연동 대기"}</strong>{week.state === "waiting" ? <span className="club-week-button__mark" aria-hidden="true">—</span> : <ArrowRight size={15} strokeWidth={1.8} />}
                         </button>)}
                       </div>}
                     </article>;
                   })}
-                </div>
+                </div> : <p className="monthly-attendance-complete">이번 달 출석을 모두 완료했습니다.</p>}
               </>}
+              {monthlyQuery.isFetched && !monthlyQuery.error && monthlyQuery.data && clubs.length === 0 && <p className="monthly-attendance-complete">{monthlyQuery.data.length === 0 ? "이번 달에 확인할 동아리가 없습니다." : "이번 달 출석을 모두 완료했습니다."}</p>}
             </div>
           </div>
         </section>

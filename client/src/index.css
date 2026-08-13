@@ -4,9 +4,10 @@
 @import "tw-animate-css";
 
 @theme inline { --font-sans: 'SUIT', sans-serif; --color-background: #fff; --color-foreground: #000; }
+:root { --type-body: 1rem; --type-small: .875rem; --leading-body: 1.6; --leading-small: 1.5; --tracking-body: -.01em; }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; color: #000; background: #fff; font-family: 'SUIT', sans-serif; font-size: 16px; -webkit-font-smoothing: antialiased; }
+html { font-size: 100%; scroll-behavior: smooth; }
+body { margin: 0; color: #000; background: #fff; font-family: 'SUIT', sans-serif; font-size: var(--type-body); font-weight: 500; letter-spacing: var(--tracking-body); line-height: var(--leading-body); -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; }
 .reference-width { width: min(1180px, calc(100% - 48px)); margin-inline: auto; }
@@ -19,42 +20,42 @@ button { font: inherit; }
 .reference-brand__mark { position: relative; display: grid; width: 32px; height: 32px; place-items: center; overflow: hidden; color: #fff; background: #000; }
 .reference-brand__mark img { position: absolute; inset: 2px; width: 28px; height: 28px; opacity: .18; filter: grayscale(1) contrast(1000%) invert(1); }
 .reference-brand__mark b { position: relative; z-index: 1; font-size: 17px; line-height: 1; letter-spacing: -.12em; }
-.reference-brand strong { display: block; font-size: 14px; font-weight: 900; letter-spacing: -.065em; }
-.reference-brand small { display: block; margin-top: 1px; font-size: 10px; font-weight: 800; letter-spacing: .105em; }
-.reference-nav { display: flex; align-items: center; gap: 19px; font-size: 12px; font-weight: 800; }
+.reference-brand strong { display: block; font-size: .875rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.35; }
+.reference-brand small { display: block; margin-top: 1px; font-size: .75rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.5; }
+.reference-nav { display: flex; align-items: center; gap: 19px; font-size: .875rem; font-weight: 700; line-height: 1.5; }
 .reference-nav a { display: inline-flex; align-items: center; gap: 4px; }
 .reference-nav__admin { padding: 10px 13px; color: #fff; background: #000; }
 
 .reference-hero { display: grid; grid-template-columns: .96fr .94fr; align-items: center; gap: clamp(42px, 7vw, 112px); min-height: 510px; padding: 70px 0 76px; }
-.reference-label { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 10px; font-weight: 800; letter-spacing: .09em; }
+.reference-label { display: flex; align-items: center; gap: 8px; margin: 0; font-size: .75rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.5; }
 .reference-label span { width: 19px; height: 2px; background: #000; }
-.reference-hero h1 { margin: 12px 0 0; font-size: clamp(42px, 5.1vw, 70px); font-weight: 900; letter-spacing: -.11em; line-height: .98; }
-.reference-hero__description { max-width: 420px; margin: 24px 0 0; padding-left: 13px; border-left: 2px solid #000; font-size: 15px; font-weight: 600; letter-spacing: -.045em; line-height: 1.8; }
+.reference-hero h1 { margin: 12px 0 0; font-size: clamp(2.625rem, 5.1vw, 4.375rem); font-weight: 800; letter-spacing: -.065em; line-height: 1.1; }
+.reference-hero__description { max-width: 420px; margin: 24px 0 0; padding-left: 13px; border-left: 2px solid #000; font-size: 1rem; font-weight: 500; letter-spacing: var(--tracking-body); line-height: var(--leading-body); }
 .reference-hero__actions { display: flex; align-items: center; gap: 16px; margin-top: 27px; }
-.reference-button { display: inline-flex; align-items: center; gap: 10px; padding: 15px 19px; color: #fff; background: #000; font-size: 13px; font-weight: 800; }
-.reference-text-button { display: inline-flex; align-items: center; gap: 7px; padding: 10px 0; border: 0; border-bottom: 1px solid #000; color: #000; background: transparent; font-size: 13px; font-weight: 800; cursor: pointer; }
-.reference-hero__benefits { display: flex; flex-wrap: wrap; gap: 17px; margin-top: 29px; padding-top: 17px; border-top: 1px solid #000; font-size: 10px; font-weight: 800; }
+.reference-button { display: inline-flex; align-items: center; gap: 10px; padding: 15px 19px; color: #fff; background: #000; font-size: var(--type-small); font-weight: 700; line-height: var(--leading-small); }
+.reference-text-button { display: inline-flex; align-items: center; gap: 7px; padding: 10px 0; border: 0; border-bottom: 1px solid #000; color: #000; background: transparent; font-size: var(--type-small); font-weight: 700; line-height: var(--leading-small); cursor: pointer; }
+.reference-hero__benefits { display: flex; flex-wrap: wrap; gap: 17px; margin-top: 29px; padding-top: 17px; border-top: 1px solid #000; font-size: .75rem; font-weight: 600; line-height: var(--leading-small); }
 .reference-hero__benefits span { display: inline-flex; align-items: center; gap: 5px; }
 
 .reference-art { position: relative; min-height: 374px; overflow: hidden; }
 .reference-art__grid { position: absolute; inset: 0; opacity: .54; background-image: linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg,#000 1px,transparent 1px); background-size: 24px 24px; mask-image: linear-gradient(to right, transparent, #000 16%, #000 88%, transparent); }
 .reference-art__texture { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .09; filter: grayscale(1) contrast(1000%); mix-blend-mode: multiply; }
 .reference-art__black-card { position: absolute; top: 35px; right: 52px; width: min(306px, 60%); min-height: 275px; padding: 19px; color: #fff; background: #000; }
-.reference-art__black-card > div { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; letter-spacing: .1em; }
+.reference-art__black-card > div { display: flex; justify-content: space-between; font-size: .75rem; font-weight: 700; letter-spacing: -.01em; line-height: var(--leading-small); }
 .reference-art__black-card i { position: absolute; right: 28px; top: 106px; color: #fff; font-size: 34px; font-style: normal; }
-.reference-art__black-card strong { position: absolute; left: 20px; bottom: 35px; font-size: 26px; font-weight: 800; letter-spacing: -.08em; line-height: 1.16; }
+.reference-art__black-card strong { position: absolute; left: 20px; bottom: 35px; font-size: 1.625rem; font-weight: 800; letter-spacing: -.05em; line-height: 1.25; }
 .reference-art__black-card em { position: absolute; right: 18px; bottom: 18px; left: 18px; height: 1px; background: #fff; }
-.reference-art__schedule,.reference-art__archive { position: absolute; display: grid; gap: 4px; padding: 13px; border: 1px solid #000; background: #fff; font-size: 11px; font-style: normal; }
+.reference-art__schedule,.reference-art__archive { position: absolute; display: grid; gap: 4px; padding: 13px; border: 1px solid #000; background: #fff; font-size: .75rem; font-style: normal; line-height: var(--leading-small); }
 .reference-art__schedule { top: 92px; left: 10px; width: 132px; }
-.reference-art__schedule b,.reference-art__archive b { font-size: 11px; letter-spacing: -.05em; }
-.reference-art__schedule small { font-size: 10px; font-weight: 600; }
+.reference-art__schedule b,.reference-art__archive b { font-size: .75rem; letter-spacing: -.03em; }
+.reference-art__schedule small { font-size: .75rem; font-weight: 500; }
 .reference-art__archive { right: 8px; bottom: 14px; width: 144px; }
-.reference-art > p { position: absolute; bottom: 9px; left: 37px; margin: 0; font-size: 10px; font-weight: 900; letter-spacing: .08em; line-height: 1.16; }
+.reference-art > p { position: absolute; bottom: 9px; left: 37px; margin: 0; font-size: .75rem; font-weight: 700; letter-spacing: -.01em; line-height: 1.5; }
 
 .reference-monthly { border-top: 1px solid #000; border-bottom: 1px solid #000; background: #fff; }
 .reference-monthly__inner { display: grid; grid-template-columns: .65fr 1.35fr; gap: 40px; padding: 36px 0; }
-.reference-monthly h2,.reference-services h2 { margin: 11px 0 0; font-size: clamp(27px,3.1vw,43px); font-weight: 900; letter-spacing: -.09em; line-height: 1.12; }
-.reference-monthly__content > p { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.7; }
+.reference-monthly h2,.reference-services h2 { margin: 11px 0 0; font-size: clamp(1.75rem,3.1vw,2.688rem); font-weight: 800; letter-spacing: -.055em; line-height: 1.25; }
+.reference-monthly__content > p { margin: 0; font-size: var(--type-small); font-weight: 500; line-height: var(--leading-body); }
 .week-status-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); border: 1px solid #000; }
 .week-status { min-height: 135px; display: flex; flex-direction: column; justify-content: space-between; gap: 13px; padding: 16px; border-right: 1px solid #000; }
 .week-status:last-child { border-right: 0; }
@@ -62,41 +63,52 @@ button { font: inherit; }
 .week-status strong { font-size: 16px; font-weight: 900; letter-spacing: -.06em; }
 .week-status button { display: inline-flex; align-items: center; align-self: flex-start; gap: 6px; border: 0; border-bottom: 1px solid #000; padding: 0 0 2px; color: #000; background: #fff; font-size: 12px; font-weight: 800; cursor: pointer; }
 .monthly-attendance-summary { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #000; }
-.monthly-attendance-summary strong { font-size: 16px; font-weight: 900; letter-spacing: -.06em; }
-.monthly-attendance-summary span { font-size: 12px; font-weight: 600; }
+.monthly-attendance-summary strong { font-size: 1rem; font-weight: 800; letter-spacing: -.03em; line-height: var(--leading-small); }
+.monthly-attendance-summary span { font-size: var(--type-small); font-weight: 500; line-height: var(--leading-small); }
+.monthly-attendance-complete { padding: 20px 0; font-size: var(--type-small); font-weight: 600; line-height: var(--leading-body); }
+.monthly-attendance-legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 16px; font-size: .75rem; font-weight: 600; line-height: 1.5; }
+.monthly-attendance-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.monthly-attendance-legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; border: 1px solid #000; }
+.monthly-attendance-legend__pending::before { background: #000; }
+.monthly-attendance-legend__complete::before { background: #fff; }
+.monthly-attendance-legend__waiting::before { border-style: dashed !important; }
 .club-attendance-list { border-top: 1px solid #000; }
 .club-attendance-item { border-right: 1px solid #000; border-bottom: 1px solid #000; border-left: 1px solid #000; }
 .club-attendance-toggle { display: grid; grid-template-columns: minmax(0,1fr) auto 18px; align-items: center; width: 100%; gap: 14px; padding: 16px; border: 0; color: #000; background: #fff; text-align: left; cursor: pointer; }
 .club-attendance-toggle:hover, .club-attendance-toggle:focus-visible { color: #fff; background: #000; outline: 0; }
-.club-attendance-name { overflow: hidden; font-size: 15px; font-weight: 900; letter-spacing: -.05em; text-overflow: ellipsis; white-space: nowrap; }
-.club-attendance-state { font-size: 12px; font-weight: 800; }
+.club-attendance-name { overflow: hidden; font-size: 1rem; font-weight: 800; letter-spacing: -.03em; line-height: var(--leading-small); text-overflow: ellipsis; white-space: nowrap; }
+.club-attendance-state { font-size: var(--type-small); font-weight: 700; line-height: var(--leading-small); }
 .club-attendance-item--pending .club-attendance-state { text-decoration: underline; text-underline-offset: 3px; }
 .club-attendance-chevron { transition: transform 180ms cubic-bezier(.23, 1, .32, 1); }
 .club-attendance-chevron--open { transform: rotate(180deg); }
 .club-week-drilldown { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid #000; }
 .club-week-button { display: grid; grid-template-columns: minmax(0,1fr) auto 15px; align-items: center; gap: 9px; min-height: 58px; padding: 12px 15px; border: 0; border-right: 1px solid #000; color: #000; background: #fff; text-align: left; cursor: pointer; }
 .club-week-button:last-child { border-right: 0; }
-.club-week-button span { font-size: 12px; font-weight: 700; }
-.club-week-button strong { font-size: 12px; font-weight: 900; }
-.club-week-button:hover, .club-week-button:focus-visible { color: #fff; background: #000; outline: 0; }
+.club-week-button span { font-size: var(--type-small); font-weight: 600; line-height: var(--leading-small); }
+.club-week-button strong { font-size: var(--type-small); font-weight: 800; line-height: var(--leading-small); }
+.club-week-button--pending { color: #fff; background: #000; }
+.club-week-button--complete { background: #fff; }
+.club-week-button--waiting { border: 1px dashed #000; border-top: 0; color: #4b4b4b; cursor: not-allowed; }
+.club-week-button:hover:not(:disabled), .club-week-button:focus-visible:not(:disabled) { color: #fff; background: #000; outline: 0; }
 .club-week-button--pending strong { text-decoration: underline; text-underline-offset: 3px; }
+.club-week-button__mark { display: grid; width: 15px; height: 15px; place-items: center; font-size: 15px; }
 
 .reference-services { padding: 85px 0; }
 .reference-services__heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 34px; padding-bottom: 30px; }
-.reference-services__heading > p { max-width: 395px; margin: 0; text-align: right; font-size: 13px; font-weight: 600; letter-spacing: -.045em; line-height: 1.7; }
+.reference-services__heading > p { max-width: 395px; margin: 0; text-align: right; font-size: var(--type-small); font-weight: 500; letter-spacing: var(--tracking-body); line-height: var(--leading-body); }
 .reference-service-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid #000; }
 .reference-service { position: relative; min-height: 290px; display: flex; flex-direction: column; justify-content: space-between; padding: 18px; border-right: 1px solid #000; transition: background 180ms ease, color 180ms ease; }
 .reference-service:last-child { border-right: 0; }
 .reference-service:hover { color: #fff; background: #000; }
-.reference-service > span { font-size: 11px; font-weight: 900; letter-spacing: .1em; }
+.reference-service > span { font-size: .75rem; font-weight: 700; letter-spacing: -.01em; line-height: var(--leading-small); }
 .reference-service > i { position: absolute; top: 18px; right: 18px; display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid currentColor; font-style: normal; }
-.reference-service h3 { margin: 0; font-size: 25px; font-weight: 900; letter-spacing: -.075em; }
-.reference-service p { margin: 9px 0 20px; font-size: 13px; font-weight: 600; letter-spacing: -.045em; line-height: 1.6; opacity: .84; }
-.reference-service b { display: inline-flex; align-items: center; gap: 5px; border-bottom: 1px solid currentColor; padding-bottom: 2px; font-size: 12px; }
+.reference-service h3 { margin: 0; font-size: 1.563rem; font-weight: 800; letter-spacing: -.05em; line-height: 1.25; }
+.reference-service p { margin: 9px 0 20px; font-size: var(--type-small); font-weight: 500; letter-spacing: var(--tracking-body); line-height: var(--leading-body); opacity: .84; }
+.reference-service b { display: inline-flex; align-items: center; gap: 5px; border-bottom: 1px solid currentColor; padding-bottom: 2px; font-size: var(--type-small); font-weight: 700; line-height: var(--leading-small); }
 .reference-service--active { color: #fff; background: #000; }
 
 .reference-utilities { display: grid; grid-template-columns: 1fr 1fr; margin-bottom: 56px; border: 1px solid #000; }
-.reference-utilities a { min-height: 100px; display: flex; align-items: center; gap: 13px; padding: 18px; border-right: 1px solid #000; font-size: 15px; font-weight: 900; letter-spacing: -.06em; }
+.reference-utilities a { min-height: 100px; display: flex; align-items: center; gap: 13px; padding: 18px; border-right: 1px solid #000; font-size: 1rem; font-weight: 800; letter-spacing: -.03em; line-height: var(--leading-small); }
 .reference-utilities a:last-child { border-right: 0; }
 .reference-utilities i { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid currentColor; font-style: normal; }
 .reference-utilities a:hover { color: #fff; background: #000; }
