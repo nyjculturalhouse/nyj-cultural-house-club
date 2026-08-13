@@ -8,6 +8,7 @@ const AttendanceApp = (() => {
     let state = {
         day: '',
         week: '',
+        preferredClub: '',
         club: '',
         members: []
     };
@@ -106,7 +107,9 @@ const AttendanceApp = (() => {
 
     function init() {
         const selectedWeek = new URLSearchParams(window.location.search).get('week');
+        const selectedClub = new URLSearchParams(window.location.search).get('club');
         state.week = selectedWeek || '';
+        state.preferredClub = selectedClub || '';
         const context = document.getElementById('attendance-week-context');
         const label = document.getElementById('attendance-week-label');
         if (context && label && selectedWeek) {
@@ -114,6 +117,10 @@ const AttendanceApp = (() => {
             const formatted = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' }).format(date);
             label.textContent = `${formatted} 시작 주차 출석체크`;
             context.classList.remove('hidden');
+            const description = context.querySelector('p:last-child');
+            if (description && state.preferredClub) {
+                description.textContent = `${state.preferredClub} 동아리의 출석을 위해 요일을 선택하세요.`;
+            }
         } else if (context) {
             context.classList.add('hidden');
         }
@@ -126,12 +133,12 @@ const AttendanceApp = (() => {
     ========================= */
     function renderDays() {
         const days = [
-            { key: "화", en: "TUE", ko: "화요일" },
-            { key: "수", en: "WED", ko: "수요일" },
-            { key: "목", en: "THU", ko: "목요일" },
-            { key: "금", en: "FRI", ko: "금요일" },
-            { key: "토", en: "SAT", ko: "토요일" },
-            { key: "일", en: "SUN", ko: "일요일" }
+            { key: "화", ko: "화요일" },
+            { key: "수", ko: "수요일" },
+            { key: "목", ko: "목요일" },
+            { key: "금", ko: "금요일" },
+            { key: "토", ko: "토요일" },
+            { key: "일", ko: "일요일" }
         ];
 
         const box = document.getElementById("day-buttons");
@@ -146,7 +153,6 @@ const AttendanceApp = (() => {
             btn.className = "flex flex-col-reverse items-center justify-center p-4 rounded-xl border bg-white hover:border-black transition active:scale-95";
             btn.setAttribute('aria-pressed', 'false');
             btn.innerHTML = `
-                <span class="day-en text-xs font-bold text-gray-500" aria-hidden="true">${d.en}</span>
                 <span class="day-kr text-2xl font-black text-gray-800">${d.ko}</span>
             `;
 
@@ -187,6 +193,11 @@ const AttendanceApp = (() => {
         const clubs = await getFn("getClubs", { day });
         box.innerHTML = "";
 
+        const preferredClubExists = Boolean(state.preferredClub && clubs?.includes(state.preferredClub));
+        if (state.preferredClub && !preferredClubExists) {
+            box.insertAdjacentHTML('beforeend', `<p class="col-span-full border border-black p-3 text-sm font-bold" role="status">${state.preferredClub} 동아리는 선택한 요일에 등록되어 있지 않습니다. 다른 요일을 선택해 주세요.</p>`);
+        }
+
         if (!clubs || clubs.length === 0) {
             box.innerHTML = "<p class='text-gray-500 p-4' role='status'>등록된 동아리가 없습니다.</p>";
             return;
@@ -198,6 +209,10 @@ const AttendanceApp = (() => {
             btn.className = "p-4 rounded-xl border bg-white hover:border-black transition text-left";
             btn.setAttribute('aria-pressed', 'false');
             btn.textContent = c;
+            if (c === state.preferredClub) {
+                btn.classList.add('border-black');
+                btn.setAttribute('aria-label', `${c} 동아리, 선택한 동아리`);
+            }
             btn.addEventListener('click', () => {
                 state.club = c;
                 document.querySelectorAll("#club-buttons button").forEach(x => {

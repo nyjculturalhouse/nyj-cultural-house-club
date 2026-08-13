@@ -2,13 +2,14 @@
  * Design philosophy: reference-matched monochrome cultural-house editorial layout.
  * The monthly attendance panel reads the supplied Google Apps Script status endpoint; no mock attendance data is used.
  */
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
   CalendarDays,
   Check,
   CheckCircle2,
+  ChevronDown,
   ExternalLink,
   Share2,
 } from "lucide-react";
@@ -18,6 +19,8 @@ const HeroArtwork = "/manus-storage/nyj-hero-grid_89a9d994.png";
 const MarkArtwork = "/manus-storage/nyj-mark_454f3ed0.png";
 
 type WeekStatus = { key: "previous" | "current"; label: string; pendingCount: number; weekStart: string };
+type ClubWeekStatus = { label: string; weekStart: string; completed: boolean };
+type ClubAttendanceStatus = { club: string; pendingCount: number; weeks: ClubWeekStatus[] };
 
 function formatWeekStart(date: Date) {
   return new Intl.DateTimeFormat("ko-KR", { month: "long", day: "numeric" }).format(date);
@@ -38,6 +41,7 @@ function toLocalDateString(date: Date) {
 
 export default function Home() {
   const monthlyPanelRef = useRef<HTMLElement>(null);
+  const [expandedClub, setExpandedClub] = useState<string | null>(null);
   const monthlyQuery = trpc.attendance.status.useQuery(undefined, {
     enabled: false,
     retry: false,
@@ -53,6 +57,16 @@ export default function Home() {
       { key: "current", label: `${formatWeekStart(current)} 시작 주차`, pendingCount: monthlyQuery.data.filter((item) => !item.thisWeek).length, weekStart: toLocalDateString(current) },
     ];
   }, [monthlyQuery.data]);
+  const clubs = useMemo<ClubAttendanceStatus[]>(() => {
+    if (!monthlyQuery.data || weeks.length === 0) return [];
+    return monthlyQuery.data.map((item) => {
+      const clubWeeks = [
+        { label: weeks[0].label, weekStart: weeks[0].weekStart, completed: item.lastWeek },
+        { label: weeks[1].label, weekStart: weeks[1].weekStart, completed: item.thisWeek },
+      ];
+      return { club: item.club, pendingCount: clubWeeks.filter((week) => !week.completed).length, weeks: clubWeeks };
+    }).sort((first, second) => second.pendingCount - first.pendingCount || first.club.localeCompare(second.club, "ko"));
+  }, [monthlyQuery.data, weeks]);
 
   const loadMonthlyAttendance = async () => {
     monthlyPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -60,8 +74,10 @@ export default function Home() {
     await monthlyQuery.refetch();
   };
 
-  const openAttendance = (weekStart: string) => {
-    window.location.href = `/attendance.html?week=${encodeURIComponent(weekStart)}`;
+  const openAttendance = (weekStart: string, club?: string) => {
+    const parameters = new URLSearchParams({ week: weekStart });
+    if (club) parameters.set("club", club);
+    window.location.href = `/attendance.html?${parameters.toString()}`;
   };
 
   return (
@@ -72,7 +88,7 @@ export default function Home() {
         <div className="reference-width reference-header__inner">
           <a className="reference-brand" href="/" aria-label="남양주시 문화의집 웹시스템 홈">
             <span className="reference-brand__mark" aria-hidden="true"><img src={MarkArtwork} alt="" /><b>N</b></span>
-            <span><strong>남양주시 문화의집</strong><small>CULTURAL HOUSE</small></span>
+            <span><strong>남양주시 문화의집</strong><small>문화의집</small></span>
           </a>
           <nav aria-label="빠른 이동" className="reference-nav">
             <a href="/calendar.html">활동 일정</a>
@@ -85,7 +101,7 @@ export default function Home() {
       <main id="main-content">
         <section className="reference-width reference-hero">
           <div className="reference-hero__copy">
-            <p className="reference-label"><span />NAMYANGJU CULTURAL HOUSE</p>
+            <p className="reference-label"><span />남양주시 문화의집</p>
             <h1>함께 만드는<br />문화의 일상</h1>
             <p className="reference-hero__description">동아리의 출석부터 공간 예약, 활동 기록까지. 남양주시 문화의집의 모든 모임을 더 쉽고 즐겁게 연결합니다.</p>
             <div className="reference-hero__actions">
@@ -103,37 +119,50 @@ export default function Home() {
             <div className="reference-art__grid" />
             <img className="reference-art__texture" src={HeroArtwork} alt="" />
             <article className="reference-art__black-card">
-              <div><span>COMMUNITY</span><span>2026</span></div>
+              <div><span>함께하는 문화</span><span>2026</span></div>
               <i>✳</i>
               <strong>함께 모여<br />더 멀리 갑니다.</strong>
               <em />
             </article>
             <article className="reference-art__schedule"><CalendarDays size={17} strokeWidth={1.8} /><b>활동 일정</b><small>우리 모임의 다음 만남</small></article>
             <article className="reference-art__archive"><Share2 size={18} strokeWidth={1.8} /><b>활동 아카이브</b></article>
-            <p>CULTURE<br />CONNECTS<br />US</p>
+            <p>문화로<br />이어지는<br />우리</p>
           </div>
         </section>
 
         <section ref={monthlyPanelRef} className="reference-monthly" aria-live="polite">
           <div className="reference-width reference-monthly__inner">
-            <div><p className="reference-label"><span />MONTHLY ATTENDANCE</p><h2>이번 달 출석 확인</h2></div>
+            <div><p className="reference-label"><span />이번 달 출석</p><h2>동아리별 출석 확인</h2></div>
             <div className="reference-monthly__content">
-              {!monthlyQuery.isFetching && !monthlyQuery.isFetched && <p>이번 달 활동 살펴보기를 누르면 미출석 주차를 확인합니다.</p>}
+              {!monthlyQuery.isFetching && !monthlyQuery.isFetched && <p>이번 달 활동 살펴보기를 누르면 동아리별 미출석 주차를 확인합니다.</p>}
               {monthlyQuery.isFetching && <p>출석 현황을 확인하는 중입니다.</p>}
               {monthlyQuery.error && <p>출석 현황을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.</p>}
-              {weeks.length > 0 && <div className="week-status-grid">
-                {weeks.map((week) => <article className="week-status" key={week.key}>
-                  <p>{week.label}</p>
-                  <strong>{week.pendingCount > 0 ? `${week.pendingCount}개 동아리 출석 확인 필요` : "출석 확인 완료"}</strong>
-                  <button type="button" onClick={() => openAttendance(week.weekStart)}>{week.pendingCount > 0 ? "출석체크 하기" : "출석부 열기"} <ArrowRight size={16} strokeWidth={1.8} /></button>
-                </article>)}
-              </div>}
+              {clubs.length > 0 && <>
+                <div className="monthly-attendance-summary"><strong>미출석 동아리 {clubs.filter((club) => club.pendingCount > 0).length}개</strong><span>미출석 동아리부터 확인해 주세요.</span></div>
+                <div className="club-attendance-list" aria-label="동아리별 이번 달 출석 현황">
+                  {clubs.map((club) => {
+                    const isExpanded = expandedClub === club.club;
+                    return <article className={`club-attendance-item ${club.pendingCount > 0 ? "club-attendance-item--pending" : ""}`} key={club.club}>
+                      <button className="club-attendance-toggle" type="button" aria-expanded={isExpanded} onClick={() => setExpandedClub(isExpanded ? null : club.club)}>
+                        <span className="club-attendance-name">{club.club}</span>
+                        <span className="club-attendance-state">{club.pendingCount > 0 ? `미출석 ${club.pendingCount}주` : "출석 완료"}</span>
+                        <ChevronDown className={isExpanded ? "club-attendance-chevron club-attendance-chevron--open" : "club-attendance-chevron"} size={18} strokeWidth={1.7} />
+                      </button>
+                      {isExpanded && <div className="club-week-drilldown" aria-label={`${club.club} 주차별 출석 현황`}>
+                        {club.weeks.map((week) => <button className={week.completed ? "club-week-button" : "club-week-button club-week-button--pending"} key={week.weekStart} type="button" onClick={() => openAttendance(week.weekStart, club.club)}>
+                          <span>{week.label}</span><strong>{week.completed ? "출석 완료" : "출석하기"}</strong><ArrowRight size={15} strokeWidth={1.8} />
+                        </button>)}
+                      </div>}
+                    </article>;
+                  })}
+                </div>
+              </>}
             </div>
           </div>
         </section>
 
         <section className="reference-services reference-width" aria-labelledby="service-title">
-          <div className="reference-services__heading"><div><p className="reference-label"><span />SERVICE</p><h2 id="service-title">동아리 활동을 위한<br />모든 시작점</h2></div><p>필요한 업무는 간결하게, 소중한 활동은 더 풍성하게. 지금 필요한 서비스를 선택해 주세요.</p></div>
+          <div className="reference-services__heading"><div><p className="reference-label"><span />서비스</p><h2 id="service-title">동아리 활동을 위한<br />모든 시작점</h2></div><p>필요한 업무는 간결하게, 소중한 활동은 더 풍성하게. 지금 필요한 서비스를 선택해 주세요.</p></div>
           <nav className="reference-service-grid" aria-label="주요 기능">
             <a className="reference-service reference-service--active" href="/attendance.html"><span>01</span><i><CheckCircle2 size={22} strokeWidth={1.7} /></i><div><h3>동아리 출석부</h3><p>빠르고 정확한 출석 관리</p></div></a>
             <a className="reference-service" href="/booking.html"><span>02</span><i><CalendarDays size={22} strokeWidth={1.7} /></i><div><h3>공간 이용 예약</h3><p>원하는 시간에 필요한 공간을 예약하세요.</p><b>예약하기 <ArrowRight size={16} strokeWidth={1.8} /></b></div></a>
