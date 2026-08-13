@@ -39,4 +39,18 @@ a[aria-label="메인으로 이동"] { display: grid !important; width: 32px !imp
 a[aria-label="메인으로 이동"] .material-symbols-outlined { display: grid; width: 15px; height: 15px; place-items: center; font-size: 0 !important; }
 a[aria-label="메인으로 이동"] .material-symbols-outlined::before { content: ""; display: block; width: 15px; height: 15px; background: currentColor; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='black' d='M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E") center/contain no-repeat; }
 a[aria-label="메인으로 이동"]:hover { color: var(--mono-white) !important; background: var(--mono-black) !important; }
+.attendance-result-panel { max-width: 420px; border: 1px solid var(--mono-black) !important; }
+.attendance-result-icon { display: grid; width: 74px; height: 74px; place-items: center; margin: 0 auto 18px; border: 1px solid var(--mono-black); color: var(--mono-black); font-size: 32px; font-weight: 800; line-height: 1; }
+.attendance-completion-mark { width: 68px; height: 68px; overflow: visible; }
+.attendance-completion-mark__ring, .attendance-completion-mark__tick { fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: square; stroke-linejoin: miter; }
+.attendance-completion-mark__ring { stroke-dasharray: 183; stroke-dashoffset: 0; }
+.attendance-completion-mark__tick { stroke-dasharray: 44; stroke-dashoffset: 0; }
+#result-modal.attendance-result--success .attendance-result-panel { animation: attendance-result-enter 320ms cubic-bezier(.23, 1, .32, 1) both; }
+#result-modal.attendance-result--success .attendance-result-icon { animation: attendance-icon-pop 360ms cubic-bezier(.23, 1, .32, 1) 70ms both; }
+#result-modal.attendance-result--success .attendance-completion-mark__ring { animation: attendance-ring-draw 420ms cubic-bezier(.23, 1, .32, 1) 100ms both; }
+#result-modal.attendance-result--success .attendance-completion-mark__tick { animation: attendance-tick-draw 280ms cubic-bezier(.23, 1, .32, 1) 330ms both; }
+@keyframes attendance-result-enter { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes attendance-icon-pop { from { transform: scale(.93); } to { transform: scale(1); } }
+@keyframes attendance-ring-draw { from { stroke-dashoffset: 183; } to { stroke-dashoffset: 0; } }
+@keyframes attendance-tick-draw { from { stroke-dashoffset: 44; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }

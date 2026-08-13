@@ -17,21 +17,39 @@ const AttendanceApp = (() => {
     /* =========================
         모달
     ========================= */
+    function successIconMarkup() {
+        return `
+            <svg class="attendance-completion-mark" viewBox="0 0 72 72" focusable="false" aria-hidden="true">
+                <circle class="attendance-completion-mark__ring" cx="36" cy="36" r="29"></circle>
+                <path class="attendance-completion-mark__tick" d="M22 37.5 31.5 47 51 26"></path>
+            </svg>
+        `;
+    }
+
     function showModal(isAlreadySubmitted) {
         const modal = document.getElementById('result-modal');
         const title = document.getElementById('modal-title');
         const desc = document.getElementById('modal-desc');
         const icon = document.getElementById('modal-icon');
-        if (!modal || !title || !desc || !icon) return;
+        const panel = document.getElementById('result-modal-panel');
+        const status = document.getElementById('attendance-completion-status');
+        const confirmButton = document.getElementById('result-modal-confirm');
+        if (!modal || !title || !desc || !icon || !panel) return;
+
+        modal.classList.toggle('attendance-result--success', !isAlreadySubmitted);
+        modal.classList.toggle('attendance-result--notice', isAlreadySubmitted);
 
         if (isAlreadySubmitted) {
-            icon.textContent = '⚠️';
+            icon.textContent = '!' ;
             title.textContent = '이미 출석부를 제출하였습니다.';
             desc.textContent = '제출 후에는 온라인 수정이 불가능합니다. 수정이 필요한 경우 사무실에 방문하여 수정을 요청해 주시기 바랍니다.';
+            if (status) status.textContent = '이미 제출된 출석부입니다.';
         } else {
-            icon.textContent = '✅';
+            icon.innerHTML = successIconMarkup();
             title.textContent = '출석이 등록되었습니다.';
-            desc.textContent = '오늘의 출석이 성공적으로 반영되었습니다.';
+            const dayLabel = state.day ? `${state.day}요일` : '선택한 날짜';
+            desc.textContent = `${state.club}의 ${dayLabel} 출석이 성공적으로 반영되었습니다.`;
+            if (status) status.textContent = `${state.club} 출석이 등록되었습니다.`;
         }
 
         if (window.KRDSModal) {
@@ -39,14 +57,22 @@ const AttendanceApp = (() => {
         } else {
             modal.classList.remove('hidden');
         }
+
+        window.setTimeout(() => {
+            panel.focus({ preventScroll: true });
+            confirmButton?.focus({ preventScroll: true });
+        }, 0);
     }
 
     window.closeModal = () => {
+        const modal = document.getElementById('result-modal');
+        modal?.classList.remove('attendance-result--success', 'attendance-result--notice');
         if (window.KRDSModal) {
             window.KRDSModal.close('result-modal');
         } else {
-            document.getElementById('result-modal')?.classList.add('hidden');
+            modal?.classList.add('hidden');
         }
+        document.getElementById('btn-submit-attendance')?.focus({ preventScroll: true });
     };
 
     /* =========================
@@ -270,9 +296,11 @@ const AttendanceApp = (() => {
         }
 
         const submitBtn = document.getElementById('btn-submit-attendance');
+        const submitLabel = submitBtn?.textContent;
         if (submitBtn) {
             submitBtn.disabled = true;
             submitBtn.setAttribute('aria-busy', 'true');
+            submitBtn.textContent = '출석 저장 중…';
         }
 
         const res = await postFn({
@@ -287,6 +315,7 @@ const AttendanceApp = (() => {
         if (submitBtn) {
             submitBtn.disabled = false;
             submitBtn.removeAttribute('aria-busy');
+            submitBtn.textContent = submitLabel || '출석 제출하기';
         }
 
         if (!res || res.error) {
