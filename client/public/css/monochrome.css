@@ -3,6 +3,9 @@
 
 :root { --mono-black: #000000; --mono-white: #ffffff; }
 
+/* KRDS standard layout: content max 1200px, 24px desktop/tablet margin, 16px mobile margin. */
+body > header > div, body > main, body > footer > div { width: min(1200px, calc(100% - 48px)) !important; max-width: 1200px !important; margin-inline: auto !important; padding-inline: 0 !important; }
+
 html { background: var(--mono-white); font-size: 100% !important; }
 body { background: var(--mono-white) !important; color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-size: 1rem !important; font-weight: 500; letter-spacing: -0.01em; line-height: 1.6; }
 body * { border-radius: 0 !important; box-shadow: none !important; }
@@ -61,3 +64,4 @@ a[aria-label="메인으로 이동"]:hover { color: var(--mono-white) !important;
 @keyframes attendance-tick-draw { from { stroke-dashoffset: 44; } to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 @media (max-width: 480px) { .booking-tab-button { min-width: 84px; padding-inline: 14px; } }
+@media (max-width: 767px) { body > header > div, body > main, body > footer > div { width: calc(100% - 32px) !important; } }
