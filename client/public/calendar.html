@@ -34,7 +34,7 @@
         <p class="text-gray-500 mt-2 text-sm font-medium">실시간으로 외부활동 일정을 확인하세요.</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-soft border border-outline p-4 md:p-6">
+    <div class="calendar-surface bg-white border border-outline p-4 md:p-6">
         <div id="calendar" aria-label="외부 활동 일정 달력"></div>
         <p id="activity-calendar-status" class="mt-4 text-sm text-gray-500" role="status"></p>
     </div>
@@ -47,16 +47,16 @@
         <div class="p-6 md:p-8">
             <div class="flex justify-between items-start gap-4 mb-6">
                 <div>
-                    <span id="modal-club-badge" class="inline-block px-2.5 py-1 text-xs font-bold rounded-md bg-[#111111] text-white tracking-wide mb-2">동아리명</span>
+                    <span id="modal-club-badge" class="inline-block px-2.5 py-1 text-xs font-bold bg-[#111111] text-white tracking-wide mb-2">동아리명</span>
                     <h2 id="modal-event-title" class="magazine-title text-2xl text-primary leading-snug">활동 내용명</h2>
                 </div>
-                <button type="button" onclick="closeActivityModal()" class="p-1 rounded-full text-gray-400 hover:bg-gray-100 hover:text-primary transition" aria-label="닫기">
+                <button type="button" onclick="closeActivityModal()" class="p-1 text-gray-400 hover:bg-gray-100 hover:text-primary transition" aria-label="닫기">
                     <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
                 </button>
             </div>
 
-            <div class="space-y-4 border-t border-outline pt-6 text-sm">
-                <div class="flex items-start gap-3">
+            <div class="activity-modal-meta space-y-4 border-t border-outline pt-6 text-sm">
+                <div class="activity-modal-meta__row flex items-start gap-3">
                     <span class="material-symbols-outlined text-gray-400 mt-0.5" aria-hidden="true">schedule</span>
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">시작 일시</p>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <div id="modal-end-container" class="flex items-start gap-3">
+                <div id="modal-end-container" class="activity-modal-meta__row flex items-start gap-3">
                     <span class="material-symbols-outlined text-gray-400 mt-0.5" aria-hidden="true">event_busy</span>
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">종료 일시</p>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="mt-8">
-                <button type="button" onclick="closeActivityModal()" class="w-full bg-[#111111] text-white font-bold py-3.5 rounded-xl hover:bg-[#222222] transition shadow-sm text-sm">
+                <button type="button" onclick="closeActivityModal()" class="w-full bg-[#111111] text-white font-bold py-3.5 hover:bg-[#222222] transition text-sm">
                     확인
                 </button>
             </div>
@@ -83,7 +83,7 @@
 </div>
 
 <footer class="w-full py-8 text-center text-xs text-gray-400 font-medium tracking-wider border-t border-outline/40">
-    <p>© 2026 Culture Connect. All rights reserved.</p>
+    <p>© 2026 남양주시 문화의집. 모든 권리 보유.</p>
 </footer>
 
 <script src="js/api.js"></script>
@@ -166,7 +166,7 @@
                           start: parsedStart,
                           end: parsedEnd,
                           allDay: isAllDayEvent,
-                          color: '#FF5A36',
+                          color: '#000000',
                           extendedProps: {
                               club: act.club || "지정 안 됨",
                               event: act.event || "내용 없음",

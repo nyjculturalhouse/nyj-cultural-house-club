@@ -28,4 +28,18 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(booking).toContain('id="booking-calendar-status"');
     expect(calendar).toContain('id="activity-calendar-status"');
   });
+
+  it("출석과 일정의 우선 상호작용 요소를 무라운드 경계·딤드 계층으로 구분한다", () => {
+    const attendance = read("client/public/attendance.html");
+    const calendar = read("client/public/calendar.html");
+    const styles = read("client/public/css/monochrome.css");
+
+    expect(attendance).toContain('id="result-modal-panel"');
+    expect(attendance).toContain('id="previous-week-modal-panel"');
+    expect(calendar).toContain('class="calendar-surface');
+    expect(calendar).toContain('class="activity-modal-meta__row');
+    expect(styles).toContain('body * { border-radius: 0 !important; box-shadow: none !important; }');
+    expect(styles).toContain('.modal-backdrop .modal-panel::before');
+    expect(styles).toContain('.calendar-surface .fc-event');
+  });
 });

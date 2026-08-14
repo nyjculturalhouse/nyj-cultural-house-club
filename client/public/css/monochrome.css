@@ -28,6 +28,12 @@ button:hover *, .btn:hover *, a:hover .card * { color: var(--mono-white) !import
 .required-mark { color: var(--mono-black) !important; }
 .skip-link, .toast { background: var(--mono-black) !important; color: var(--mono-white) !important; }
 .modal-backdrop { background: rgba(0, 0, 0, 0.62) !important; backdrop-filter: none !important; }
+.modal-backdrop { z-index: 100 !important; }
+.modal-backdrop .modal-panel { position: relative; z-index: 101; border: 2px solid var(--mono-black) !important; }
+.modal-backdrop .modal-panel::before { display: block; height: 6px; margin: -1.5rem -1.5rem 1.5rem; background: var(--mono-black); content: ""; }
+@media (min-width: 768px) { .modal-backdrop .modal-panel::before { margin: -2rem -2rem 2rem; } }
+input:not([type="checkbox"]):not([type="radio"]), select, textarea { min-height: 44px; border-width: 1px !important; }
+input:not([type="checkbox"]):not([type="radio"]):focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--mono-black) !important; outline-offset: 3px; }
 .fc .fc-button-primary, .fc .fc-button-primary:hover { background: var(--mono-black) !important; border-color: var(--mono-black) !important; }
 .fc .fc-toolbar-title, .fc th { color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; }
 .fc .fc-event { background: var(--mono-black) !important; border-color: var(--mono-black) !important; color: var(--mono-white) !important; }
@@ -48,7 +54,17 @@ a[aria-label="메인으로 이동"]:hover { color: var(--mono-white) !important;
 .booking-tabs { scrollbar-width: thin; }
 .booking-tab-button { flex: 0 0 auto; min-width: 88px; padding-inline: 18px; white-space: nowrap; }
 .booking-tabs .booking-tab-button + .booking-tab-button { border-left: 1px solid var(--mono-black); }
+.booking-tabs .booking-tab-button[aria-selected="true"] { position: relative; z-index: 1; border: 1px solid var(--mono-black); border-bottom: 0; }
+.booking-tabs .booking-tab-button[aria-selected="true"] + .booking-tab-button { border-left: 0; }
 .attendance-result-panel { max-width: 420px; border: 1px solid var(--mono-black) !important; }
+#previous-week-modal .attendance-result-panel { border-top-width: 6px !important; }
+#booking-calendar-status, #activity-calendar-status { min-height: 24px; margin-bottom: 0; padding: 8px 0 8px 12px; border-left: 3px solid var(--mono-black); color: var(--mono-black) !important; font-size: .875rem !important; font-weight: 600; }
+#booking-calendar-status:empty, #activity-calendar-status:empty { display: none; }
+.calendar-surface { border: 1px solid var(--mono-black) !important; box-shadow: none !important; }
+.calendar-surface .fc-event { overflow: hidden; border: 1px solid var(--mono-black) !important; border-radius: 0 !important; background: var(--mono-black) !important; color: var(--mono-white) !important; font-weight: 700; }
+.calendar-surface .fc-event:hover, .calendar-surface .fc-event:focus { outline: 2px solid var(--mono-black); outline-offset: 2px; background: var(--mono-white) !important; color: var(--mono-black) !important; }
+.activity-modal-meta__row { min-height: 64px; padding: 12px; border-left: 3px solid var(--mono-black); background: var(--mono-white); }
+.activity-modal-meta__row .material-symbols-outlined { color: var(--mono-black) !important; }
 .attendance-result-icon { display: grid; width: 74px; height: 74px; place-items: center; margin: 0 auto 18px; border: 1px solid var(--mono-black); color: var(--mono-black); font-size: 32px; font-weight: 800; line-height: 1; }
 .attendance-completion-mark { width: 68px; height: 68px; overflow: visible; }
 .attendance-completion-mark__ring, .attendance-completion-mark__tick { fill: none; stroke: currentColor; stroke-width: 3.4; stroke-linecap: square; stroke-linejoin: miter; }
