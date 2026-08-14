@@ -39,3 +39,18 @@ https://script.google.com/macros/s/배포_ID/exec?mode=getMonthlyAttendanceStatu
 ## 5. 간소화된 출석 제출 적용
 
 최신 `Code.gs`는 회원 이름 대신 **출석 인원 수**를 받습니다. 웹 화면은 `attendanceCount`에 1 이상의 정수를 보내며, 출석부의 `출석인원` 열에 숫자를 기록합니다. 이 변경을 적용하려면 `google-apps-script/Code.gs` 전체를 다시 반영하고 웹앱을 새 버전으로 배포해야 합니다.
+
+## 6. 대관·외부활동 조회 모드 배포 확인
+
+현재 운영 `/exec` URL을 2026-08-14에 확인한 결과, `getBookings`와 `getActivities`는 모두 `{"error":"지원하지 않는 요청입니다."}`를 반환했습니다. 즉, 저장소의 `Code.gs`에는 구현되어 있어도 운영 웹앱에는 아직 새 버전이 배포되지 않은 상태입니다.
+
+다음 네 가지 모드를 포함한 `Code.gs` 전체를 반영한 뒤 **배포 → 배포 관리 → 수정 → 새 버전**으로 웹앱 버전을 갱신해야 합니다.
+
+| 모드 | 용도 | 배포 후 확인 URL |
+| --- | --- | --- |
+| `getBookings` | 대관 캘린더 조회 | `/exec?mode=getBookings` |
+| `getActivities` | 외부활동 캘린더 조회 | `/exec?mode=getActivities` |
+| `submitBooking` | 대관 신청 저장 | 운영 테스트 데이터로만 확인 |
+| `submitExternal` | 외부활동 등록 | 운영 테스트 데이터로만 확인 |
+
+배포 직후 위 조회 URL이 빈 배열 `[]` 또는 데이터 배열을 반환하면 화면의 오류 안내가 정상적인 빈 상태 또는 일정 목록으로 전환됩니다.
