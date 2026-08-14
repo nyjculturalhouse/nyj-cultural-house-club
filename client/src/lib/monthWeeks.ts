@@ -46,3 +46,9 @@ export function getMonthWeeks(date: Date): MonthWeek[] {
     weekEnd: toLocalDateString(range.end),
   }));
 }
+
+/** 아직 시작하지 않은 주차는 제외하고, 오늘 시작했거나 이미 지난 주차만 반환합니다. */
+export function getStartedMonthWeeks(weeks: MonthWeek[], currentDate: Date): MonthWeek[] {
+  const today = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()).getTime();
+  return weeks.filter((week) => new Date(`${week.weekStart}T00:00:00`).getTime() <= today);
+}
