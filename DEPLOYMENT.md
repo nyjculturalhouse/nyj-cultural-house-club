@@ -42,7 +42,9 @@ https://script.google.com/macros/s/배포_ID/exec?mode=getMonthlyAttendanceStatu
 
 ## 6. 대관·외부활동 조회 모드 배포 확인
 
-현재 운영 `/exec` URL을 2026-08-14에 확인한 결과, `getBookings`와 `getActivities`는 모두 `{"error":"지원하지 않는 요청입니다."}`를 반환했습니다. 즉, 저장소의 `Code.gs`에는 구현되어 있어도 운영 웹앱에는 아직 새 버전이 배포되지 않은 상태입니다.
+2026-08-14 재배포 후 운영 `/exec` URL을 확인한 결과, `getBookings`와 `getActivities`는 모두 빈 배열 `[]`을 반환했습니다. 이는 두 조회 모드가 운영 웹앱에 정상 배포됐고, 아직 대관·외부활동 등록 데이터가 없음을 의미합니다.
+
+같은 시점의 `health` 응답은 `{"ok":true,"version":"2026-08-14","timeZone":"Asia/Seoul"}`로 확인됐습니다. 따라서 현재 운영 웹앱은 재작성된 배포 코드 버전과 `Asia/Seoul` 시간대를 사용하고 있습니다.
 
 다음 네 가지 모드를 포함한 `Code.gs` 전체를 반영한 뒤 **배포 → 배포 관리 → 수정 → 새 버전**으로 웹앱 버전을 갱신해야 합니다.
 
@@ -53,4 +55,4 @@ https://script.google.com/macros/s/배포_ID/exec?mode=getMonthlyAttendanceStatu
 | `submitBooking` | 대관 신청 저장 | 운영 테스트 데이터로만 확인 |
 | `submitExternal` | 외부활동 등록 | 운영 테스트 데이터로만 확인 |
 
-배포 직후 위 조회 URL이 빈 배열 `[]` 또는 데이터 배열을 반환하면 화면의 오류 안내가 정상적인 빈 상태 또는 일정 목록으로 전환됩니다.
+위 조회 URL이 빈 배열 `[]` 또는 데이터 배열을 반환하면 화면의 오류 안내가 정상적인 빈 상태 또는 일정 목록으로 전환됩니다.
