@@ -30,4 +30,10 @@ describe("Google Apps Script 배포 코드 계약", () => {
     expect(script).toContain("사용일시");
     expect(script).toContain("function initializeSheets");
   });
+
+  it("datetime-local 형식의 대관·외부활동 일시를 명시적으로 해석한다", () => {
+    expect(script).toContain("function parseLocalDateTime");
+    expect(script).toContain("[T\\s]");
+    expect(script).toContain("new Date(Number(match[1])");
+  });
 });

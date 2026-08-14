@@ -225,10 +225,13 @@ function dateFromIso(isoDate) {
 }
 
 function parseLocalDateTime(value) {
+  if (value instanceof Date && !isNaN(value.getTime())) return value;
   const text = normaliseText(value);
   if (!text) return null;
-  const parsed = new Date(text.replace(" ", "T").replace(/-/g, "/"));
-  return isNaN(parsed.getTime()) ? null : parsed;
+  const match = /^(\d{4})-(\d{2})-(\d{2})[T\s](\d{2}):(\d{2})(?::(\d{2}))?$/.exec(text);
+  if (!match) return null;
+  const parsed = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), Number(match[4]), Number(match[5]), Number(match[6] || 0));
+  return parsed.getFullYear() === Number(match[1]) && parsed.getMonth() === Number(match[2]) - 1 && parsed.getDate() === Number(match[3]) && parsed.getHours() === Number(match[4]) && parsed.getMinutes() === Number(match[5]) ? parsed : null;
 }
 
 function formatDateKey(date) {
