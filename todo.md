@@ -49,8 +49,10 @@
 - [x] 현재 검증된 프로젝트 코드와 Google Apps Script 배포 문서를 새 저장소에 업로드한다.
 - [x] 새 저장소의 코드·검증 워크플로 구성을 확인하고 링크를 제공한다.
 - [x] GitHub Actions 검증 워크플로에서 pnpm 실행 환경을 준비해 성공 여부를 확인한다.
-- [ ] 사용자가 복사해 적용할 Google Apps Script 전체 코드를 제공한다.
-- [ ] 사용자가 배포한 Google Apps Script `/exec` URL을 받아 응답을 확인한다.
-- [ ] 새 웹앱 URL을 프로젝트에 연결하고 실제 월간 출석 데이터를 검증한다.
+- [x] 사용자가 복사해 적용할 Google Apps Script 전체 코드를 제공한다.
+- [x] 사용자가 배포한 Google Apps Script `/exec` URL을 받아 응답을 확인한다.
+- [x] 새 웹앱 URL을 프로젝트에 연결하고 실제 월간 출석 데이터를 검증한다.
 - [x] Google Apps Script `Code.gs` 308행 구문 오류를 진단하고 Apps Script 호환 문법으로 수정한다.
 - [x] 수정된 전체 `Code.gs` 파일의 구문을 검증해 사용자에게 다시 제공한다.
+- [x] 사용자가 제공한 새 Google Apps Script `/exec` URL의 상태·월간 출석 응답을 검증한다.
+- [x] 검증된 새 Google Apps Script URL을 웹 프로젝트에 연결하고 월간 출석 화면을 확인한다.
