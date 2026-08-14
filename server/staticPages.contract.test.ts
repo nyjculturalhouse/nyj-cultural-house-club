@@ -13,6 +13,8 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(html).toContain('id="previous-week-modal"');
     expect(html).toContain('id="btn-use-previous-week"');
     expect(script).toContain("showPreviousWeekNotice");
+    expect(script).toContain("window.KRDSModal.open('previous-week-modal')");
+    expect(script).toContain("window.KRDSModal.close('previous-week-modal')");
     expect(script).toContain("keepSelectedWeek");
   });
 

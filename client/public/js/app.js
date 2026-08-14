@@ -277,7 +277,12 @@ const AttendanceApp = (() => {
     }
 
     function hidePreviousWeekNotice() {
-        document.getElementById('previous-week-modal')?.classList.add('hidden');
+        const modal = document.getElementById('previous-week-modal');
+        if (window.KRDSModal && modal && !modal.classList.contains('hidden')) {
+            window.KRDSModal.close('previous-week-modal');
+            return;
+        }
+        modal?.classList.add('hidden');
     }
 
     function showPreviousWeekNotice(week) {
@@ -287,7 +292,11 @@ const AttendanceApp = (() => {
         const confirm = document.getElementById('btn-use-previous-week');
         if (!modal || !text) return;
         text.textContent = `${formatDateLabel(week.start)} 시작 주차의 출석이 아직 등록되지 않았습니다.`;
-        modal.classList.remove('hidden');
+        if (window.KRDSModal) {
+            window.KRDSModal.open('previous-week-modal');
+        } else {
+            modal.classList.remove('hidden');
+        }
         window.setTimeout(() => {
             panel?.focus({ preventScroll: true });
             confirm?.focus({ preventScroll: true });
