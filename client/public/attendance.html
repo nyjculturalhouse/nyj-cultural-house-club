@@ -69,16 +69,6 @@
                 <p class="text-gray-700 mt-2 text-sm font-semibold">출석한 인원 수만 숫자로 입력하세요.</p>
             </div>
 
-            <section id="previous-week-notice" class="hidden border border-black p-4 mb-6" aria-live="polite">
-                <p class="text-xs font-bold tracking-wider">직전 미출석 확인</p>
-                <p id="previous-week-notice-text" class="mt-2 font-bold"></p>
-                <p class="text-sm mt-1">지난 주차 출석을 먼저 등록하거나, 현재 선택한 주차로 계속할 수 있습니다.</p>
-                <div class="mt-4 flex flex-col sm:flex-row gap-2">
-                    <button id="btn-use-previous-week" type="button" class="border border-black bg-black text-white px-4 py-3 font-bold">지난 주차 먼저 출석하기</button>
-                    <button id="btn-keep-selected-week" type="button" class="border border-black bg-white text-black px-4 py-3 font-bold">선택한 주차로 계속</button>
-                </div>
-            </section>
-
             <div class="max-w-md border border-black p-5">
                 <label for="attendance-count" class="block font-bold text-primary">출석 인원</label>
                 <p id="attendance-count-help" class="text-sm mt-2">회원 이름을 선택하지 않고, 오늘 출석한 인원 수만 입력합니다.</p>
@@ -101,6 +91,19 @@
         <button id="result-modal-confirm" type="button" onclick="closeModal()" class="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary-hover transition">
             확인
         </button>
+    </div>
+</div>
+
+<div id="previous-week-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="previous-week-modal-title" aria-describedby="previous-week-modal-text" onclick="if(event.target===this) window.AttendanceApp.keepSelectedWeek()">
+    <div id="previous-week-modal-panel" class="modal-panel attendance-result-panel p-6" tabindex="-1">
+        <p class="text-xs font-bold tracking-wider">직전 미출석 확인</p>
+        <h2 id="previous-week-modal-title" class="text-xl font-bold text-primary mt-2">먼저 확인할 출석이 있습니다.</h2>
+        <p id="previous-week-modal-text" class="text-gray-600 text-sm mt-3"></p>
+        <p class="text-gray-600 text-sm mt-2">지난 주차 출석을 먼저 등록하거나, 현재 선택한 주차로 계속할 수 있습니다.</p>
+        <div class="mt-6 grid gap-2 sm:grid-cols-2">
+            <button id="btn-use-previous-week" type="button" class="border border-black bg-black text-white px-4 py-3 font-bold">지난 주차 먼저 출석하기</button>
+            <button id="btn-keep-selected-week" type="button" class="border border-black bg-white text-black px-4 py-3 font-bold">선택한 주차로 계속</button>
+        </div>
     </div>
 </div>
 

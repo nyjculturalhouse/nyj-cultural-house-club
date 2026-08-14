@@ -40,10 +40,10 @@
     <p class="text-gray-500 mt-2 text-sm font-medium">공간 예약 및 일정 확인 시스템</p>
 </div>
 
-<div class="flex border-b border-outline mb-8 gap-6 text-[17px] font-medium" role="tablist" aria-label="대관 신청 메뉴">
-    <button id="tab-form-btn" role="tab" aria-selected="true" aria-controls="booking-form-section" onclick="showBookingTab('form')" class="py-3 tab-active">신청서</button>
-    <button id="tab-schedule-btn" role="tab" aria-selected="false" aria-controls="booking-schedule-section" onclick="showBookingTab('schedule')" class="py-3 text-gray-500 hover:text-primary transition">시간표</button>
-    <button id="tab-calendar-btn" role="tab" aria-selected="false" aria-controls="booking-calendar-section" onclick="showBookingTab('calendar')" class="py-3 text-gray-500 hover:text-primary transition">캘린더</button>
+<div class="booking-tabs flex w-full overflow-x-auto border-b border-outline mb-8 text-[17px] font-medium" role="tablist" aria-label="대관 신청 메뉴">
+    <button id="tab-form-btn" role="tab" aria-selected="true" aria-controls="booking-form-section" onclick="showBookingTab('form')" class="booking-tab-button py-3 tab-active">신청서</button>
+    <button id="tab-schedule-btn" role="tab" aria-selected="false" aria-controls="booking-schedule-section" onclick="showBookingTab('schedule')" class="booking-tab-button py-3 text-gray-500 hover:text-primary transition">시간표</button>
+    <button id="tab-calendar-btn" role="tab" aria-selected="false" aria-controls="booking-calendar-section" onclick="showBookingTab('calendar')" class="booking-tab-button py-3 text-gray-500 hover:text-primary transition">캘린더</button>
 </div>
 
 <section id="booking-form-section" role="tabpanel" aria-labelledby="tab-form-btn" class="bg-white rounded-2xl border border-outline shadow-soft p-8">
@@ -176,6 +176,7 @@
 <section id="booking-calendar-section" role="tabpanel" aria-labelledby="tab-calendar-btn" class="hidden">
     <div class="bg-white rounded-2xl border border-outline shadow-soft p-4 md:p-6">
         <div id="calendar" aria-label="대관 캘린더"></div>
+        <p id="booking-calendar-status" class="mt-4 text-sm text-gray-500" role="status"></p>
     </div>
 </section>
 
@@ -278,6 +279,7 @@
             const btn = document.getElementById(id);
             const isActive = key === tab;
             btn.className = isActive ? 'py-3 tab-active' : 'py-3 text-gray-500 hover:text-primary transition';
+            btn.className = isActive ? 'booking-tab-button py-3 tab-active' : 'booking-tab-button py-3 text-gray-500 hover:text-primary transition';
             btn.setAttribute('aria-selected', String(isActive));
         });
 
@@ -489,13 +491,17 @@ times.forEach(t => {
             },
 
             events: async function(info, successCallback, failureCallback) {
+                const status = document.getElementById('booking-calendar-status');
                 try {
                     const bookingData = await apiGet("getBookings");
 
                     if (!bookingData || bookingData.error || !Array.isArray(bookingData)) {
+                        if (status) status.textContent = '대관 일정 데이터를 불러오지 못했습니다.';
                         successCallback([]);
                         return;
                     }
+
+                    if (status) status.textContent = bookingData.length ? '' : '등록된 대관 일정이 없습니다.';
 
                     const events = bookingData.map(item => {
                         return {

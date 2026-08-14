@@ -10,6 +10,8 @@ const APP = Object.freeze({
   sheets: {
     clubs: "동아리정보",
     attendance: "출석부",
+    bookings: "대관신청",
+    activities: "외부활동",
   },
   clubColumns: {
     day: ["요일", "활동요일", "day"],
@@ -33,6 +35,10 @@ function doGet(e) {
         return json(getAttendanceStatus());
       case "getMonthlyAttendanceStatus":
         return json(getMonthlyAttendanceStatus(parameter.year, parameter.month));
+      case "getBookings":
+        return json(getBookings());
+      case "getActivities":
+        return json(getActivities());
       case "health":
         return json({ ok: true, timeZone: APP.timeZone, now: formatDateKey(new Date()) });
       default:
@@ -52,6 +58,10 @@ function doPost(e) {
     switch (String(payload.mode || "").trim()) {
       case "submitAttendance":
         return json(submitAttendance(payload));
+      case "submitBooking":
+        return json(submitBooking(payload));
+      case "submitExternal":
+        return json(submitExternal(payload));
       default:
         return json({ error: "지원하지 않는 요청입니다." });
     }
@@ -96,6 +106,13 @@ function ensureAttendanceSheet() {
   const spreadsheet = getSpreadsheet();
   const sheet = spreadsheet.getSheetByName(APP.sheets.attendance) || spreadsheet.insertSheet(APP.sheets.attendance);
   if (sheet.getLastRow() === 0) sheet.appendRow(APP.attendanceHeaders);
+  return sheet;
+}
+
+function ensureRecordSheet(name, headers) {
+  const spreadsheet = getSpreadsheet();
+  const sheet = spreadsheet.getSheetByName(name) || spreadsheet.insertSheet(name);
+  if (sheet.getLastRow() === 0) sheet.appendRow(headers);
   return sheet;
 }
 
@@ -212,6 +229,13 @@ function getMonthWeekKey(date) {
 
 function formatDateKey(date) {
   return Utilities.formatDate(date, APP.timeZone, "yyyy-MM-dd");
+}
+
+function formatDateTimeValue(value) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return Utilities.formatDate(value, APP.timeZone, "yyyy-MM-dd'T'HH:mm:ss");
+  }
+  return normaliseText(value);
 }
 
 function getMonthWeekRanges(year, month) {
@@ -331,6 +355,64 @@ function submitAttendance(payload) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function getBookings() {
+  const sheet = getSheet(APP.sheets.bookings);
+  const rows = getSheetValues(sheet);
+  if (rows.length < 2) return [];
+  return rows.slice(1).map(function (row) {
+    const name = normaliseText(row[1]);
+    const space = normaliseText(row[3]);
+    const start = formatDateTimeValue(row[4]);
+    return { title: [space, name].filter(Boolean).join(" · ") || "대관 일정", start: start, space: space };
+  }).filter(function (record) { return record.start; });
+}
+
+function getActivities() {
+  const sheet = getSheet(APP.sheets.activities);
+  const rows = getSheetValues(sheet);
+  if (rows.length < 2) return [];
+  return rows.slice(1).map(function (row) {
+    return {
+      club: normaliseText(row[1]),
+      phone: normaliseText(row[2]),
+      event: normaliseText(row[3]),
+      content: normaliseText(row[4]),
+      dateTime: formatDateTimeValue(row[5]),
+      endDateTime: "",
+      allDay: false,
+    };
+  }).filter(function (record) { return record.dateTime; });
+}
+
+function submitBooking(payload) {
+  const name = normaliseText(payload.name);
+  const phone = normaliseText(payload.phone);
+  const space = normaliseText(payload.space);
+  const dateTime = normaliseText(payload.dateTime);
+  const hours = Number(payload.hours);
+  const count = Number(payload.count);
+  if (!name || !phone || !space || !dateTime || !Number.isFinite(hours) || hours < 1 || !Number.isFinite(count) || count < 1) {
+    throw new Error("대관 신청의 필수 입력 항목을 확인해 주세요.");
+  }
+  const sheet = ensureRecordSheet(APP.sheets.bookings, ["신청일", "신청자", "연락처", "공간", "사용일시", "사용시간", "예상인원", "대관사유"]);
+  sheet.appendRow([new Date(), name, phone, space, dateTime, hours, count, normaliseText(payload.content)]);
+  return { ok: true, msg: "대관 신청이 접수되었습니다." };
+}
+
+function submitExternal(payload) {
+  const club = normaliseText(payload.club);
+  const phone = normaliseText(payload.phone);
+  const event = normaliseText(payload.eventName || payload.event || payload.title);
+  const content = normaliseText(payload.content);
+  const dateTime = normaliseText(payload.dateTime);
+  if (!club || !phone || !event || !content || !dateTime) {
+    throw new Error("외부활동의 필수 입력 항목을 확인해 주세요.");
+  }
+  const sheet = ensureRecordSheet(APP.sheets.activities, ["등록일", "동아리", "연락처", "행사명", "상세내용", "행사일시"]);
+  sheet.appendRow([new Date(), club, phone, event, content, dateTime]);
+  return { ok: true, msg: "외부활동이 등록되었습니다." };
 }
 
 /** 최초 설치 시 한 번 실행하면 출석부 시트와 헤더를 만들 수 있습니다. */

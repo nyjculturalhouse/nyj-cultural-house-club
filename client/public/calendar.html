@@ -36,6 +36,7 @@
 
     <div class="bg-white rounded-2xl shadow-soft border border-outline p-4 md:p-6">
         <div id="calendar" aria-label="외부 활동 일정 달력"></div>
+        <p id="activity-calendar-status" class="mt-4 text-sm text-gray-500" role="status"></p>
     </div>
 </main>
 
@@ -143,13 +144,17 @@
             },
 
             events: async function(info, successCallback, failureCallback) {
+                const status = document.getElementById('activity-calendar-status');
                 try {
                     const activities = await apiGet("getActivities");
 
                     if (!activities || activities.error || !Array.isArray(activities)) {
+                        if (status) status.textContent = '외부활동 일정 데이터를 불러오지 못했습니다.';
                         successCallback([]);
                         return;
                     }
+
+                    if (status) status.textContent = activities.length ? '' : '등록된 외부활동 일정이 없습니다.';
 
                     const events = activities.map(act => {
                         const isAllDayEvent = act.allDay === "true" || act.allDay === true;

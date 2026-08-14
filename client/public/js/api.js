@@ -2,7 +2,7 @@
  * api.js
  * Google Apps Script(GAS) 백엔드와 통신하는 공통 GET/POST 함수입니다.
  */
-const API_URL = "https://script.google.com/macros/s/AKfycbyDiCKTYTFJNc5_2iS9j1ONuUdvVZfaLSQl_LhR4AFPr_ayrEuEU2S8IQJVwPBoQ5sLvA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz6jMx_mhQPB8j-QmY0yTPFoND907gRNMHqttgtbv1f1J69lx2rtJ4gFUNNta601yDolg/exec";
 
 /**
  * GET 요청

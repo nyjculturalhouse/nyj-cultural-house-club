@@ -277,15 +277,21 @@ const AttendanceApp = (() => {
     }
 
     function hidePreviousWeekNotice() {
-        document.getElementById('previous-week-notice')?.classList.add('hidden');
+        document.getElementById('previous-week-modal')?.classList.add('hidden');
     }
 
     function showPreviousWeekNotice(week) {
-        const notice = document.getElementById('previous-week-notice');
-        const text = document.getElementById('previous-week-notice-text');
-        if (!notice || !text) return;
+        const modal = document.getElementById('previous-week-modal');
+        const panel = document.getElementById('previous-week-modal-panel');
+        const text = document.getElementById('previous-week-modal-text');
+        const confirm = document.getElementById('btn-use-previous-week');
+        if (!modal || !text) return;
         text.textContent = `${formatDateLabel(week.start)} 시작 주차의 출석이 아직 등록되지 않았습니다.`;
-        notice.classList.remove('hidden');
+        modal.classList.remove('hidden');
+        window.setTimeout(() => {
+            panel?.focus({ preventScroll: true });
+            confirm?.focus({ preventScroll: true });
+        }, 0);
     }
 
     async function loadAttendanceCount(club) {
@@ -394,6 +400,12 @@ const AttendanceApp = (() => {
         hidePreviousWeekNotice();
         document.getElementById('attendance-count')?.focus({ preventScroll: true });
     }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !document.getElementById('previous-week-modal')?.classList.contains('hidden')) {
+            keepSelectedWeek();
+        }
+    });
 
     return { init, submit, usePreviousWeek, keepSelectedWeek };
 })();
