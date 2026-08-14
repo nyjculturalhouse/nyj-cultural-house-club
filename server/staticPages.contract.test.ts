@@ -22,6 +22,7 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(html).toContain("선택한 출석 날짜");
     expect(html).toContain('id="previous-week-modal-help"');
     expect(script).toContain("pendingDateLabel");
+    expect(html).toContain('js/app.js?v=20260814-date-attendance');
   });
 
   it("대관과 외부활동·일정 화면이 필요한 조회 모드와 상태 메시지를 사용한다", () => {
