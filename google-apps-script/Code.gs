@@ -305,7 +305,7 @@ function submitAttendance(payload) {
 
   const recordDate = dateFromIso(payload.attendanceWeek) || toLocalCalendarDate(new Date());
   const lock = LockService.getScriptLock();
-  lock.waitLock(20_000);
+  lock.waitLock(20000);
 
   try {
     const sheet = ensureAttendanceSheet();
