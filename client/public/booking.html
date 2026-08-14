@@ -250,6 +250,11 @@
     }
     setMinBookingDate();
 
+    const requestedBookingTab = new URLSearchParams(window.location.search).get('tab');
+    if (requestedBookingTab === 'calendar' || requestedBookingTab === 'schedule' || requestedBookingTab === 'form') {
+        showBookingTab(requestedBookingTab);
+    }
+
     function openBookingModal(spaceName, titleText, rawStart) {
         const badge = document.getElementById('modal-space-badge');
         const topBar = document.getElementById('modal-top-bar');
