@@ -2,7 +2,8 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
-import { fetchAttendanceStatuses } from "./attendanceStatus";
+import { z } from "zod";
+import { fetchAttendanceStatuses, fetchMonthlyAttendanceStatuses } from "./attendanceStatus";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -19,6 +20,9 @@ export const appRouter = router({
   }),
   attendance: router({
     status: publicProcedure.query(async () => fetchAttendanceStatuses()),
+    monthlyStatus: publicProcedure
+      .input(z.object({ year: z.number().int().min(2000).max(2100), month: z.number().int().min(1).max(12) }))
+      .query(async ({ input }) => fetchMonthlyAttendanceStatuses(input.year, input.month)),
   }),
 
   // TODO: add feature routers here, e.g.

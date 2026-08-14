@@ -14,7 +14,7 @@ import {
   Share2,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { getMonthWeekIndex, getMonthWeeks, type MonthWeek } from "@/lib/monthWeeks";
+import { getMonthWeeks, type MonthWeek } from "@/lib/monthWeeks";
 
 const HeroArtwork = "/manus-storage/nyj-hero-grid_89a9d994.png";
 const MarkArtwork = "/manus-storage/nyj-mark_454f3ed0.png";
@@ -22,34 +22,37 @@ const MarkArtwork = "/manus-storage/nyj-mark_454f3ed0.png";
 type ClubWeekState = "complete" | "pending" | "waiting";
 type ClubWeekStatus = MonthWeek & { state: ClubWeekState };
 type ClubAttendanceStatus = { club: string; pendingCount: number; waitingCount: number; complete: boolean; weeks: ClubWeekStatus[] };
+type MonthlyStatusResponse = { club: string; year: number; month: number; weeks: Array<{ index: number; start: string; end: string; completed: boolean }> };
 
 export default function Home() {
   const monthlyPanelRef = useRef<HTMLElement>(null);
   const [expandedClub, setExpandedClub] = useState<string | null>(() => new URLSearchParams(window.location.search).get("club"));
+  const [currentMonth] = useState(() => new Date());
   const loadMonthlyFromLink = useMemo(() => new URLSearchParams(window.location.search).get("monthly") === "1", []);
-  const monthlyQuery = trpc.attendance.status.useQuery(undefined, {
+  const monthlyQueryInput = useMemo(() => ({ year: currentMonth.getFullYear(), month: currentMonth.getMonth() + 1 }), [currentMonth]);
+  const monthlyQuery = trpc.attendance.monthlyStatus.useQuery(monthlyQueryInput, {
     enabled: loadMonthlyFromLink,
     retry: false,
     refetchOnWindowFocus: false,
   });
-  const monthWeeks = useMemo(() => getMonthWeeks(new Date()), []);
+  const monthWeeks = useMemo(() => getMonthWeeks(currentMonth), [currentMonth]);
+  const monthlyStatuses = useMemo<MonthlyStatusResponse[]>(() => {
+    const statuses = monthlyQuery.data?.statuses;
+    return Array.isArray(statuses) ? statuses as MonthlyStatusResponse[] : [];
+  }, [monthlyQuery.data]);
   const clubs = useMemo<ClubAttendanceStatus[]>(() => {
-    if (!monthlyQuery.data || monthWeeks.length === 0) return [];
-    const currentWeekIndex = getMonthWeekIndex(new Date());
-    const lastWeekDate = new Date();
-    lastWeekDate.setDate(lastWeekDate.getDate() - 7);
-    const lastWeekIndex = getMonthWeekIndex(lastWeekDate);
-    return monthlyQuery.data.map((item) => {
+    if (monthlyStatuses.length === 0 || monthWeeks.length === 0) return [];
+    return monthlyStatuses.map((item) => {
       const clubWeeks = monthWeeks.map((week): ClubWeekStatus => {
-        if (week.index === currentWeekIndex) return { ...week, state: item.thisWeek ? "complete" : "pending" };
-        if (week.index === lastWeekIndex) return { ...week, state: item.lastWeek ? "complete" : "pending" };
-        return { ...week, state: "waiting" };
+        const reportedWeek = item.weeks.find((reported) => reported.index === week.index);
+        if (!reportedWeek) return { ...week, state: "waiting" };
+        return { ...week, state: reportedWeek.completed ? "complete" : "pending" };
       });
       const pendingCount = clubWeeks.filter((week) => week.state === "pending").length;
       const waitingCount = clubWeeks.filter((week) => week.state === "waiting").length;
       return { club: item.club, pendingCount, waitingCount, complete: clubWeeks.every((week) => week.state === "complete"), weeks: clubWeeks };
     }).filter((club) => !club.complete).sort((first, second) => second.pendingCount - first.pendingCount || first.waitingCount - second.waitingCount || first.club.localeCompare(second.club, "ko"));
-  }, [monthlyQuery.data, monthWeeks]);
+  }, [monthlyStatuses, monthWeeks]);
 
   const loadMonthlyAttendance = async () => {
     monthlyPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -141,7 +144,7 @@ export default function Home() {
                   })}
                 </div> : <p className="monthly-attendance-complete">이번 달 출석을 모두 완료했습니다.</p>}
               </>}
-              {monthlyQuery.isFetched && !monthlyQuery.error && monthlyQuery.data && clubs.length === 0 && <p className="monthly-attendance-complete">{monthlyQuery.data.length === 0 ? "이번 달에 확인할 동아리가 없습니다." : "이번 달 출석을 모두 완료했습니다."}</p>}
+              {monthlyQuery.isFetched && !monthlyQuery.error && monthlyQuery.data && clubs.length === 0 && <p className="monthly-attendance-complete">{monthlyStatuses.length === 0 ? "이번 달에 확인할 동아리가 없습니다." : "이번 달 출석을 모두 완료했습니다."}</p>}
             </div>
           </div>
         </section>
