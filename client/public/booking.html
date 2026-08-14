@@ -492,16 +492,26 @@ times.forEach(t => {
 
             events: async function(info, successCallback, failureCallback) {
                 const status = document.getElementById('booking-calendar-status');
+                if (status) {
+                    status.dataset.state = 'loading';
+                    status.textContent = '대관 일정 정보를 불러오는 중입니다.';
+                }
                 try {
                     const bookingData = await apiGet("getBookings");
 
                     if (!bookingData || bookingData.error || !Array.isArray(bookingData)) {
-                        if (status) status.textContent = '대관 일정 데이터를 불러오지 못했습니다.';
+                        if (status) {
+                            status.dataset.state = 'error';
+                            status.textContent = '대관 일정 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.';
+                        }
                         successCallback([]);
                         return;
                     }
 
-                    if (status) status.textContent = bookingData.length ? '' : '등록된 대관 일정이 없습니다.';
+                    if (status) {
+                        status.dataset.state = bookingData.length ? 'success' : 'empty';
+                        status.textContent = bookingData.length ? '' : '등록된 대관 일정이 없습니다.';
+                    }
 
                     const events = bookingData.map(item => {
                         return {
@@ -518,7 +528,11 @@ times.forEach(t => {
                     successCallback(events);
                 } catch (error) {
                     console.error("Calendar data fetch error:", error);
-                    failureCallback(error);
+                    if (status) {
+                        status.dataset.state = 'error';
+                        status.textContent = '대관 일정 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.';
+                    }
+                    successCallback([]);
                 }
             }
         });
@@ -526,13 +540,7 @@ times.forEach(t => {
     }
 
     function getSpaceColor(space) {
-        switch(space) {
-            case '댄스실': return '#FF5A36';
-            case '음악실': return '#2563EB';
-            case '동아리방': return '#16A34A';
-            case '어울림방': return '#7C3AED';
-            default: return '#111111';
-        }
+        return '#000000';
     }
 
     function showBookingFormError(message) {

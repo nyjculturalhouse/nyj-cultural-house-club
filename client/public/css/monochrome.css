@@ -60,6 +60,8 @@ a[aria-label="메인으로 이동"]:hover { color: var(--mono-white) !important;
 #previous-week-modal .attendance-result-panel { border-top-width: 6px !important; }
 #booking-calendar-status, #activity-calendar-status { min-height: 24px; margin-bottom: 0; padding: 8px 0 8px 12px; border-left: 3px solid var(--mono-black); color: var(--mono-black) !important; font-size: .875rem !important; font-weight: 600; }
 #booking-calendar-status:empty, #activity-calendar-status:empty { display: none; }
+#booking-calendar-status[data-state="loading"], #activity-calendar-status[data-state="loading"] { border-left-style: dashed; font-weight: 500; }
+#booking-calendar-status[data-state="error"], #activity-calendar-status[data-state="error"] { border-left-width: 6px; }
 .calendar-surface { border: 1px solid var(--mono-black) !important; box-shadow: none !important; }
 .calendar-surface .fc-event { overflow: hidden; border: 1px solid var(--mono-black) !important; border-radius: 0 !important; background: var(--mono-black) !important; color: var(--mono-white) !important; font-weight: 700; }
 .calendar-surface .fc-event:hover, .calendar-surface .fc-event:focus { outline: 2px solid var(--mono-black); outline-offset: 2px; background: var(--mono-white) !important; color: var(--mono-black) !important; }

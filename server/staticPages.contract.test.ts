@@ -42,4 +42,17 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(styles).toContain('.modal-backdrop .modal-panel::before');
     expect(styles).toContain('.calendar-surface .fc-event');
   });
+
+  it("대관과 외부활동 일정에 로딩·빈 상태·오류 상태를 한국어로 제공한다", () => {
+    const booking = read("client/public/booking.html");
+    const calendar = read("client/public/calendar.html");
+    const styles = read("client/public/css/monochrome.css");
+
+    expect(booking).toContain("대관 일정 정보를 불러오는 중입니다.");
+    expect(booking).toContain("대관 일정 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
+    expect(calendar).toContain("외부활동 일정 정보를 불러오는 중입니다.");
+    expect(calendar).toContain("외부활동 일정 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.");
+    expect(styles).toContain('[data-state="loading"]');
+    expect(styles).toContain('[data-state="error"]');
+  });
 });

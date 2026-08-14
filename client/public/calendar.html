@@ -145,16 +145,26 @@
 
             events: async function(info, successCallback, failureCallback) {
                 const status = document.getElementById('activity-calendar-status');
+                if (status) {
+                    status.dataset.state = 'loading';
+                    status.textContent = '외부활동 일정 정보를 불러오는 중입니다.';
+                }
                 try {
                     const activities = await apiGet("getActivities");
 
                     if (!activities || activities.error || !Array.isArray(activities)) {
-                        if (status) status.textContent = '외부활동 일정 데이터를 불러오지 못했습니다.';
+                        if (status) {
+                            status.dataset.state = 'error';
+                            status.textContent = '외부활동 일정 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.';
+                        }
                         successCallback([]);
                         return;
                     }
 
-                    if (status) status.textContent = activities.length ? '' : '등록된 외부활동 일정이 없습니다.';
+                    if (status) {
+                        status.dataset.state = activities.length ? 'success' : 'empty';
+                        status.textContent = activities.length ? '' : '등록된 외부활동 일정이 없습니다.';
+                    }
 
                     const events = activities.map(act => {
                         const isAllDayEvent = act.allDay === "true" || act.allDay === true;
@@ -180,7 +190,11 @@
                     successCallback(events);
                 } catch (error) {
                     console.error("외부활동 캘린더 로드 실패:", error);
-                    failureCallback(error);
+                    if (status) {
+                        status.dataset.state = 'error';
+                        status.textContent = '외부활동 일정 데이터를 불러오지 못했습니다. 잠시 후 다시 확인해 주세요.';
+                    }
+                    successCallback([]);
                 }
             }
         });
