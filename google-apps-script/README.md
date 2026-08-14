@@ -29,6 +29,8 @@
 | GET | `getMembers` | `club=글♥낭` | 해당 동아리의 회원 배열 |
 | GET | `getAttendanceStatus` | 없음 | 기존 UI 호환용 `lastWeek`, `thisWeek` 배열 |
 | GET | `getMonthlyAttendanceStatus` | `year=2026&month=8` | 동아리별 실제 1~5주차 완료 이력 |
-| POST | `submitAttendance` | `clubName`, `attendees`, `day`, `attendanceWeek` | 중복 방지 후 출석 기록 |
+| POST | `submitAttendance` | `clubName`, `attendanceCount`, `day`, `attendanceWeek` | 중복 방지 후 출석 인원 기록 |
 
 월간 이력은 해당 월에 실제 존재하는 주차만 반환하며, 달력상 여섯 번째 구간이 생기는 경우에도 사용자 화면 정책에 맞춰 **5주차에 합쳐** 반환합니다.
+
+출석 화면은 회원 이름을 선택하지 않고 `attendanceCount`에 1 이상의 정수를 전달합니다. `출석자` 열에는 개인정보 대신 `인원 수 입력`으로 기록되며, 기존 화면처럼 `attendees` 배열을 보내는 요청도 계속 처리합니다.

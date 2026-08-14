@@ -299,9 +299,11 @@ function getAttendanceStatus() {
 function submitAttendance(payload) {
   const club = normaliseText(payload.clubName);
   const attendees = Array.isArray(payload.attendees) ? uniqueSorted(payload.attendees.map(normaliseText)) : [];
+  const requestedCount = Number(payload.attendanceCount);
+  const attendanceCount = Number.isInteger(requestedCount) && requestedCount > 0 ? requestedCount : attendees.length;
   const day = normaliseDay(payload.day);
   if (!club) throw new Error("동아리를 선택해 주세요.");
-  if (!attendees.length) throw new Error("출석 인원을 한 명 이상 선택해 주세요.");
+  if (!attendanceCount) throw new Error("출석 인원을 한 명 이상 입력해 주세요.");
 
   const recordDate = dateFromIso(payload.attendanceWeek) || toLocalCalendarDate(new Date());
   const lock = LockService.getScriptLock();
@@ -320,8 +322,8 @@ function submitAttendance(payload) {
     sheet.appendRow([
       recordDate,
       club,
-      attendees.length,
-      attendees.join(", "),
+      attendanceCount,
+      attendees.length ? attendees.join(", ") : "인원 수 입력",
       day,
       formatDateKey(recordDate),
     ]);

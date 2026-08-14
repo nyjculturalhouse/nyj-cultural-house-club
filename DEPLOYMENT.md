@@ -35,3 +35,7 @@ https://script.google.com/macros/s/배포_ID/exec?mode=getMonthlyAttendanceStatu
 ```
 
 응답의 각 동아리는 `weeks` 배열 안에 `index`, `start`, `end`, `completed`를 가집니다. 웹 화면은 이 응답을 기준으로 완료 동아리를 숨기고, 미완료 주차만 출석 화면으로 연결합니다.
+
+## 5. 간소화된 출석 제출 적용
+
+최신 `Code.gs`는 회원 이름 대신 **출석 인원 수**를 받습니다. 웹 화면은 `attendanceCount`에 1 이상의 정수를 보내며, 출석부의 `출석인원` 열에 숫자를 기록합니다. 이 변경을 적용하려면 `google-apps-script/Code.gs` 전체를 다시 반영하고 웹앱을 새 버전으로 배포해야 합니다.

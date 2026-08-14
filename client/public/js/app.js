@@ -1,6 +1,6 @@
 /**
  * app.js
- * attendance.html 전용 3단계(요일 → 동아리 → 회원) 출석 앱.
+ * attendance.html 전용 3단계(요일 → 동아리 → 인원) 출석 앱.
  * getOrCreateUID 등 공통 헬퍼는 utils.js 로 이동했습니다.
  */
 const AttendanceApp = (() => {
@@ -10,7 +10,8 @@ const AttendanceApp = (() => {
         week: '',
         preferredClub: '',
         club: '',
-        members: []
+        attendanceCount: null,
+        previousPendingWeek: null
     };
 
     const STEP_ORDER = ["step-days", "step-clubs", "step-members"];
@@ -49,8 +50,8 @@ const AttendanceApp = (() => {
             icon.innerHTML = successIconMarkup();
             title.textContent = '출석이 등록되었습니다.';
             const dayLabel = state.day ? `${state.day}요일` : '선택한 날짜';
-            desc.textContent = `${state.club}의 ${dayLabel} 출석이 성공적으로 반영되었습니다.`;
-            if (status) status.textContent = `${state.club} 출석이 등록되었습니다.`;
+            desc.textContent = `${state.club}의 ${dayLabel} 출석 ${state.attendanceCount}명이 성공적으로 반영되었습니다.`;
+            if (status) status.textContent = `${state.club} 출석 ${state.attendanceCount}명이 등록되었습니다.`;
         }
 
         if (window.KRDSModal) {
@@ -105,16 +106,16 @@ const AttendanceApp = (() => {
         });
     }
 
-    function init() {
-        const selectedWeek = new URLSearchParams(window.location.search).get('week');
-        const selectedClub = new URLSearchParams(window.location.search).get('club');
-        state.week = selectedWeek || '';
-        state.preferredClub = selectedClub || '';
+    function formatDateLabel(value) {
+        const date = new Date(`${value}T00:00:00`);
+        return new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' }).format(date);
+    }
+
+    function updateWeekContext() {
         const context = document.getElementById('attendance-week-context');
         const label = document.getElementById('attendance-week-label');
-        if (context && label && selectedWeek) {
-            const date = new Date(`${selectedWeek}T00:00:00`);
-            const formatted = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' }).format(date);
+        if (context && label && state.week) {
+            const formatted = formatDateLabel(state.week);
             label.textContent = `${formatted} 시작 주차 출석체크`;
             context.classList.remove('hidden');
             const description = context.querySelector('p:last-child');
@@ -124,6 +125,16 @@ const AttendanceApp = (() => {
         } else if (context) {
             context.classList.add('hidden');
         }
+    }
+
+    function init() {
+        const selectedWeek = new URLSearchParams(window.location.search).get('week');
+        const selectedClub = new URLSearchParams(window.location.search).get('club');
+        state.week = selectedWeek || '';
+        state.preferredClub = selectedClub || '';
+        state.attendanceCount = null;
+        state.previousPendingWeek = null;
+        updateWeekContext();
         showStep("step-days");
         renderDays();
     }
@@ -175,7 +186,8 @@ const AttendanceApp = (() => {
     ========================= */
     async function loadClubs(day) {
         state.club = '';
-        state.members = [];
+        state.attendanceCount = null;
+        state.previousPendingWeek = null;
         showStep("step-clubs");
 
         const box = document.getElementById("club-buttons");
@@ -221,65 +233,80 @@ const AttendanceApp = (() => {
                 });
                 btn.classList.add("selected");
                 btn.setAttribute('aria-pressed', 'true');
-                loadMembers(c);
+                loadAttendanceCount(c);
             });
             box.appendChild(btn);
         });
     }
 
     /* =========================
-        3단계 - 회원 선택
+        3단계 - 인원 입력 및 직전 미출석 안내
     ========================= */
-    async function loadMembers(club) {
-        state.members = [];
+    function getMonthWeekIndex(date) {
+        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+        return Math.min(5, Math.ceil((date.getDate() + firstDay) / 7));
+    }
+
+    function previousMonth(date) {
+        return new Date(date.getFullYear(), date.getMonth() - 1, 1);
+    }
+
+    async function findPreviousPendingWeek(club) {
+        const getFn = window.apiGet;
+        if (typeof getFn !== "function") return null;
+
+        const targetDate = state.week ? new Date(`${state.week}T00:00:00`) : new Date();
+        const targetIndex = getMonthWeekIndex(targetDate);
+        const currentMonthData = await getFn("getMonthlyAttendanceStatus", {
+            year: targetDate.getFullYear(),
+            month: targetDate.getMonth() + 1
+        });
+        const currentClub = Array.isArray(currentMonthData) ? currentMonthData.find(item => item?.club === club) : null;
+        const earlierWeeks = currentClub?.weeks?.filter(week => Number(week.index) < targetIndex && !week.completed) || [];
+        if (earlierWeeks.length) return earlierWeeks.sort((a, b) => Number(b.index) - Number(a.index))[0];
+
+        if (targetIndex !== 1) return null;
+        const priorDate = previousMonth(targetDate);
+        const previousMonthData = await getFn("getMonthlyAttendanceStatus", {
+            year: priorDate.getFullYear(),
+            month: priorDate.getMonth() + 1
+        });
+        const previousClub = Array.isArray(previousMonthData) ? previousMonthData.find(item => item?.club === club) : null;
+        const previousWeeks = previousClub?.weeks?.filter(week => !week.completed) || [];
+        return previousWeeks.length ? previousWeeks.sort((a, b) => Number(b.index) - Number(a.index))[0] : null;
+    }
+
+    function hidePreviousWeekNotice() {
+        document.getElementById('previous-week-notice')?.classList.add('hidden');
+    }
+
+    function showPreviousWeekNotice(week) {
+        const notice = document.getElementById('previous-week-notice');
+        const text = document.getElementById('previous-week-notice-text');
+        if (!notice || !text) return;
+        text.textContent = `${formatDateLabel(week.start)} 시작 주차의 출석이 아직 등록되지 않았습니다.`;
+        notice.classList.remove('hidden');
+    }
+
+    async function loadAttendanceCount(club) {
+        state.attendanceCount = null;
+        state.previousPendingWeek = null;
         showStep("step-members");
 
         const title = document.getElementById("club-title");
         if (title) title.textContent = club;
 
-        const box = document.getElementById("member-list");
-        if (!box) return;
-        box.setAttribute('role', 'group');
-        box.setAttribute('aria-label', `${club} 출석 회원 선택`);
-        box.innerHTML = '<p class="text-gray-500 p-4" role="status">불러오는 중...</p>';
-
-        const getFn = window.apiGet;
-        if (typeof getFn !== "function") {
-            box.innerHTML = "<p class='text-red-500 p-4' role='alert'>API 로드 오류</p>";
-            return;
+        const input = document.getElementById('attendance-count');
+        if (input) {
+            input.value = '';
+            input.focus({ preventScroll: true });
         }
-
-        let members = await getFn("getMembers", { club });
-        box.innerHTML = "";
-
-        if (members?.length === 1 && typeof members[0] === "string") {
-            members = members[0].split(",").map(v => v.trim()).filter(Boolean);
+        hidePreviousWeekNotice();
+        const previousWeek = await findPreviousPendingWeek(club);
+        if (previousWeek) {
+            state.previousPendingWeek = previousWeek;
+            showPreviousWeekNotice(previousWeek);
         }
-
-        if (!members?.length) {
-            box.innerHTML = "<p class='text-gray-500 p-4' role='status'>등록된 인원이 없습니다.</p>";
-            return;
-        }
-
-        members.forEach(m => {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "p-3 border rounded-xl bg-white transition hover:border-black";
-            btn.setAttribute('aria-pressed', 'false');
-            btn.textContent = m;
-            btn.addEventListener('click', () => {
-                if (state.members.includes(m)) {
-                    state.members = state.members.filter(x => x !== m);
-                    btn.classList.remove("selected");
-                    btn.setAttribute('aria-pressed', 'false');
-                } else {
-                    state.members.push(m);
-                    btn.classList.add("selected");
-                    btn.setAttribute('aria-pressed', 'true');
-                }
-            });
-            box.appendChild(btn);
-        });
     }
 
     /* =========================
@@ -290,10 +317,14 @@ const AttendanceApp = (() => {
             window.announce ? window.announce("동아리를 선택하세요.") : alert("동아리를 선택하세요.");
             return;
         }
-        if (!state.members.length) {
-            window.announce ? window.announce("출석 인원을 선택하세요.") : alert("인원을 선택하세요.");
+        const countInput = document.getElementById('attendance-count');
+        const count = Number(countInput?.value);
+        if (!Number.isInteger(count) || count < 1) {
+            window.announce ? window.announce("출석 인원을 한 명 이상 숫자로 입력하세요.") : alert("출석 인원을 한 명 이상 숫자로 입력하세요.");
+            countInput?.focus();
             return;
         }
+        state.attendanceCount = count;
 
         const today = new Date().toISOString().split('T')[0];
         const attendanceKey = state.week || today;
@@ -321,7 +352,7 @@ const AttendanceApp = (() => {
         const res = await postFn({
             mode: "submitAttendance",
             clubName: state.club,
-            attendees: state.members,
+            attendanceCount: count,
             day: state.day,
             attendanceWeek: state.week,
             uid: window.getOrCreateUID ? window.getOrCreateUID() : ''
@@ -341,14 +372,33 @@ const AttendanceApp = (() => {
         localStorage.setItem(`attendance_${attendanceKey}`, 'true');
         showModal(false);
 
-        state.members = [];
+        state.attendanceCount = null;
         state.club = '';
         state.day = '';
         init();
     }
 
-    return { init, submit };
+    function usePreviousWeek() {
+        if (!state.previousPendingWeek?.start) return;
+        state.week = state.previousPendingWeek.start;
+        state.previousPendingWeek = null;
+        updateWeekContext();
+        hidePreviousWeekNotice();
+        const input = document.getElementById('attendance-count');
+        input?.focus({ preventScroll: true });
+        window.announce?.("직전 미출석 주차로 변경했습니다.");
+    }
+
+    function keepSelectedWeek() {
+        state.previousPendingWeek = null;
+        hidePreviousWeekNotice();
+        document.getElementById('attendance-count')?.focus({ preventScroll: true });
+    }
+
+    return { init, submit, usePreviousWeek, keepSelectedWeek };
 })();
 
 window.AttendanceApp = AttendanceApp;
 window.submitAttendance = AttendanceApp.submit;
+document.getElementById('btn-use-previous-week')?.addEventListener('click', AttendanceApp.usePreviousWeek);
+document.getElementById('btn-keep-selected-week')?.addEventListener('click', AttendanceApp.keepSelectedWeek);
