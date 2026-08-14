@@ -107,20 +107,33 @@ const AttendanceApp = (() => {
     }
 
     function formatDateLabel(value) {
-        const date = new Date(`${value}T00:00:00`);
+        const date = new Date(`${value}T12:00:00`);
         return new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' }).format(date);
+    }
+
+    function getAttendanceDateLabel(weekStart, dayKey) {
+        if (!weekStart) return '';
+        const dayIndexes = { 일: 0, 월: 1, 화: 2, 수: 3, 목: 4, 금: 5, 토: 6 };
+        const target = new Date(`${weekStart}T12:00:00`);
+        const selectedDayIndex = dayIndexes[dayKey];
+        if (selectedDayIndex === undefined) return formatDateLabel(weekStart);
+        target.setDate(target.getDate() + ((selectedDayIndex - target.getDay() + 7) % 7));
+        return new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric' }).format(target);
     }
 
     function updateWeekContext() {
         const context = document.getElementById('attendance-week-context');
         const label = document.getElementById('attendance-week-label');
         if (context && label && state.week) {
-            const formatted = formatDateLabel(state.week);
-            label.textContent = `${formatted} 시작 주차 출석체크`;
+            label.textContent = state.day
+                ? `${getAttendanceDateLabel(state.week, state.day)} 출석체크`
+                : '출석 날짜를 선택하세요';
             context.classList.remove('hidden');
             const description = context.querySelector('p:last-child');
             if (description && state.preferredClub) {
-                description.textContent = `${state.preferredClub} 동아리의 출석을 위해 요일을 선택하세요.`;
+                description.textContent = state.day
+                    ? `${state.preferredClub} 동아리의 선택된 출석 날짜입니다.`
+                    : `${state.preferredClub} 동아리의 출석 날짜를 선택하세요.`;
             }
         } else if (context) {
             context.classList.add('hidden');
@@ -169,6 +182,7 @@ const AttendanceApp = (() => {
 
             btn.addEventListener('click', () => {
                 state.day = d.key;
+                updateWeekContext();
                 document.querySelectorAll("#day-buttons button").forEach(b => {
                     b.classList.remove("selected");
                     b.setAttribute('aria-pressed', 'false');
@@ -289,9 +303,18 @@ const AttendanceApp = (() => {
         const modal = document.getElementById('previous-week-modal');
         const panel = document.getElementById('previous-week-modal-panel');
         const text = document.getElementById('previous-week-modal-text');
+        const help = document.getElementById('previous-week-modal-help');
         const confirm = document.getElementById('btn-use-previous-week');
+        const keepSelected = document.getElementById('btn-keep-selected-week');
         if (!modal || !text) return;
-        text.textContent = `${formatDateLabel(week.start)} 시작 주차의 출석이 아직 등록되지 않았습니다.`;
+        const pendingDateLabel = getAttendanceDateLabel(week.start, state.day);
+        const selectedDateLabel = state.week && state.day
+            ? getAttendanceDateLabel(state.week, state.day)
+            : '현재 선택한 날짜';
+        text.textContent = `${pendingDateLabel} 출석체크가 아직 등록되지 않았습니다.`;
+        if (help) help.textContent = `${pendingDateLabel} 출석을 먼저 등록하거나, ${selectedDateLabel}로 계속할 수 있습니다.`;
+        if (confirm) confirm.textContent = `${pendingDateLabel} 출석하기`;
+        if (keepSelected) keepSelected.textContent = `${selectedDateLabel}로 계속`;
         if (window.KRDSModal) {
             window.KRDSModal.open('previous-week-modal');
         } else {
@@ -401,7 +424,7 @@ const AttendanceApp = (() => {
         hidePreviousWeekNotice();
         const input = document.getElementById('attendance-count');
         input?.focus({ preventScroll: true });
-        window.announce?.("직전 미출석 주차로 변경했습니다.");
+        window.announce?.("미출석 날짜로 변경했습니다.");
     }
 
     function keepSelectedWeek() {
