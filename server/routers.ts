@@ -49,6 +49,15 @@ export const appRouter = router({
       } as const;
     }),
   }),
+  adminGate: router({
+    verify: publicProcedure
+      .input(z.object({ password: z.string().min(1).max(64) }))
+      .mutation(({ input }) => {
+        const expectedPassword = process.env.ADMIN_GATE_PASSWORD;
+        if (!expectedPassword) throw new Error("관리자 비밀번호가 설정되지 않았습니다.");
+        return { valid: input.password === expectedPassword } as const;
+      }),
+  }),
   attendance: router({
     status: publicProcedure.query(async () => fetchAttendanceStatuses()),
     monthlyStatus: publicProcedure

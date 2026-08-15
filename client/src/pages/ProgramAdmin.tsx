@@ -3,7 +3,7 @@ import { startLogin } from "@/const";
 import { downloadAttendanceWorkbook } from "@/lib/attendanceExport";
 import { trpc } from "@/lib/trpc";
 import { BarChart3, CalendarCheck, Check, Download, Edit3, Filter, ImagePlus, Loader2, Plus, Save, Trash2, X } from "lucide-react";
-import { ChangeEvent, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 
 type ProgramForm = { externalId: string; title: string; summary: string; description: string; category: string; target: string; venue: string; startAt: string; endAt: string; recruitmentDeadline: string; recruitmentStatus: "upcoming" | "open" | "closing-soon" | "closed"; applicationUrl: string; applicationProvider: "nyjcf" | "naver" | "other" | "none"; contact: string; preApplicationChecks: string; imageUrl: string; isPublished: boolean; };
@@ -31,6 +31,9 @@ export default function ProgramAdmin() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [isBulkSaving, setIsBulkSaving] = useState(false);
+  const [gatePassword, setGatePassword] = useState("");
+  const [gateError, setGateError] = useState("");
+  const [gateGranted, setGateGranted] = useState(() => typeof window !== "undefined" && window.sessionStorage.getItem("nyj-admin-gate") === "verified");
   const utils = trpc.useUtils();
   const attendanceQuery = trpc.attendance.status.useQuery(undefined, { enabled: isAdmin });
   const monthlyQuery = trpc.attendance.monthlyStatus.useQuery(month, { enabled: isAdmin });
@@ -38,6 +41,7 @@ export default function ProgramAdmin() {
   const saveMutation = trpc.programs.adminSave.useMutation({ onSuccess: () => { utils.programs.adminList.invalidate(); utils.programs.list.invalidate(); } });
   const deleteMutation = trpc.programs.adminDelete.useMutation({ onSuccess: () => { utils.programs.adminList.invalidate(); utils.programs.list.invalidate(); } });
   const uploadMutation = trpc.programs.uploadImage.useMutation();
+  const gateMutation = trpc.adminGate.verify.useMutation();
 
   useEffect(() => { if (!programsQuery.data) return; setRows(programsQuery.data.length === 0 ? [exampleRow()] : programsQuery.data.map(item => ({ ...item, key: item.externalId, persisted: true, isExample: false, startAt: toLocalInput(item.startAt), endAt: toLocalInput(item.endAt), recruitmentDeadline: toLocalInput(item.recruitmentDeadline) }))); }, [programsQuery.data]);
   const attendance = attendanceQuery.data ?? [];
@@ -59,7 +63,9 @@ export default function ProgramAdmin() {
   const saveRow = async (row: SheetRow) => { setError(""); setNotice(""); if (!validateRow(row)) { setError("프로그램 ID, 제목, 한 줄 소개는 반드시 입력해 주세요."); return; } try { const result = await saveMutation.mutateAsync(buildInput(row)); markSaved(new Set([row.key])); setEditingKey(row.externalId.trim()); setSelectedRows(current => { const next = new Set(current); next.delete(row.key); return next; }); setNotice(result.created ? `‘${row.title}’ 프로그램을 저장했습니다.` : `‘${row.title}’ 프로그램을 수정했습니다.`); } catch (saveError) { setError(saveError instanceof Error ? saveError.message : "프로그램 저장에 실패했습니다."); } };
   const bulkSave = async () => { const targets = rows.filter(row => selectedRows.has(row.key)); if (targets.length === 0) { setError("일괄 저장할 행을 먼저 선택해 주세요."); return; } const invalid = targets.filter(row => !validateRow(row)); if (invalid.length) { setError(`선택한 ${invalid.length}개 행에 프로그램 ID·제목·한 줄 소개가 비어 있습니다.`); return; } setIsBulkSaving(true); setError(""); setNotice(""); const saved = new Set<string>(); const failed: string[] = []; for (const row of targets) { try { await saveMutation.mutateAsync(buildInput(row)); saved.add(row.key); } catch { failed.push(row.title || row.externalId); } } markSaved(saved); setSelectedRows(new Set()); setIsBulkSaving(false); if (failed.length) setError(`${saved.size}개 행을 저장했지만 ${failed.join(", ")} 행은 저장하지 못했습니다.`); else setNotice(`선택한 ${saved.size}개 프로그램 행을 한꺼번에 저장했습니다.`); };
   const removeRow = async (row: SheetRow) => { if (!row.persisted) { setRows(current => current.filter(item => item.key !== row.key)); if (editingKey === row.key) setEditingKey(null); return; } if (!window.confirm(`‘${row.title}’ 프로그램을 삭제할까요?`)) return; try { await deleteMutation.mutateAsync({ externalId: row.externalId }); setRows(current => current.filter(item => item.key !== row.key)); if (editingKey === row.key) setEditingKey(null); setNotice("프로그램을 삭제했습니다."); } catch (deleteError) { setError(deleteError instanceof Error ? deleteError.message : "프로그램 삭제에 실패했습니다."); } };
+  const verifyGate = async (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); setGateError(""); try { const result = await gateMutation.mutateAsync({ password: gatePassword }); if (!result.valid) { setGateError("비밀번호가 맞지 않습니다. 다시 입력해 주세요."); return; } window.sessionStorage.setItem("nyj-admin-gate", "verified"); setGateGranted(true); setGatePassword(""); if (!user) startLogin(); } catch { setGateError("비밀번호 확인 중 문제가 발생했습니다. 잠시 뒤 다시 시도해 주세요."); } };
 
+  if (!gateGranted) return <div className="program-admin-gate"><div><p className="reference-label"><span />관리자 보호</p><h1>관리자 비밀번호</h1><p>운영 관리 화면으로 들어가기 전에 비밀번호를 입력해 주세요.</p><form className="program-admin-password-form" onSubmit={verifyGate}><label htmlFor="admin-gate-password">비밀번호<input id="admin-gate-password" type="password" value={gatePassword} onChange={event => setGatePassword(event.target.value)} autoComplete="current-password" inputMode="numeric" required /></label>{gateError && <p role="alert" className="program-admin-password-form__error">{gateError}</p>}<button type="submit" className="reference-button" disabled={gateMutation.isPending}>{gateMutation.isPending ? <Loader2 className="animate-spin" size={17} /> : null} 확인</button></form></div></div>;
   if (loading) return <div className="program-admin-gate">관리자 정보를 확인하고 있습니다.</div>;
   if (!user) return <div className="program-admin-gate"><div><p className="reference-label"><span />관리자</p><h1>운영 관리</h1><p>동아리 출석과 프로그램을 관리하려면 문화의집 프로젝트 소유자 계정으로 로그인해 주세요.</p><button onClick={() => startLogin()} className="reference-button">관리자 로그인</button></div></div>;
   if (!isAdmin) return <div className="program-admin-gate"><div><p className="reference-label"><span />접근 제한</p><h1>관리자 권한이 필요합니다.</h1><p>현재 계정에는 출석 현황을 보거나 프로그램을 등록할 권한이 없습니다. 문화의집 프로젝트를 만든 계정으로 다시 로그인해 주세요.</p><Link href="/" className="reference-text-button">메인으로 돌아가기</Link></div></div>;

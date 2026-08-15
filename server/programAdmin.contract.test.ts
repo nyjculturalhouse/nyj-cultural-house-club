@@ -69,4 +69,11 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(styles).toContain(".program-compact-table .program-sheet-save { width: 38px; min-width: 38px; padding: 0; }");
     expect(styles).toContain(".program-detail-editor__fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr));");
   });
+
+  it("관리자 진입 전에 서버 검증 비밀번호를 확인한다", () => {
+    const page = read("client/src/pages/ProgramAdmin.tsx");
+    expect(page).toContain("adminGate.verify.useMutation");
+    expect(page).toContain("관리자 비밀번호");
+    expect(page).toContain("nyj-admin-gate");
+  });
 });
