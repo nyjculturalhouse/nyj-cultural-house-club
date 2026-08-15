@@ -103,8 +103,13 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(home).not.toContain("program-spotlight");
     expect(home).not.toContain("reference-service--active");
     expect(home).toContain('className="reference-service__action-spacer"');
+    expect(home).toContain("출석 현황을 빠르게 기록하세요.");
+    expect(home).toContain("문화재단 공간을 예약하세요.");
+    expect(home).toContain("동아리 활동을 공유하세요.");
+    expect(home).toContain("프로그램 소식을 확인하세요.");
     expect(styles).toContain(".reference-service:hover { color: #fff; background: #000; }");
     expect(styles).toContain(".reference-service__action-spacer { display: block; height: 24px; }");
+    expect(styles).toContain(".reference-service { min-height: 184px; padding: 15px 16px; }");
     expect(styles).not.toContain(".reference-service--active { color: #fff; background: #000; }");
   });
 });
