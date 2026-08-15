@@ -87,4 +87,20 @@ describe("정적 출석·대관·일정 화면 계약", () => {
       expect(html).not.toContain('href="index.html"');
     });
   });
+
+  it("메인은 핵심 서비스와 세 가지 운영 바로가기만 유지하고 출석부 카드는 호버 시에만 반전한다", () => {
+    const home = read("client/src/pages/Home.tsx");
+    const styles = read("client/src/index.css");
+
+    expect(home).toContain("동아리 활동을 위한");
+    expect(home).toContain("남양주문화재단");
+    expect(home).toContain("동아리 활동 일정 확인");
+    expect(home).toContain(">대관 확인<");
+    expect(home).not.toContain("함께 만드는");
+    expect(home).not.toContain("reference-hero");
+    expect(home).not.toContain("program-spotlight");
+    expect(home).not.toContain("reference-service--active");
+    expect(styles).toContain(".reference-service:hover { color: #fff; background: #000; }");
+    expect(styles).not.toContain(".reference-service--active { color: #fff; background: #000; }");
+  });
 });
