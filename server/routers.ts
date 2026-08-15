@@ -17,7 +17,7 @@ import {
 } from "./programs";
 
 const managementProgramInput = z.object({
-  externalId: z.string().trim().min(3).max(128).regex(/^[a-zA-Z0-9-]+$/, "프로그램 ID는 영문·숫자·하이픈만 사용할 수 있습니다."),
+  externalId: z.string().trim().min(1).max(128).regex(/^[a-zA-Z0-9가-힣-]+$/, "프로그램 ID는 한글·영문·숫자·하이픈만 사용할 수 있습니다."),
   title: z.string().trim().min(1).max(255),
   summary: z.string().trim().min(1).max(500),
   description: z.string().trim().max(8_000).optional().default(""),

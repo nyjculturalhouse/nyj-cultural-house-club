@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PhoneNumberAutoFormatter } from "@/components/PhoneNumberAutoFormatter";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -39,6 +40,7 @@ function App() {
         // switchable
       >
         <TooltipProvider>
+          <PhoneNumberAutoFormatter />
           <Toaster />
           <Router />
         </TooltipProvider>

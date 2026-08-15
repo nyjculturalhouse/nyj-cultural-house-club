@@ -76,4 +76,12 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("관리자 비밀번호");
     expect(page).toContain("nyj-admin-gate");
   });
+
+  it("프로그램 ID는 한글을 허용하고 문의 전화번호 입력에는 자동 서식을 연결한다", () => {
+    const router = read("server/routers.ts");
+    const app = read("client/src/App.tsx");
+    expect(router).toContain("a-zA-Z0-9가-힣-");
+    expect(router).toContain("프로그램 ID는 한글·영문·숫자·하이픈만 사용할 수 있습니다.");
+    expect(app).toContain("PhoneNumberAutoFormatter");
+  });
 });
