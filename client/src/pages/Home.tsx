@@ -9,13 +9,18 @@ import {
   Check,
   CheckCircle2,
   ExternalLink,
+  Megaphone,
   Share2,
 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 const HeroArtwork = "/manus-storage/nyj-hero-grid_89a9d994.png";
 const MarkArtwork = "/manus-storage/nyj-mark_454f3ed0.png";
 
 export default function Home() {
+  const { data: programFeed, isLoading: programsLoading } = trpc.programs.list.useQuery();
+  const programs = programFeed?.items.slice(0, 3) ?? [];
+
   return (
     <div className="reference-shell min-h-screen bg-white text-black">
       <a className="skip-link" href="#main-content">본문 바로가기</a>
@@ -27,6 +32,7 @@ export default function Home() {
             <span><strong>남양주시 문화의집</strong><small>웹시스템</small></span>
           </a>
           <nav aria-label="빠른 이동" className="reference-nav">
+            <a href="/programs">프로그램</a>
             <a href="/calendar.html">활동 일정</a>
             <a href="https://www.nyjcf.or.kr/www/1" target="_blank" rel="noopener noreferrer">문화재단 <ExternalLink size={13} strokeWidth={1.75} /></a>
             <a className="reference-nav__admin" href="/admin.html"><ArrowUpRight size={15} strokeWidth={1.8} /> 관리자</a>
@@ -67,7 +73,15 @@ export default function Home() {
             <a className="reference-service reference-service--active" href="/attendance.html"><span>01</span><i><CheckCircle2 size={22} strokeWidth={1.7} /></i><div><h3>동아리 출석부</h3><p>빠르고 정확한 출석 관리</p></div></a>
             <a className="reference-service" href="https://www.nyjcf.or.kr/www/114" target="_blank" rel="noopener noreferrer"><span>02</span><i><CalendarDays size={22} strokeWidth={1.7} /></i><div><h3>공간 이용 예약</h3><p>남양주문화재단에서 공간 이용을 예약하세요.</p><b>예약하기 <ExternalLink size={16} strokeWidth={1.8} /></b></div></a>
             <a className="reference-service" href="/external.html"><span>03</span><i><Share2 size={22} strokeWidth={1.7} /></i><div><h3>외부활동 공유</h3><p>다양한 활동 소식을 간편하게 등록하세요.</p><b>등록하기 <ArrowRight size={16} strokeWidth={1.8} /></b></div></a>
+            <a className="reference-service" href="/programs"><span>04</span><i><Megaphone size={22} strokeWidth={1.7} /></i><div><h3>프로그램 안내</h3><p>이번에 열리는 문화 프로그램과 공식 신청처를 확인하세요.</p><b>프로그램 보기 <ArrowRight size={16} strokeWidth={1.8} /></b></div></a>
           </nav>
+        </section>
+
+        <section className="reference-width program-spotlight" aria-labelledby="program-spotlight-title">
+          <div className="program-spotlight__heading"><div><p className="reference-label"><span />이달의 프로그램</p><h2 id="program-spotlight-title">지금 만나는<br />문화 프로그램</h2></div><a className="reference-text-button" href="/programs">모든 프로그램 보기 <ArrowUpRight size={16} strokeWidth={1.8} /></a></div>
+          {programsLoading && <p className="program-spotlight__state">공개 프로그램을 불러오는 중입니다.</p>}
+          {!programsLoading && programs.length === 0 && <div className="program-spotlight__state"><strong>현재 공개된 프로그램이 없습니다.</strong><p>담당자가 공식 프로그램 정보와 신청 링크를 등록하면 이곳에 표시됩니다.</p></div>}
+          {programs.length > 0 && <div className="program-spotlight__grid">{programs.map((program) => <a className="program-spotlight__item" href={`/programs/${encodeURIComponent(program.id)}`} key={program.id}><span>{program.category || "문화 프로그램"}</span><h3>{program.title}</h3><p>{program.summary}</p><b>자세히 보기 <ArrowRight size={16} strokeWidth={1.8} /></b></a>)}</div>}
         </section>
 
         <section className="reference-width reference-utilities">

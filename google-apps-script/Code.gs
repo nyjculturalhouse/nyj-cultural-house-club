@@ -6,13 +6,14 @@
  */
 
 const APP = Object.freeze({
-  version: "2026-08-14",
+  version: "2026-08-15",
   timeZone: "Asia/Seoul",
   sheets: {
     clubs: "동아리정보",
     attendance: "출석부",
     bookings: "대관신청",
     activities: "외부활동",
+    programs: "프로그램",
   },
   clubColumns: {
     day: ["요일", "활동요일", "day"],
@@ -22,6 +23,7 @@ const APP = Object.freeze({
   attendanceHeaders: ["출석일", "동아리명", "출석인원", "출석자", "요일", "출석주차", "요청ID"],
   bookingHeaders: ["신청일", "신청자", "연락처", "공간", "사용일시", "사용시간", "예상인원", "대관사유", "이용동의", "개인정보동의", "요청ID"],
   activityHeaders: ["등록일", "동아리", "연락처", "행사명", "상세내용", "행사시작일시", "행사종료일시", "종일여부", "요청ID"],
+  programHeaders: ["프로그램ID", "제목", "한 줄 소개", "상세 소개", "주제", "대상", "장소", "시작 일시", "종료 일시", "모집 마감일", "모집 상태", "신청 링크", "신청처", "문의처", "신청 전 확인", "사진 URL", "공개 여부", "수정일"],
 });
 
 function doGet(e) {
@@ -42,6 +44,8 @@ function doGet(e) {
         return json(getBookings());
       case "getActivities":
         return json(getActivities());
+      case "getPrograms":
+        return json(getPrograms());
       case "health":
         return json({ ok: true, version: APP.version, timeZone: APP.timeZone, now: formatDateKey(new Date()) });
       default:
@@ -405,6 +409,64 @@ function getActivities() {
   });
 }
 
+/**
+ * 프로그램 시트의 공개 행만 웹으로 제공합니다.
+ * '공개 여부'는 공개, 예, true, 1 중 하나로 입력한 행만 반환합니다.
+ */
+function getPrograms() {
+  const sheet = getSheet(APP.sheets.programs);
+  const values = getSheetValues(sheet);
+  if (values.length < 2) return [];
+
+  const headers = values[0];
+  const idIndex = findColumn(headers, ["프로그램ID", "프로그램 ID", "id", "externalId"], 0);
+  const titleIndex = findColumn(headers, ["제목", "title"], 1);
+  const summaryIndex = findColumn(headers, ["한 줄 소개", "한줄소개", "summary"], 2);
+  const descriptionIndex = findColumn(headers, ["상세 소개", "상세소개", "description"], 3);
+  const categoryIndex = findColumn(headers, ["주제", "분류", "category"], 4);
+  const targetIndex = findColumn(headers, ["대상", "target"], 5);
+  const venueIndex = findColumn(headers, ["장소", "venue"], 6);
+  const startIndex = findColumn(headers, ["시작 일시", "시작일시", "startAt"], 7);
+  const endIndex = findColumn(headers, ["종료 일시", "종료일시", "endAt"], 8);
+  const deadlineIndex = findColumn(headers, ["모집 마감일", "모집마감일", "마감일", "recruitmentDeadline"], 9);
+  const statusIndex = findColumn(headers, ["모집 상태", "모집상태", "recruitmentStatus"], 10);
+  const applicationUrlIndex = findColumn(headers, ["신청 링크", "신청링크", "공식 신청 URL", "applicationUrl"], 11);
+  const providerIndex = findColumn(headers, ["신청처", "applicationProvider"], 12);
+  const contactIndex = findColumn(headers, ["문의처", "contact"], 13);
+  const checksIndex = findColumn(headers, ["신청 전 확인", "신청전확인", "preApplicationChecks"], 14);
+  const imageIndex = findColumn(headers, ["사진 URL", "사진URL", "imageUrl"], 15);
+  const publicIndex = findColumn(headers, ["공개 여부", "공개여부", "isPublished"], 16);
+
+  return values.slice(1).map(function (row) {
+    return {
+      externalId: normaliseText(row[idIndex]),
+      title: normaliseText(row[titleIndex]),
+      summary: normaliseText(row[summaryIndex]),
+      description: normaliseText(row[descriptionIndex]),
+      category: normaliseText(row[categoryIndex]),
+      target: normaliseText(row[targetIndex]),
+      venue: normaliseText(row[venueIndex]),
+      startAt: formatDateTimeValue(row[startIndex]),
+      endAt: formatDateTimeValue(row[endIndex]),
+      recruitmentDeadline: formatDateTimeValue(row[deadlineIndex]),
+      recruitmentStatus: normaliseText(row[statusIndex]),
+      applicationUrl: normaliseText(row[applicationUrlIndex]),
+      applicationProvider: normaliseText(row[providerIndex]),
+      contact: normaliseText(row[contactIndex]),
+      preApplicationChecks: normaliseText(row[checksIndex]),
+      imageUrl: normaliseText(row[imageIndex]),
+      isPublished: isProgramPublished(row[publicIndex]),
+    };
+  }).filter(function (program) {
+    return program.isPublished && program.externalId && program.title && program.summary;
+  });
+}
+
+function isProgramPublished(value) {
+  const text = normaliseText(value).toLowerCase();
+  return ["true", "1", "예", "공개", "게시"].indexOf(text) >= 0;
+}
+
 function hasRequestId(sheet, requestId) {
   if (!requestId || sheet.getLastRow() < 2) return false;
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
@@ -485,5 +547,6 @@ function initializeSheets() {
   ensureAttendanceSheet();
   ensureRecordSheet(APP.sheets.bookings, APP.bookingHeaders);
   ensureRecordSheet(APP.sheets.activities, APP.activityHeaders);
-  return { ok: true, msg: "출석부·대관신청·외부활동 시트를 확인했습니다." };
+  ensureRecordSheet(APP.sheets.programs, APP.programHeaders);
+  return { ok: true, msg: "출석부·대관신청·외부활동·프로그램 시트를 확인했습니다." };
 }

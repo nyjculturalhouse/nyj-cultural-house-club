@@ -6,11 +6,12 @@ const root = path.resolve(import.meta.dirname, "..");
 const script = readFileSync(path.join(root, "google-apps-script/Code.gs"), "utf8");
 
 describe("Google Apps Script 배포 코드 계약", () => {
-  it("출석·대관·외부활동의 공개 조회 모드를 제공한다", () => {
+  it("출석·대관·외부활동·프로그램의 공개 조회 모드를 제공한다", () => {
     expect(script).toContain('case "getAttendanceStatus"');
     expect(script).toContain('case "getMonthlyAttendanceStatus"');
     expect(script).toContain('case "getBookings"');
     expect(script).toContain('case "getActivities"');
+    expect(script).toContain('case "getPrograms"');
     expect(script).toContain('case "health"');
   });
 
@@ -35,5 +36,14 @@ describe("Google Apps Script 배포 코드 계약", () => {
     expect(script).toContain("function parseLocalDateTime");
     expect(script).toContain("[T\\s]");
     expect(script).toContain("new Date(Number(match[1])");
+  });
+
+  it("프로그램 시트에서 공개 여부·공식 신청 링크·사진 URL을 포함해 반환한다", () => {
+    expect(script).toContain('programs: "프로그램"');
+    expect(script).toContain("function getPrograms");
+    expect(script).toContain("function isProgramPublished");
+    expect(script).toContain("신청 링크");
+    expect(script).toContain("사진 URL");
+    expect(script).toContain("공개 여부");
   });
 });
