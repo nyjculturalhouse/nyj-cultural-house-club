@@ -66,6 +66,7 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("상세 편집");
     expect(page).toContain("program-detail-editor");
     expect(styles).toContain(".program-compact-table { width: 100%; min-width: 1060px;");
+    expect(styles).toContain(".program-compact-table .program-sheet-save { width: 38px; min-width: 38px; padding: 0; }");
     expect(styles).toContain(".program-detail-editor__fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr));");
   });
 });
