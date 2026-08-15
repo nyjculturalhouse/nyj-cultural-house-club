@@ -81,7 +81,7 @@ describe("정적 출석·대관·일정 화면 계약", () => {
   });
 
   it("모든 정적 하위 화면의 홈 링크가 존재하지 않는 index.html 대신 루트 메인으로 이동한다", () => {
-    ["attendance.html", "booking.html", "calendar.html", "external.html", "admin.html"].forEach((file) => {
+    ["attendance.html", "booking.html", "calendar.html", "external.html"].forEach((file) => {
       const html = read(`client/public/${file}`);
       expect(html).toContain('href="/"');
       expect(html).not.toContain('href="index.html"');

@@ -62,7 +62,7 @@ export default function Programs() {
           <nav aria-label="빠른 이동" className="reference-nav">
             <a href="/calendar.html">활동 일정</a>
             <a href="https://www.nyjcf.or.kr/www/1" target="_blank" rel="noopener noreferrer">문화재단 <ExternalLink size={13} strokeWidth={1.75} /></a>
-            <a className="reference-nav__admin" href="/admin.html">관리자</a>
+            <a className="reference-nav__admin" href="/program-admin">관리자</a>
           </nav>
         </div>
       </header>

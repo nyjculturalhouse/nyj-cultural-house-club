@@ -42,7 +42,7 @@ export default function ProgramDetail() {
       <header className="reference-header">
         <div className="reference-width reference-header__inner">
           <a className="reference-brand" href="/" aria-label="남양주시 문화의집 웹시스템 홈"><span className="reference-brand__mark" aria-hidden="true"><b>N</b></span><span><strong>남양주시 문화의집</strong><small>웹시스템</small></span></a>
-          <nav aria-label="빠른 이동" className="reference-nav"><a href="/programs">프로그램</a><a className="reference-nav__admin" href="/admin.html">관리자</a></nav>
+          <nav aria-label="빠른 이동" className="reference-nav"><a href="/programs">프로그램</a><a className="reference-nav__admin" href="/program-admin">관리자</a></nav>
         </div>
       </header>
       <main id="main-content" className="program-page reference-width">

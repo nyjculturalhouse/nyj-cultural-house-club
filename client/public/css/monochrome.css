@@ -15,7 +15,10 @@ header h1::before, header h2::before { content: 'N'; display: inline-grid; width
 h1, h2, h3, h4, .magazine-title { font-family: 'SUIT', sans-serif !important; color: var(--mono-black) !important; font-weight: 800 !important; letter-spacing: -0.04em !important; line-height: 1.25 !important; }
 body :not(.material-symbols-outlined) { font-family: 'SUIT', sans-serif !important; }
 body p, body li, body label, body input, body select, body textarea, body button { line-height: 1.6 !important; letter-spacing: -0.01em !important; }
-body .text-xs, body .text-sm { font-size: .875rem !important; line-height: 1.5 !important; }
+body .text-xs { font-size: .875rem !important; line-height: 1.5 !important; }
+body .text-sm { font-size: .9375rem !important; line-height: 1.6 !important; }
+body #admin-content-area .text-xs { font-size: .875rem !important; }
+body #admin-content-area .text-sm, body #admin-content-area input, body #admin-content-area select, body #admin-content-area textarea, body #admin-content-area button { font-size: 1rem !important; }
 body .text-lg { font-size: 1.125rem !important; line-height: 1.5 !important; }
 .bg-primary, .bg-accent-bg, .btn.selected, .tab-active, .step-indicator li.done .step-num { background: var(--mono-black) !important; color: var(--mono-white) !important; }
 .bg-primary *, .bg-accent-bg *, .btn.selected *, .tab-active * { color: var(--mono-white) !important; }
@@ -49,6 +52,10 @@ input:not([type="checkbox"]):not([type="radio"]):focus-visible, select:focus-vis
 .attendance-step-heading { color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-size: 1.5rem !important; font-weight: 700 !important; line-height: 1.5 !important; letter-spacing: 0 !important; }
 @media (max-width: 767px) { .attendance-step-heading { font-size: 1.375rem !important; } }
 .material-symbols-outlined { color: currentColor !important; }
+.static-redirect-page { width: min(520px, calc(100% - 32px)); margin: 18vh auto 0; padding: 32px; border: 1px solid var(--mono-black); background: var(--mono-white); }
+.static-redirect-page p { margin: 0 0 16px; font-size: 1rem; }
+.static-redirect-page h1 { margin: 0 0 16px; font-size: 1.75rem; }
+.static-redirect-page a { display: inline-flex; min-height: 44px; align-items: center; padding: 0 14px; color: var(--mono-white); background: var(--mono-black); font-size: 1rem; font-weight: 800; }
 .hero .magazine-title, .hero .material-symbols-outlined { color: var(--mono-white) !important; }
 a[aria-label="메인으로 이동"] { display: grid !important; width: 32px !important; height: 32px !important; place-items: center !important; padding: 0 !important; border: 1px solid var(--mono-black) !important; color: var(--mono-black) !important; background: var(--mono-white) !important; transition: background 160ms ease, color 160ms ease !important; }
 a[aria-label="메인으로 이동"] .material-symbols-outlined { display: grid; width: 15px; height: 15px; place-items: center; font-size: 0 !important; }
