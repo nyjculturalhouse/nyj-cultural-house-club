@@ -314,6 +314,23 @@ select:focus-visible,
     display: none;
 }
 
+/* 출석 등록의 각 단계 제목: KRDS Heading medium(PC 24px / 모바일 22px,
+   bold 700, 150% line-height, 0px letter-spacing) 기준을 SUIT에 적용합니다. */
+.attendance-step-heading {
+    color: #111111;
+    font-family: 'SUIT', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: 0;
+}
+
+@media (max-width: 767px) {
+    .attendance-step-heading {
+        font-size: 1.375rem;
+    }
+}
+
 /* -----------------------------
    8. 모달 공통 컴포넌트
 ------------------------------ */

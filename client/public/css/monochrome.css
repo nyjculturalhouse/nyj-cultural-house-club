@@ -45,6 +45,9 @@ input:not([type="checkbox"]):not([type="radio"]):focus-visible, select:focus-vis
 #timetable-view-container .bg-striped { background-image: none !important; background-color: var(--mono-white) !important; }
 .step-indicator li[aria-current="step"] .step-num { background: var(--mono-black) !important; border-color: var(--mono-black) !important; }
 .step-indicator li .step-num { border-color: var(--mono-black) !important; color: var(--mono-black) !important; }
+.step-indicator li[aria-current="step"] .step-num { display: none !important; }
+.attendance-step-heading { color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; font-size: 1.5rem !important; font-weight: 700 !important; line-height: 1.5 !important; letter-spacing: 0 !important; }
+@media (max-width: 767px) { .attendance-step-heading { font-size: 1.375rem !important; } }
 .material-symbols-outlined { color: currentColor !important; }
 .hero .magazine-title, .hero .material-symbols-outlined { color: var(--mono-white) !important; }
 a[aria-label="메인으로 이동"] { display: grid !important; width: 32px !important; height: 32px !important; place-items: center !important; padding: 0 !important; border: 1px solid var(--mono-black) !important; color: var(--mono-black) !important; background: var(--mono-white) !important; transition: background 160ms ease, color 160ms ease !important; }
