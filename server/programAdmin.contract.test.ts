@@ -32,9 +32,9 @@ describe("관리자 프로그램 등록 화면 계약", () => {
   it("관리자 화면이 행·열 기반 프로그램 시트를 제공한다", () => {
     const page = read("client/src/pages/ProgramAdmin.tsx");
     expect(page).toContain("프로그램 시트");
-    expect(page).toContain("새 행 추가");
-    expect(page).toContain("program-sheet");
-    expect(page).toContain("해당 행의 저장 버튼");
+    expect(page).toContain("새 프로그램");
+    expect(page).toContain("program-compact-table");
+    expect(page).toContain("저장하면 프로그램에 연결됩니다.");
   });
 
   it("관리자 화면이 출석 완료 현황 탭과 저장 전 프로그램 입력 예시 행을 제공한다", () => {
@@ -42,7 +42,7 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain('attendance.status.useQuery');
     expect(page).toContain('attendance.monthlyStatus.useQuery');
     expect(page).toContain("동아리 출석 확인");
-    expect(page).toContain("입력 예시 추가");
+    expect(page).toContain("입력 예시");
     expect(page).toContain("[입력 예시] 주말 생활 도자기");
     expect(page).toContain("programsQuery.data.length === 0 ? [exampleRow()]");
   });
@@ -52,10 +52,20 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("onlyUnsubmitted");
     expect(page).toContain("미출석만 보기");
     expect(page).toContain("downloadAttendanceWorkbook");
-    expect(page).toContain("선택한 행 일괄 저장");
+    expect(page).toContain("선택 항목 저장");
     expect(page).toContain("bulkSave");
     expect(page).toContain("for (const row of targets)");
     expect(page).toContain("const failed: string[]");
     expect(page).toContain("개 행을 저장했지만");
+  });
+
+  it("프로그램 입력을 핵심 열 표와 행별 상세 편집으로 나눠 가로 스크롤을 줄인다", () => {
+    const page = read("client/src/pages/ProgramAdmin.tsx");
+    const styles = read("client/src/index.css");
+    expect(page).toContain("program-compact-table");
+    expect(page).toContain("상세 편집");
+    expect(page).toContain("program-detail-editor");
+    expect(styles).toContain(".program-compact-table { width: 100%; min-width: 1060px;");
+    expect(styles).toContain(".program-detail-editor__fields { display: grid; grid-template-columns: repeat(2,minmax(0,1fr));");
   });
 });
