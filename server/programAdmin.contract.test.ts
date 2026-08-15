@@ -17,7 +17,7 @@ describe("관리자 프로그램 등록 화면 계약", () => {
   it("사진 업로드는 1080×1350의 4:5 세로 비율과 5MB 한도를 안내·검증한다", () => {
     const page = read("client/src/pages/ProgramAdmin.tsx");
     const styles = read("client/src/index.css");
-    expect(page).toContain("1080×1350px(4:5)");
+    expect(page).toContain("가로 1080px · 세로 1350px");
     expect(page).toContain("Math.abs(dimensions.width / dimensions.height - (4 / 5))");
     expect(page).toContain("5 * 1024 * 1024");
     expect(styles).toContain(".program-sheet-image { display: grid; width: 96px; aspect-ratio: 4 / 5;");
@@ -45,5 +45,17 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("입력 예시 추가");
     expect(page).toContain("[입력 예시] 주말 생활 도자기");
     expect(page).toContain("programsQuery.data.length === 0 ? [exampleRow()]");
+  });
+
+  it("미출석 필터·엑셀 다운로드·선택 행 일괄 저장을 제공한다", () => {
+    const page = read("client/src/pages/ProgramAdmin.tsx");
+    expect(page).toContain("onlyUnsubmitted");
+    expect(page).toContain("미출석만 보기");
+    expect(page).toContain("downloadAttendanceWorkbook");
+    expect(page).toContain("선택한 행 일괄 저장");
+    expect(page).toContain("bulkSave");
+    expect(page).toContain("for (const row of targets)");
+    expect(page).toContain("const failed: string[]");
+    expect(page).toContain("개 행을 저장했지만");
   });
 });

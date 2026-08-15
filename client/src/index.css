@@ -283,6 +283,11 @@ button { font: inherit; }
 .attendance-admin { padding-top: 28px; }
 .attendance-admin__heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid #000; }
 .attendance-admin__heading p:not(.reference-label) { margin: 12px 0 0; font-size: 1rem; line-height: 1.65; }
+.attendance-admin__actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 9px; }
+.attendance-admin__actions button,.attendance-admin__actions .reference-text-button { display: inline-flex; min-height: 42px; align-items: center; gap: 6px; border: 1px solid #000; padding: 0 12px; color: #000; background: #fff; font: inherit; font-size: .875rem; font-weight: 800; cursor: pointer; }
+.attendance-admin__actions button.is-active,.attendance-admin__actions button:hover { color: #fff; background: #000; }
+.attendance-admin__actions button:disabled { opacity: .5; cursor: wait; }
+.attendance-admin__result { margin: 0; padding: 12px 16px; border: 1px solid #000; border-top: 0; font-size: .875rem; font-weight: 700; }
 .attendance-admin__metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid #000; border-top: 0; }
 .attendance-admin__metrics > div { position: relative; display: grid; gap: 8px; min-height: 148px; align-content: end; padding: 18px; border-right: 1px solid #000; }
 .attendance-admin__metrics > div:last-child { border-right: 0; }
@@ -308,6 +313,9 @@ button { font: inherit; }
 .program-sheet { width: max-content; min-width: 2380px; border-collapse: collapse; color: #000; font-size: .875rem; }
 .program-sheet caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .program-sheet th { position: sticky; top: 0; z-index: 2; padding: 12px 10px; border-right: 1px solid #000; border-bottom: 2px solid #000; background: #000; color: #fff; font-size: .8125rem; font-weight: 800; line-height: 1.45; text-align: left; white-space: nowrap; }
+.program-sheet th:first-child { width: 42px; min-width: 42px; text-align: center; }
+.program-sheet th input,.program-sheet td > input[type="checkbox"] { width: 17px; height: 17px; accent-color: #fff; cursor: pointer; }
+.program-sheet td > input[type="checkbox"] { accent-color: #000; }
 .program-sheet th small { color: #fff; font-size: .75rem; font-weight: 500; }
 .program-sheet td { min-width: 114px; padding: 8px; border-right: 1px solid #000; border-bottom: 1px solid #000; vertical-align: top; background: #fff; }
 .program-sheet tr:last-child td { border-bottom: 0; }
@@ -354,6 +362,7 @@ button { font: inherit; }
   .program-admin-tabs button { min-height: 48px; flex: 0 0 auto; padding: 0 14px; font-size: .9375rem; }
   .attendance-admin { padding-top: 20px; }
   .attendance-admin__heading { align-items: flex-start; flex-direction: column; gap: 14px; padding-bottom: 18px; }
+  .attendance-admin__actions { justify-content: flex-start; }
   .attendance-admin__heading p:not(.reference-label) { font-size: .9375rem; }
   .attendance-admin__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .attendance-admin__metrics > div { min-height: 120px; padding: 14px; border-bottom: 1px solid #000; }
