@@ -93,6 +93,8 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     const styles = read("client/src/index.css");
 
     expect(home).toContain("동아리 활동을 위한");
+    expect(home).toContain('href="/admin.html"');
+    expect(home).toContain("동아리 활동을 위한 모든 시작점</h2>");
     expect(home).toContain("남양주문화재단");
     expect(home).toContain("동아리 활동 일정 확인");
     expect(home).toContain(">대관 확인<");

@@ -25,12 +25,15 @@ export default function Home() {
             <span className="reference-brand__mark" aria-hidden="true"><img src={MarkArtwork} alt="" /><b>N</b></span>
             <span><strong>남양주시 문화의집</strong><small>웹시스템</small></span>
           </a>
+          <nav aria-label="빠른 이동" className="reference-nav">
+            <a className="reference-nav__admin" href="/admin.html"><ArrowUpRight size={15} strokeWidth={1.8} /> 관리자</a>
+          </nav>
         </div>
       </header>
 
       <main id="main-content">
         <section className="reference-services reference-width" aria-labelledby="service-title">
-          <div className="reference-services__heading"><div><p className="reference-label"><span />서비스</p><h2 id="service-title">동아리 활동을 위한<br />모든 시작점</h2></div></div>
+          <div className="reference-services__heading"><div><p className="reference-label"><span />서비스</p><h2 id="service-title">동아리 활동을 위한 모든 시작점</h2></div></div>
           <nav className="reference-service-grid" aria-label="주요 기능">
             <a className="reference-service" href="/attendance.html"><span>01</span><i><CheckCircle2 size={22} strokeWidth={1.7} /></i><div><h3>동아리 출석부</h3><p>빠르고 정확한 출석 관리</p></div></a>
             <a className="reference-service" href="https://www.nyjcf.or.kr/www/114" target="_blank" rel="noopener noreferrer"><span>02</span><i><CalendarDays size={22} strokeWidth={1.7} /></i><div><h3>공간 이용 예약</h3><p>남양주문화재단에서 공간 이용을 예약하세요.</p><b>예약하기 <ExternalLink size={16} strokeWidth={1.8} /></b></div></a>
