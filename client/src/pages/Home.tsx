@@ -35,7 +35,7 @@ export default function Home() {
         <section className="reference-services reference-width" aria-labelledby="service-title">
           <div className="reference-services__heading"><div><p className="reference-label"><span />서비스</p><h2 id="service-title">동아리 활동을 위한 모든 시작점</h2></div></div>
           <nav className="reference-service-grid" aria-label="주요 기능">
-            <a className="reference-service" href="/attendance.html"><span>01</span><i><CheckCircle2 size={22} strokeWidth={1.7} /></i><div><h3>동아리 출석부</h3><p>빠르고 정확한 출석 관리</p></div></a>
+            <a className="reference-service" href="/attendance.html"><span>01</span><i><CheckCircle2 size={22} strokeWidth={1.7} /></i><div><h3>동아리 출석부</h3><p>빠르고 정확한 출석 관리</p><span className="reference-service__action-spacer" aria-hidden="true" /></div></a>
             <a className="reference-service" href="https://www.nyjcf.or.kr/www/114" target="_blank" rel="noopener noreferrer"><span>02</span><i><CalendarDays size={22} strokeWidth={1.7} /></i><div><h3>공간 이용 예약</h3><p>남양주문화재단에서 공간 이용을 예약하세요.</p><b>예약하기 <ExternalLink size={16} strokeWidth={1.8} /></b></div></a>
             <a className="reference-service" href="/external.html"><span>03</span><i><Share2 size={22} strokeWidth={1.7} /></i><div><h3>외부활동 공유</h3><p>다양한 활동 소식을 간편하게 등록하세요.</p><b>등록하기 <ArrowRight size={16} strokeWidth={1.8} /></b></div></a>
             <a className="reference-service" href="/programs"><span>04</span><i><Megaphone size={22} strokeWidth={1.7} /></i><div><h3>프로그램 안내</h3><p>이번에 열리는 문화 프로그램과 공식 신청처를 확인하세요.</p><b>프로그램 보기 <ArrowRight size={16} strokeWidth={1.8} /></b></div></a>

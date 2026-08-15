@@ -102,7 +102,9 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(home).not.toContain("reference-hero");
     expect(home).not.toContain("program-spotlight");
     expect(home).not.toContain("reference-service--active");
+    expect(home).toContain('className="reference-service__action-spacer"');
     expect(styles).toContain(".reference-service:hover { color: #fff; background: #000; }");
+    expect(styles).toContain(".reference-service__action-spacer { display: block; height: 24px; }");
     expect(styles).not.toContain(".reference-service--active { color: #fff; background: #000; }");
   });
 });
