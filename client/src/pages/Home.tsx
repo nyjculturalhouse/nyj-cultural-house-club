@@ -26,7 +26,7 @@ export default function Home() {
             <span><strong>남양주시 문화의집</strong><small>웹시스템</small></span>
           </a>
           <nav aria-label="빠른 이동" className="reference-nav">
-            <a className="reference-nav__admin" href="/admin.html"><ArrowUpRight size={15} strokeWidth={1.8} /> 관리자</a>
+            <a className="reference-nav__admin" href="/program-admin"><ArrowUpRight size={15} strokeWidth={1.8} /> 관리자</a>
           </nav>
         </div>
       </header>

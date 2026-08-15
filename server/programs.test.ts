@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildProgramIcs, resolveRecruitmentStatus, type PublicProgram } from "./programs";
+import { buildProgramIcs, decodeProgramImage, mergeProgramFeeds, resolveRecruitmentStatus, type PublicProgram } from "./programs";
 
 const sampleProgram: PublicProgram = {
   id: "culture-2026-01",
@@ -50,5 +50,21 @@ describe("buildProgramIcs", () => {
 
   it("시작 일시가 없으면 잘못된 ICS 파일 대신 명확한 오류를 반환한다", () => {
     expect(() => buildProgramIcs({ ...sampleProgram, startAt: null })).toThrow("일정 시작 일시");
+  });
+});
+
+describe("관리자 프로그램 도우미", () => {
+  it("데이터베이스 등록 프로그램과 공식 시트 프로그램을 ID 기준으로 병합하며 시트 값을 우선한다", () => {
+    const database = { ...sampleProgram, title: "관리자 등록 프로그램" };
+    const sheet = { ...sampleProgram, title: "공식 시트 프로그램" };
+    const separate = { ...sampleProgram, id: "culture-2026-02", title: "별도 프로그램" };
+    const merged = mergeProgramFeeds([database, separate], [sheet]);
+    expect(merged).toHaveLength(2);
+    expect(merged.find(item => item.id === sampleProgram.id)?.title).toBe("공식 시트 프로그램");
+  });
+
+  it("대표 사진 업로드용 데이터 URL은 이미지·5MB 규칙을 검증한다", () => {
+    expect(decodeProgramImage("data:image/png;base64,aGVsbG8=", "image/png").toString()).toBe("hello");
+    expect(() => decodeProgramImage("data:text/plain;base64,aGVsbG8=", "text/plain")).toThrow("이미지 파일");
   });
 });

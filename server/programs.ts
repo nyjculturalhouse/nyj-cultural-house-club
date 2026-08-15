@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { programs } from "../drizzle/schema";
 import { getDb } from "./db";
 import { buildGasUrl } from "./attendanceStatus";
+import { storagePut } from "./storage";
 
 export const PROGRAM_STATUSES = ["upcoming", "open", "closing-soon", "closed"] as const;
 export const APPLICATION_PROVIDERS = ["nyjcf", "naver", "other", "none"] as const;
@@ -39,6 +40,26 @@ export type ProgramFilters = {
 export type ProgramsFeed = {
   source: "google-sheet" | "database";
   items: PublicProgram[];
+};
+
+export type ProgramManagementInput = {
+  externalId: string;
+  title: string;
+  summary: string;
+  description: string;
+  category: string;
+  target: string;
+  venue: string;
+  startAt: string | null;
+  endAt: string | null;
+  recruitmentDeadline: string | null;
+  recruitmentStatus: ProgramStatus;
+  applicationUrl: string;
+  applicationProvider: ApplicationProvider;
+  contact: string;
+  preApplicationChecks: string;
+  imageUrl: string;
+  isPublished: boolean;
 };
 
 const ipv4Agent = new https.Agent({ family: 4, keepAlive: false });
@@ -167,15 +188,114 @@ async function getDatabasePrograms(now: Date): Promise<PublicProgram[]> {
     .filter((item): item is PublicProgram => Boolean(item));
 }
 
+export function mergeProgramFeeds(databaseItems: PublicProgram[], sheetItems: PublicProgram[]) {
+  const merged = new Map(databaseItems.map(item => [item.id, item]));
+  sheetItems.forEach(item => merged.set(item.id, item));
+  return Array.from(merged.values());
+}
+
 export async function listPrograms(filters: ProgramFilters = {}, now = new Date()): Promise<ProgramsFeed> {
+  const databaseItems = await getDatabasePrograms(now);
   try {
-    const items = await getSheetPrograms(now);
+    const sheetItems = await getSheetPrograms(now);
+    const items = mergeProgramFeeds(databaseItems, sheetItems);
     return { source: "google-sheet", items: items.filter((item) => matchesFilters(item, filters)).sort(chronological) };
   } catch (error) {
     console.info("[Programs] Google Sheet feed unavailable; using the verified database fallback.", error instanceof Error ? error.message : error);
-    const items = await getDatabasePrograms(now);
-    return { source: "database", items: items.filter((item) => matchesFilters(item, filters)).sort(chronological) };
+    return { source: "database", items: databaseItems.filter((item) => matchesFilters(item, filters)).sort(chronological) };
   }
+}
+
+function toDatabaseDate(value: string | null) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) throw new Error("날짜 형식이 올바르지 않습니다.");
+  return parsed;
+}
+
+export async function listManagedPrograms() {
+  const db = await getDb();
+  if (!db) throw new Error("프로그램 관리 데이터베이스에 연결할 수 없습니다.");
+  const rows = await db.select().from(programs);
+  return rows
+    .sort((first, second) => second.updatedAt.getTime() - first.updatedAt.getTime())
+    .map(row => ({
+      externalId: row.externalId,
+      title: row.title,
+      summary: row.summary,
+      description: row.description ?? "",
+      category: row.category ?? "",
+      target: row.target ?? "",
+      venue: row.venue ?? "",
+      startAt: row.startAt?.toISOString() ?? null,
+      endAt: row.endAt?.toISOString() ?? null,
+      recruitmentDeadline: row.recruitmentDeadline?.toISOString() ?? null,
+      recruitmentStatus: row.recruitmentStatus as ProgramStatus,
+      applicationUrl: row.applicationUrl ?? "",
+      applicationProvider: row.applicationProvider as ApplicationProvider,
+      contact: row.contact ?? "",
+      preApplicationChecks: row.preApplicationChecks ?? "",
+      imageUrl: row.imageUrl ?? "",
+      isPublished: row.isPublished,
+      updatedAt: row.updatedAt.toISOString(),
+    }));
+}
+
+export async function saveManagedProgram(input: ProgramManagementInput) {
+  const db = await getDb();
+  if (!db) throw new Error("프로그램 관리 데이터베이스에 연결할 수 없습니다.");
+
+  const values = {
+    externalId: input.externalId,
+    title: input.title,
+    summary: input.summary,
+    description: input.description || null,
+    category: input.category || null,
+    target: input.target || null,
+    venue: input.venue || null,
+    startAt: toDatabaseDate(input.startAt),
+    endAt: toDatabaseDate(input.endAt),
+    recruitmentDeadline: toDatabaseDate(input.recruitmentDeadline),
+    recruitmentStatus: input.recruitmentStatus,
+    applicationUrl: input.applicationUrl || null,
+    applicationProvider: input.applicationProvider,
+    contact: input.contact || null,
+    preApplicationChecks: input.preApplicationChecks || null,
+    imageUrl: input.imageUrl || null,
+    isPublished: input.isPublished,
+    sourceUpdatedAt: new Date(),
+  };
+  const existing = await db.select({ id: programs.id }).from(programs).where(eq(programs.externalId, input.externalId)).limit(1);
+
+  if (existing.length) {
+    await db.update(programs).set(values).where(eq(programs.externalId, input.externalId));
+  } else {
+    await db.insert(programs).values(values);
+  }
+
+  return { externalId: input.externalId, created: !existing.length };
+}
+
+export async function deleteManagedProgram(externalId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("프로그램 관리 데이터베이스에 연결할 수 없습니다.");
+  await db.delete(programs).where(eq(programs.externalId, externalId));
+  return { externalId };
+}
+
+export function decodeProgramImage(dataUrl: string, contentType: string) {
+  if (!contentType.startsWith("image/")) throw new Error("이미지 파일만 업로드할 수 있습니다.");
+  const base64 = dataUrl.includes(",") ? dataUrl.slice(dataUrl.indexOf(",") + 1) : dataUrl;
+  const bytes = Buffer.from(base64, "base64");
+  if (!bytes.length) throw new Error("사진 파일을 읽을 수 없습니다.");
+  if (bytes.length > 5 * 1024 * 1024) throw new Error("사진은 5MB 이하만 업로드할 수 있습니다.");
+  return bytes;
+}
+
+export async function uploadManagedProgramImage(input: { fileName: string; contentType: string; dataUrl: string }) {
+  const bytes = decodeProgramImage(input.dataUrl, input.contentType);
+  const safeName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "-") || "program-image";
+  return storagePut(`programs/${Date.now()}-${safeName}`, bytes, input.contentType);
 }
 
 export async function getProgramById(id: string, now = new Date()) {
