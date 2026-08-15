@@ -36,4 +36,14 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("program-sheet");
     expect(page).toContain("해당 행의 저장 버튼");
   });
+
+  it("관리자 화면이 출석 완료 현황 탭과 저장 전 프로그램 입력 예시 행을 제공한다", () => {
+    const page = read("client/src/pages/ProgramAdmin.tsx");
+    expect(page).toContain('attendance.status.useQuery');
+    expect(page).toContain('attendance.monthlyStatus.useQuery');
+    expect(page).toContain("동아리 출석 확인");
+    expect(page).toContain("입력 예시 추가");
+    expect(page).toContain("[입력 예시] 주말 생활 도자기");
+    expect(page).toContain("programsQuery.data.length === 0 ? [exampleRow()]");
+  });
 });

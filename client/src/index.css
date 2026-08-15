@@ -274,6 +274,36 @@ button { font: inherit; }
 .program-sheet-heading h1 { margin: 8px 0 0; font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 800; letter-spacing: -.06em; line-height: 1.15; }
 .program-sheet-heading p:not(.reference-label) { max-width: 720px; margin: 12px 0 0; font-size: 1rem; line-height: 1.65; }
 .program-sheet-heading__actions { display: flex; align-items: center; gap: 13px; flex-shrink: 0; font-size: var(--type-small); font-weight: 700; }
+.program-sheet-heading--inner { margin-bottom: 24px; }
+.program-sheet-heading h2,.attendance-admin h2 { margin: 8px 0 0; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -.055em; line-height: 1.2; }
+.program-admin-tabs { display: flex; gap: 0; border-bottom: 1px solid #000; }
+.program-admin-tabs button { display: inline-flex; min-height: 52px; align-items: center; gap: 8px; border: 1px solid #000; border-bottom: 0; padding: 0 18px; color: #000; background: #fff; font: inherit; font-size: 1rem; font-weight: 800; cursor: pointer; }
+.program-admin-tabs button + button { border-left: 0; }
+.program-admin-tabs button.is-active { color: #fff; background: #000; }
+.attendance-admin { padding-top: 28px; }
+.attendance-admin__heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-bottom: 24px; border-bottom: 1px solid #000; }
+.attendance-admin__heading p:not(.reference-label) { margin: 12px 0 0; font-size: 1rem; line-height: 1.65; }
+.attendance-admin__metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid #000; border-top: 0; }
+.attendance-admin__metrics > div { position: relative; display: grid; gap: 8px; min-height: 148px; align-content: end; padding: 18px; border-right: 1px solid #000; }
+.attendance-admin__metrics > div:last-child { border-right: 0; }
+.attendance-admin__metrics small { font-size: .875rem; font-weight: 800; }
+.attendance-admin__metrics strong { font-size: 2.5rem; font-weight: 800; letter-spacing: -.06em; line-height: 1; }
+.attendance-admin__metrics em { margin-left: 3px; font-size: 1rem; font-style: normal; }
+.attendance-admin__metrics span { position: absolute; top: 18px; right: 18px; font-size: .8125rem; font-weight: 700; }
+.attendance-admin__table-wrap { overflow-x: auto; border: 1px solid #000; border-top: 0; }
+.attendance-admin__table { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 1rem; }
+.attendance-admin__table caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.attendance-admin__table th,.attendance-admin__table td { padding: 16px 18px; border-right: 1px solid #000; border-bottom: 1px solid #000; text-align: left; line-height: 1.5; }
+.attendance-admin__table th { color: #fff; background: #000; font-size: .875rem; font-weight: 800; }
+.attendance-admin__table th:last-child,.attendance-admin__table td:last-child { border-right: 0; }
+.attendance-admin__table tr:last-child td { border-bottom: 0; }
+.attendance-admin__table td:first-child { font-weight: 800; }
+.attendance-state { display: inline-flex; align-items: center; gap: 5px; border: 1px solid #000; padding: 4px 8px; font-size: .8125rem; font-weight: 800; white-space: nowrap; }
+.attendance-state.is-complete { color: #fff; background: #000; }
+.program-sheet-section { padding-top: 28px; }
+.program-sheet tr.is-example td { background: #f4f4f4; }
+.program-sheet-example,.program-sheet-row-state { display: inline-flex; min-width: 58px; justify-content: center; border: 1px solid #000; padding: 4px 6px; font-size: .75rem; font-weight: 800; line-height: 1.35; text-align: center; }
+.program-sheet-example { color: #fff; background: #000; }
 .program-sheet-scroll { overflow: auto; border: 1px solid #000; background: #fff; }
 .program-sheet { width: max-content; min-width: 2380px; border-collapse: collapse; color: #000; font-size: .875rem; }
 .program-sheet caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
@@ -320,6 +350,17 @@ button { font: inherit; }
   .program-sheet-heading p:not(.reference-label) { font-size: .9375rem; }
   .program-sheet-heading__actions { width: 100%; justify-content: space-between; }
   .program-sheet-scroll { margin-inline: -16px; }
+  .program-admin-tabs { overflow-x: auto; }
+  .program-admin-tabs button { min-height: 48px; flex: 0 0 auto; padding: 0 14px; font-size: .9375rem; }
+  .attendance-admin { padding-top: 20px; }
+  .attendance-admin__heading { align-items: flex-start; flex-direction: column; gap: 14px; padding-bottom: 18px; }
+  .attendance-admin__heading p:not(.reference-label) { font-size: .9375rem; }
+  .attendance-admin__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .attendance-admin__metrics > div { min-height: 120px; padding: 14px; border-bottom: 1px solid #000; }
+  .attendance-admin__metrics > div:nth-child(2) { border-right: 0; }
+  .attendance-admin__metrics > div:nth-child(3),.attendance-admin__metrics > div:nth-child(4) { border-bottom: 0; }
+  .attendance-admin__metrics span { top: 14px; right: 14px; }
+  .attendance-admin__metrics strong { font-size: 2rem; }
 }
 
 @media (max-width: 1023px) { .reference-hero { grid-template-columns: repeat(8, minmax(0, 1fr)); } .reference-hero > :first-child { grid-column: span 4; } .reference-art { grid-column: 5 / span 4; } .reference-monthly__inner > :first-child { grid-column: span 3; } .reference-monthly__content { grid-column: span 5; } }
