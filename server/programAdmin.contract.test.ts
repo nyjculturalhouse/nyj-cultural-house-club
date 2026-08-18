@@ -111,4 +111,10 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(preview).toContain("공개 전 미리보기");
     expect(preview).toContain("작성으로 돌아가기");
   });
+
+  it("공개 프로그램 상세에서 내 일정에 저장 기능을 제공하지 않는다", () => {
+    const detail = read("client/src/pages/ProgramDetail.tsx");
+    expect(detail).not.toContain("내 일정에 저장");
+    expect(detail).not.toContain("downloadIcs");
+  });
 });

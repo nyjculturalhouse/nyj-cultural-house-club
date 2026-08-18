@@ -19,22 +19,7 @@ function formatDateTime(value: string | null) {
 export default function ProgramDetail() {
   const { id = "" } = useParams<{ id: string }>();
   const { data, isLoading, isError } = trpc.programs.getById.useQuery({ id }, { enabled: Boolean(id) });
-  const icsQuery = trpc.programs.ics.useQuery({ id }, { enabled: false });
   const item = data?.item;
-
-  async function downloadIcs() {
-    const result = await icsQuery.refetch();
-    if (!result.data) return;
-    const blob = new Blob([result.data.content], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = result.data.filename;
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-    URL.revokeObjectURL(url);
-  }
 
   return (
     <div className="reference-shell min-h-screen bg-white text-black">
@@ -67,7 +52,6 @@ export default function ProgramDetail() {
                   {item.recruitmentDeadline && <div><dt>모집 마감</dt><dd>{formatDateTime(item.recruitmentDeadline)}</dd></div>}
                   {item.contact && <div><dt>문의</dt><dd>{item.contact}</dd></div>}
                 </dl>
-                {item.startAt && <button className="program-detail__ics" type="button" onClick={downloadIcs} disabled={icsQuery.isFetching}><Download size={17} strokeWidth={1.8} />{icsQuery.isFetching ? "일정 파일 준비 중" : "내 일정에 저장"}</button>}
               </aside>
             </div>
             {item.preApplicationChecks.length > 0 && <section className="program-checks"><h2><CheckSquare size={20} strokeWidth={1.8} /> 신청 전 확인</h2><ul>{item.preApplicationChecks.map((check, index) => <li key={`${check}-${index}`}>{check}</li>)}</ul></section>}
