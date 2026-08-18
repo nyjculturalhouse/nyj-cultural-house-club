@@ -125,11 +125,12 @@ export default function Programs() {
                   <div className="program-card__meta"><span>{item.category || "문화 프로그램"}</span><b className={`program-status program-status--${item.recruitmentStatus}`}>{statusLabel[item.recruitmentStatus]}</b></div>
                   <h2>{item.title}</h2>
                   <p>{item.summary}</p>
-                  <dl>
-                    <div><dt><CalendarDays size={15} strokeWidth={1.8} />일정</dt><dd>{formatDateTime(item.startAt)}</dd></div>
+                  {(item.venue || item.target) && <dl>
                     {item.venue && <div><dt><MapPin size={15} strokeWidth={1.8} />장소</dt><dd>{item.venue}</dd></div>}
                     {item.target && <div><dt><Users size={15} strokeWidth={1.8} />대상</dt><dd>{item.target}</dd></div>}
                   </dl>
+                  }
+                  <p className="program-card__schedule"><CalendarDays size={15} strokeWidth={1.8} /> <span>일정</span><b>{formatDateTime(item.startAt)}</b></p>
                   <a className="program-card__link" href={`/programs/${encodeURIComponent(item.id)}`}>자세히 보기 <ArrowRight size={17} strokeWidth={1.8} /></a>
                 </div>
               </article>

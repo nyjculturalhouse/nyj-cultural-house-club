@@ -191,6 +191,9 @@ button { font: inherit; }
 .program-card dl > div,.program-detail__side dl > div { display: grid; grid-template-columns: 64px minmax(0,1fr); gap: 8px; }
 .program-card dt,.program-detail__side dt { display: inline-flex; align-items: flex-start; gap: 5px; font-size: .8125rem; font-weight: 800; line-height: 1.5; }
 .program-card dd,.program-detail__side dd { margin: 0; font-size: .8125rem; font-weight: 500; line-height: 1.5; }
+.program-card__schedule { display: flex; align-items: flex-start; gap: 5px; margin: 15px 0 0; border-top: 1px solid #000; padding-top: 12px; font-size: .8125rem; line-height: 1.5; }
+.program-card__schedule span { font-weight: 800; }
+.program-card__schedule b { margin-left: auto; max-width: 72%; text-align: right; font-weight: 500; }
 .program-card__link { display: inline-flex; align-items: center; gap: 5px; align-self: flex-start; margin-top: 21px; border-bottom: 1px solid #000; padding-bottom: 2px; font-size: var(--type-small); font-weight: 800; line-height: 1.5; }
 .program-detail { margin-top: 40px; }
 .program-detail__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding-bottom: 38px; border-bottom: 1px solid #000; }
@@ -509,5 +512,7 @@ button { font: inherit; }
   .program-card dl > div { grid-template-columns: 42px minmax(0, 1fr); gap: 4px; }
   .program-card dt,
   .program-card dd { font-size: .6875rem; line-height: 1.4; }
+  .program-card__schedule { align-items: flex-start; flex-direction: column; gap: 3px; margin-top: 12px; padding-top: 9px; font-size: .6875rem; }
+  .program-card__schedule b { max-width: none; margin-left: 0; text-align: left; }
   .program-card__link { margin-top: 14px; font-size: .75rem; }
 }

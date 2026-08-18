@@ -19,7 +19,7 @@
     try {
       const items = await gasGet('getPrograms');
       list.innerHTML = items.length
-        ? items.map((p) => `<a class="program" href="./program.html?id=${encodeURIComponent(p.externalId)}">${imageMarkup(p)}<div><p class="meta">${p.category || '프로그램'} · ${formatDate(p.startAt)}</p><h2>${p.title}</h2><p>${p.summary}</p></div></a>`).join('')
+        ? items.map((p) => `<a class="program" href="./program.html?id=${encodeURIComponent(p.externalId)}">${imageMarkup(p)}<div><p class="meta">${p.category || '프로그램'}</p><h2>${p.title}</h2><p>${p.summary}</p><p class="program-date">일정 · ${formatDate(p.startAt)}</p></div></a>`).join('')
         : '<p class="empty">현재 공개된 프로그램이 없습니다.</p>';
     } catch (error) {
       list.innerHTML = `<p class="notice error">${error.message}</p>`;
