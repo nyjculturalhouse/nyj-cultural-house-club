@@ -7,24 +7,47 @@
   <link rel="stylesheet" href="./assets/site.css">
   <link rel="stylesheet" href="./assets/krds-static.css">
   <link rel="stylesheet" href="./assets/mobile-program-grid.css">
+  <link rel="stylesheet" href="./assets/program-editorial.css">
 </head>
 <body>
-  <header class="top"><div class="wrap"><a class="brand" href="./index.html"><span>N</span>남양주시 문화의집</a><a class="button" href="./admin.html">관리자</a></div></header>
-  <main class="wrap section">
-    <p class="eyebrow">프로그램</p>
-    <div id="list" class="program-grid"><p class="notice">프로그램을 불러오는 중입니다.</p></div>
+  <header class="top"><div class="wrap"><a class="brand" href="./index.html"><span>N</span><span class="brand-copy"><strong>남양주시 문화의집</strong><small>웹시스템</small></span></a><a class="button--black button" href="./admin.html">관리자</a></div></header>
+  <main class="program-static-page">
+    <a class="program-static-back" href="./index.html">← 홈으로 돌아가기</a>
+    <p class="program-static-label">프로그램</p>
+    <section class="program-static-filter" aria-label="프로그램 찾아보기">
+      <strong class="program-static-filter__title">프로그램 찾아보기</strong>
+      <div class="program-static-filter__controls">
+        <label>주제<select id="category-filter"><option value="">전체</option></select></label>
+        <label>대상<select id="target-filter"><option value="">전체</option></select></label>
+        <label>모집 상태<select id="status-filter"><option value="">전체</option><option value="upcoming">예정</option><option value="open">모집 중</option><option value="closing-soon">마감 임박</option><option value="closed">모집 마감</option></select></label>
+      </div>
+    </section>
+    <div class="program-static-viewbar"><span id="count" class="program-static-count">공개 프로그램을 불러오는 중입니다.</span><div class="program-static-tabs"><button id="list-tab" class="is-active" type="button">목록</button><button id="calendar-tab" type="button">달력</button></div></div>
+    <div id="list" class="program-grid" aria-live="polite"><p class="notice">프로그램을 불러오는 중입니다.</p></div>
+    <section id="calendar-view" class="program-static-calendar"><div class="program-static-calendar__box">달력 보기는 공개 프로그램을 등록한 뒤 시작일 기준으로 표시됩니다.</div></section>
   </main>
   <script type="module">
     import { gasGet, formatDate, imageMarkup } from './assets/gas.js';
     const list = document.querySelector('#list');
-    try {
-      const items = await gasGet('getPrograms');
-      list.innerHTML = items.length
-        ? items.map((p) => `<a class="program" href="./program.html?id=${encodeURIComponent(p.externalId)}">${imageMarkup(p)}<div><p class="meta">${p.category || '프로그램'}</p><h2>${p.title}</h2><p>${p.summary}</p><p class="program-date">일정 · ${formatDate(p.startAt)}</p></div></a>`).join('')
-        : '<p class="empty">현재 공개된 프로그램이 없습니다.</p>';
-    } catch (error) {
-      list.innerHTML = `<p class="notice error">${error.message}</p>`;
-    }
+    const count = document.querySelector('#count');
+    const category = document.querySelector('#category-filter');
+    const target = document.querySelector('#target-filter');
+    const status = document.querySelector('#status-filter');
+    const listTab = document.querySelector('#list-tab');
+    const calendarTab = document.querySelector('#calendar-tab');
+    const calendarView = document.querySelector('#calendar-view');
+    let items = [];
+    const unique = (key) => [...new Set(items.map((item) => item[key]).filter(Boolean))];
+    const populate = (select, values) => values.forEach((value) => select.insertAdjacentHTML('beforeend', `<option value="${value}">${value}</option>`));
+    const render = () => {
+      const visible = items.filter((item) => (!category.value || item.category === category.value) && (!target.value || item.target === target.value) && (!status.value || item.recruitmentStatus === status.value));
+      count.textContent = `공개 프로그램 ${visible.length}건`;
+      list.innerHTML = visible.length ? visible.map((p) => `<a class="program" href="./program.html?id=${encodeURIComponent(p.externalId)}">${imageMarkup(p)}<div><p class="meta">${p.category || '프로그램'}</p><h2>${p.title}</h2><p>${p.summary}</p><p class="program-date">일정 · ${formatDate(p.startAt)}</p></div></a>`).join('') : '<div class="program-static-empty"><strong>현재 공개된 프로그램이 없습니다.</strong><p>담당자가 공식 프로그램 정보와 신청 링크를 등록하면 이곳에 표시됩니다.</p></div>';
+    };
+    [category, target, status].forEach((select) => select.addEventListener('change', render));
+    listTab.onclick = () => { listTab.classList.add('is-active'); calendarTab.classList.remove('is-active'); list.hidden = false; calendarView.classList.remove('is-visible'); };
+    calendarTab.onclick = () => { calendarTab.classList.add('is-active'); listTab.classList.remove('is-active'); list.hidden = true; calendarView.classList.add('is-visible'); };
+    try { items = await gasGet('getPrograms'); populate(category, unique('category')); populate(target, unique('target')); render(); } catch (error) { count.textContent = '프로그램을 불러오지 못했습니다.'; list.innerHTML = `<p class="notice error">${error.message}</p>`; }
   </script>
 </body>
 </html>

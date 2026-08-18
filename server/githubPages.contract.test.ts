@@ -20,6 +20,8 @@ describe("GitHub Pages 정적 운영 계약", () => {
     expect(home).toContain("krds-static.css");
     expect(home).toContain("동아리 활동 일정 확인");
     expect(programs).toContain("mobile-program-grid.css");
+    expect(programs).toContain("프로그램 찾아보기");
+    expect(programs).toContain("calendar-tab");
     expect(mobileProgramGrid).toContain("repeat(2, minmax(0, 1fr))");
   });
 
