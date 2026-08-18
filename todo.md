@@ -200,9 +200,11 @@
 - [x] Google Apps Script의 Drive 업로드 권한과 자동 저장 응답 구조를 점검한다.
 - [x] 관리자에서 사진 선택만으로 Drive 저장·프로그램 연결이 이뤄지는 업로드 흐름을 구현한다.
 - [ ] 자동 Drive 업로드의 사진 공개 URL·오류 안내·프로그램 연결을 검증한다. Apps Script 스크립트 속성 설정·재배포 후 실제 사진 업로드 확인이 남아 있다.
-- [ ] 현재 Manus 의존 기능을 GitHub Pages·Apps Script·Sheets·Drive 대체 구조로 매핑한다.
+- [x] 현재 Manus 의존 기능을 GitHub Pages·Apps Script·Sheets·Drive 대체 구조로 매핑한다.
 - [x] Apps Script에 관리자 프로그램 저장·임시저장·Drive 자동 사진 업로드 API를 구현한다.
-- [ ] React 프런트엔드를 GitHub Pages 정적 배포와 Apps Script API 호출 구조로 전환한다.
-- [ ] GitHub Pages 배포·관리자 사진 업로드·출석·프로그램 공개 흐름을 검증한다.
-- [ ] Google Drive를 프로그램 대표 사진 저장소로 사용하는 공개 URL·권한 운영 절차를 정리한다.
-- [ ] 현재 관리자 사진 업로드를 Google Drive·Apps Script 흐름으로 전환할 방법을 안내한다.
+- [x] 정적 공개 화면과 비밀번호 기반 관리자 화면을 GitHub Pages 정적 배포·Apps Script API 호출 구조로 구현한다.
+- [ ] GitHub Pages 배포·관리자 사진 업로드·출석·프로그램 공개 흐름을 검증한다. Apps Script 재배포와 GitHub Pages 활성화 후 실제 확인이 남아 있다.
+- [x] 기존 Apps Script 소유 Google 계정을 관리자 데이터·Drive 소유 계정으로 사용하는 공개·관리자 분리 구조를 설계한다.
+- [x] 공개 GitHub Pages와 비밀번호 기반 관리자 화면이 같은 Sheets·Drive 데이터를 쓰도록 구현한다.
+- [x] Google Drive를 프로그램 대표 사진 저장소로 사용하는 공개 URL·권한 운영 절차를 정리한다.
+- [x] 현재 관리자 사진 업로드를 Google Drive·Apps Script 흐름으로 전환할 방법을 안내한다.

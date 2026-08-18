@@ -20,6 +20,9 @@ const APP = Object.freeze({
     programImageFolderProperty: "PROGRAM_IMAGE_FOLDER_ID",
     uploadTokenProperty: "GAS_DRIVE_UPLOAD_TOKEN",
   },
+  admin: {
+    passwordProperty: "ADMIN_GATE_PASSWORD",
+  },
   clubColumns: {
     day: ["요일", "활동요일", "day"],
     club: ["동아리명", "동아리", "club"],
@@ -78,6 +81,16 @@ function doPost(e) {
         return json(submitExternal(payload));
       case "uploadProgramImage":
         return json(uploadProgramImage(payload));
+      case "verifyAdminPassword":
+        return json(verifyAdminPassword(payload));
+      case "adminListPrograms":
+        return json(adminListPrograms(payload));
+      case "adminSaveProgram":
+        return json(adminSaveProgram(payload));
+      case "adminDeleteProgram":
+        return json(adminDeleteProgram(payload));
+      case "adminUploadProgramImage":
+        return json(adminUploadProgramImage(payload));
       default:
         return json({ error: "지원하지 않는 요청입니다." });
     }
@@ -115,6 +128,22 @@ function requireDriveUploadToken(payload) {
   const received = normaliseText(payload && payload.uploadToken);
   if (!expected) throw new Error("Google Drive 업로드 토큰이 설정되지 않았습니다. 스크립트 속성을 확인해 주세요.");
   if (!received || received !== expected) throw new Error("사진 업로드 권한을 확인해 주세요.");
+}
+
+function requireAdminPassword(payload) {
+  const expected = normaliseText(PropertiesService.getScriptProperties().getProperty(APP.admin.passwordProperty));
+  const received = normaliseText(payload && payload.adminPassword);
+  if (!expected) throw new Error("관리자 비밀번호가 설정되지 않았습니다. 스크립트 속성을 확인해 주세요.");
+  if (!received || received !== expected) throw new Error("관리자 비밀번호가 맞지 않습니다.");
+}
+
+function verifyAdminPassword(payload) {
+  try {
+    requireAdminPassword(payload);
+    return { ok: true, valid: true };
+  } catch (_error) {
+    return { ok: true, valid: false };
+  }
 }
 
 function getProgramImageFolder() {
@@ -157,8 +186,7 @@ function getDriveImageUrl(file) {
   return "https://drive.google.com/thumbnail?id=" + id + "&sz=w1600" + query;
 }
 
-function uploadProgramImage(payload) {
-  requireDriveUploadToken(payload);
+function storeProgramImage(payload) {
   const blob = dataUrlToImageBlob(payload.dataUrl, payload.fileName, payload.contentType);
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
@@ -177,6 +205,16 @@ function uploadProgramImage(payload) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function uploadProgramImage(payload) {
+  requireDriveUploadToken(payload);
+  return storeProgramImage(payload);
+}
+
+function adminUploadProgramImage(payload) {
+  requireAdminPassword(payload);
+  return storeProgramImage(payload);
 }
 
 function normaliseDay(value) {
@@ -584,6 +622,141 @@ function getPrograms() {
   }).filter(function (program) {
     return program.isPublished && program.externalId && program.title && program.summary;
   });
+}
+
+function getProgramColumnIndexes(headers) {
+  return {
+    externalId: findColumn(headers, ["프로그램ID", "프로그램 ID", "id", "externalId"], 0),
+    title: findColumn(headers, ["제목", "title"], 1),
+    summary: findColumn(headers, ["한 줄 소개", "한줄소개", "summary"], 2),
+    description: findColumn(headers, ["상세 소개", "상세소개", "description"], 3),
+    category: findColumn(headers, ["주제", "분류", "category"], 4),
+    target: findColumn(headers, ["대상", "target"], 5),
+    venue: findColumn(headers, ["장소", "venue"], 6),
+    startAt: findColumn(headers, ["시작 일시", "시작일시", "startAt"], 7),
+    endAt: findColumn(headers, ["종료 일시", "종료일시", "endAt"], 8),
+    recruitmentDeadline: findColumn(headers, ["모집 마감일", "모집마감일", "마감일", "recruitmentDeadline"], 9),
+    recruitmentStatus: findColumn(headers, ["모집 상태", "모집상태", "recruitmentStatus"], 10),
+    applicationUrl: findColumn(headers, ["신청 링크", "신청링크", "공식 신청 URL", "applicationUrl"], 11),
+    applicationProvider: findColumn(headers, ["신청처", "applicationProvider"], 12),
+    contact: findColumn(headers, ["문의처", "contact"], 13),
+    preApplicationChecks: findColumn(headers, ["신청 전 확인", "신청전확인", "preApplicationChecks"], 14),
+    imageUrl: findColumn(headers, ["사진 URL", "사진URL", "imageUrl"], 15),
+    isPublished: findColumn(headers, ["공개 여부", "공개여부", "isPublished"], 16),
+    updatedAt: findColumn(headers, ["수정일", "updatedAt"], 17),
+  };
+}
+
+function programRecordFromRow(row, columns) {
+  return {
+    externalId: normaliseText(row[columns.externalId]),
+    title: normaliseText(row[columns.title]),
+    summary: normaliseText(row[columns.summary]),
+    description: normaliseText(row[columns.description]),
+    category: normaliseText(row[columns.category]),
+    target: normaliseText(row[columns.target]),
+    venue: normaliseText(row[columns.venue]),
+    startAt: formatDateTimeValue(row[columns.startAt]),
+    endAt: formatDateTimeValue(row[columns.endAt]),
+    recruitmentDeadline: formatDateTimeValue(row[columns.recruitmentDeadline]),
+    recruitmentStatus: normaliseText(row[columns.recruitmentStatus]) || "upcoming",
+    applicationUrl: normaliseText(row[columns.applicationUrl]),
+    applicationProvider: normaliseText(row[columns.applicationProvider]) || "none",
+    contact: normaliseText(row[columns.contact]),
+    preApplicationChecks: normaliseText(row[columns.preApplicationChecks]),
+    imageUrl: normaliseText(row[columns.imageUrl]),
+    isPublished: isProgramPublished(row[columns.isPublished]),
+  };
+}
+
+function adminListPrograms(payload) {
+  requireAdminPassword(payload);
+  const sheet = ensureRecordSheet(APP.sheets.programs, APP.programHeaders);
+  const values = getSheetValues(sheet);
+  if (values.length < 2) return [];
+  const columns = getProgramColumnIndexes(values[0]);
+  return values.slice(1).map(function (row) {
+    return programRecordFromRow(row, columns);
+  }).filter(function (record) {
+    return record.externalId || record.title;
+  });
+}
+
+function makeProgramId(title) {
+  const base = normaliseText(title).replace(/\s+/g, "-").replace(/[^a-zA-Z0-9가-힣-]/g, "").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  return (base || "program") + "-" + Utilities.formatDate(new Date(), APP.timeZone, "yyyyMMddHHmmss");
+}
+
+function normaliseAdminProgram(payload) {
+  const title = normaliseText(payload.title);
+  if (!title) throw new Error("프로그램 제목을 입력해 주세요.");
+  const externalId = normaliseText(payload.externalId) || makeProgramId(title);
+  if (!/^[a-zA-Z0-9가-힣-]{1,128}$/.test(externalId)) throw new Error("프로그램 ID는 한글·영문·숫자·하이픈만 사용할 수 있습니다.");
+  return {
+    externalId: externalId,
+    title: title,
+    summary: normaliseText(payload.summary) || title,
+    description: normaliseText(payload.description),
+    category: normaliseText(payload.category),
+    target: normaliseText(payload.target),
+    venue: normaliseText(payload.venue),
+    startAt: normaliseText(payload.startAt),
+    endAt: normaliseText(payload.endAt),
+    recruitmentDeadline: normaliseText(payload.recruitmentDeadline),
+    recruitmentStatus: normaliseText(payload.recruitmentStatus) || "upcoming",
+    applicationUrl: normaliseText(payload.applicationUrl),
+    applicationProvider: normaliseText(payload.applicationProvider) || "none",
+    contact: normaliseText(payload.contact),
+    preApplicationChecks: normaliseText(payload.preApplicationChecks),
+    imageUrl: normaliseText(payload.imageUrl),
+    isPublished: payload.isPublished === true || normaliseText(payload.isPublished).toLowerCase() === "true",
+  };
+}
+
+function adminSaveProgram(payload) {
+  requireAdminPassword(payload);
+  const record = normaliseAdminProgram(payload);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const sheet = ensureRecordSheet(APP.sheets.programs, APP.programHeaders);
+    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const columns = getProgramColumnIndexes(headers);
+    const rowValues = new Array(headers.length).fill("");
+    Object.keys(columns).forEach(function (key) {
+      const index = columns[key];
+      if (index >= 0 && key !== "updatedAt") rowValues[index] = record[key] == null ? "" : record[key];
+    });
+    rowValues[columns.isPublished] = record.isPublished ? "공개" : "비공개";
+    if (columns.updatedAt >= 0) rowValues[columns.updatedAt] = new Date();
+
+    const lastRow = sheet.getLastRow();
+    const existing = lastRow >= 2 ? sheet.getRange(2, columns.externalId + 1, lastRow - 1, 1).getValues().findIndex(function (row) {
+      return normaliseText(row[0]) === record.externalId;
+    }) : -1;
+    const created = existing < 0;
+    if (created) sheet.appendRow(rowValues);
+    else sheet.getRange(existing + 2, 1, 1, rowValues.length).setValues([rowValues]);
+    return { ok: true, created: created, item: record };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function adminDeleteProgram(payload) {
+  requireAdminPassword(payload);
+  const externalId = normaliseText(payload.externalId);
+  if (!externalId) throw new Error("삭제할 프로그램 ID를 확인해 주세요.");
+  const sheet = ensureRecordSheet(APP.sheets.programs, APP.programHeaders);
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const columns = getProgramColumnIndexes(headers);
+  const lastRow = sheet.getLastRow();
+  const existing = lastRow >= 2 ? sheet.getRange(2, columns.externalId + 1, lastRow - 1, 1).getValues().findIndex(function (row) {
+    return normaliseText(row[0]) === externalId;
+  }) : -1;
+  if (existing < 0) throw new Error("삭제할 프로그램을 찾지 못했습니다.");
+  sheet.deleteRow(existing + 2);
+  return { ok: true, externalId: externalId };
 }
 
 function isProgramPublished(value) {

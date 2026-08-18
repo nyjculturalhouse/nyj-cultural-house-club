@@ -35,6 +35,21 @@ describe("Google Apps Script 배포 코드 계약", () => {
     expect(script).toContain("5 * 1024 * 1024");
   });
 
+  it("정적 관리자 화면이 비밀번호 검증 뒤 프로그램·사진을 Google Sheets와 Drive에서 직접 관리할 수 있다", () => {
+    expect(script).toContain('case "verifyAdminPassword"');
+    expect(script).toContain('case "adminListPrograms"');
+    expect(script).toContain('case "adminSaveProgram"');
+    expect(script).toContain('case "adminDeleteProgram"');
+    expect(script).toContain('case "adminUploadProgramImage"');
+    expect(script).toContain("function requireAdminPassword");
+    expect(script).toContain("function adminListPrograms");
+    expect(script).toContain("function adminSaveProgram");
+    expect(script).toContain("function adminDeleteProgram");
+    expect(script).toContain("function adminUploadProgramImage");
+    expect(script).toContain("function normaliseAdminProgram");
+    expect(script).toContain("function makeProgramId");
+  });
+
   it("대관·외부활동의 기존 시트 헤더를 찾아 달력 데이터로 정규화한다", () => {
     expect(script).toContain("function getBookings");
     expect(script).toContain("function getActivities");
