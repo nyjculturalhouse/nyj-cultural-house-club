@@ -4,7 +4,7 @@ import path from "node:path";
 const root = path.resolve(import.meta.dirname, "..");
 const output = path.join(root, "dist", "github-pages");
 const staticStyleVersion = "20260818-03";
-const adminGridStyleVersion = "20260818-01";
+const adminGridStyleVersion = "20260818-02";
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 await cp(path.join(root, "client", "public"), output, { recursive: true });
