@@ -26,6 +26,22 @@ export type MonthlyAttendanceFetchResult = {
   statuses: MonthlyAttendanceStatus[];
 };
 
+export type AttendanceHeadcountWeek = {
+  index: number;
+  start: string;
+  end: string;
+  attendees: number;
+};
+
+export type AttendanceHeadcountSummary = {
+  year: number;
+  month: number;
+  currentWeek: AttendanceHeadcountWeek;
+  monthAttendees: number;
+  yearAttendees: number;
+  weeks: AttendanceHeadcountWeek[];
+};
+
 const DEFAULT_GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8TIvA_grDjk0Lu98nSh3gplAUBHezY5rp5ANDlxu4Fk7b2x6VRd0Lbw6wgFNA-NvL9A/exec";
 const GAS_WEB_APP_URL = process.env.GAS_WEB_APP_URL || DEFAULT_GAS_WEB_APP_URL;
 const ipv4Agent = new https.Agent({ family: 4, keepAlive: false });
@@ -36,6 +52,11 @@ function asCompleted(value: unknown) {
 
 function asIsoDate(value: unknown) {
   return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
+}
+
+function asAttendeeCount(value: unknown) {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) && parsed >= 0 ? Math.floor(parsed) : 0;
 }
 
 function toIsoDate(date: Date) {
@@ -94,6 +115,27 @@ export function normalizeMonthlyAttendanceStatuses(payload: unknown): MonthlyAtt
     .filter((item) => item.club.length > 0 && item.club !== "동아리명" && Number.isInteger(item.year) && item.month >= 1 && item.month <= 12);
 }
 
+export function normalizeAttendanceHeadcountSummary(payload: unknown): AttendanceHeadcountSummary {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) throw new Error("출석 인원 통계 응답 형식이 올바르지 않습니다.");
+  const value = payload as Record<string, unknown>;
+  const rawWeeks = Array.isArray(value.weeks) ? value.weeks : [];
+  const normalizeWeek = (week: unknown): AttendanceHeadcountWeek | null => {
+    if (!week || typeof week !== "object") return null;
+    const item = week as Record<string, unknown>;
+    const index = Number(item.index);
+    const start = asIsoDate(item.start);
+    const end = asIsoDate(item.end);
+    if (!Number.isInteger(index) || index < 1 || index > 5 || !start || !end) return null;
+    return { index, start, end, attendees: asAttendeeCount(item.attendees) };
+  };
+  const currentWeek = normalizeWeek(value.currentWeek);
+  const weeks = rawWeeks.map(normalizeWeek).filter((week): week is AttendanceHeadcountWeek => Boolean(week)).sort((first, second) => first.index - second.index);
+  const year = Number(value.year);
+  const month = Number(value.month);
+  if (!currentWeek || !Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) throw new Error("출석 인원 통계 응답 형식이 올바르지 않습니다.");
+  return { year, month, currentWeek, monthAttendees: asAttendeeCount(value.monthAttendees), yearAttendees: asAttendeeCount(value.yearAttendees), weeks };
+}
+
 async function fetchGasPayload(mode: string, parameters: Record<string, string | number> = {}) {
   const response = await axios.get<unknown>(buildGasUrl(mode, parameters), {
     headers: {
@@ -115,6 +157,10 @@ async function fetchGasPayload(mode: string, parameters: Record<string, string |
 
 export async function fetchAttendanceStatuses(): Promise<AttendanceStatus[]> {
   return normalizeAttendanceStatuses(await fetchGasPayload("getAttendanceStatus"));
+}
+
+export async function fetchAttendanceHeadcountSummary(): Promise<AttendanceHeadcountSummary> {
+  return normalizeAttendanceHeadcountSummary(await fetchGasPayload("getAttendanceHeadcountSummary"));
 }
 
 function canUseLegacyStatusForMonth(year: number, month: number, date: Date) {

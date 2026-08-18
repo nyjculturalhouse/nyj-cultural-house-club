@@ -84,4 +84,13 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(router).toContain("프로그램 ID는 한글·영문·숫자·하이픈만 사용할 수 있습니다.");
     expect(app).toContain("PhoneNumberAutoFormatter");
   });
+
+  it("참석 인원 통계·등록 완료 모달·상세 입력 선택 안내를 관리자 화면에 연결한다", () => {
+    const router = read("server/routers.ts");
+    const enhancements = read("client/src/components/AdminProgramEnhancements.tsx");
+    expect(router).toContain("headcountSummary");
+    expect(enhancements).toContain("누적 참석 인원");
+    expect(enhancements).toContain("프로그램 등록 완료");
+    expect(enhancements).toContain("상세 입력은 선택");
+  });
 });

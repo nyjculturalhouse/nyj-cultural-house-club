@@ -6,7 +6,7 @@
  */
 
 const APP = Object.freeze({
-  version: "2026-08-15",
+  version: "2026-08-18",
   timeZone: "Asia/Seoul",
   sheets: {
     clubs: "동아리정보",
@@ -40,6 +40,8 @@ function doGet(e) {
         return json(getAttendanceStatus());
       case "getMonthlyAttendanceStatus":
         return json(getMonthlyAttendanceStatus(parameter.year, parameter.month));
+      case "getAttendanceHeadcountSummary":
+        return json(getAttendanceHeadcountSummary(parameter.year));
       case "getBookings":
         return json(getBookings());
       case "getActivities":
@@ -327,6 +329,52 @@ function getAttendanceStatus() {
       thisWeek: wasCompleted(completed, club, now.getFullYear(), now.getMonth() + 1, getMonthWeekIndex(now)),
     };
   });
+}
+
+/**
+ * 출석부의 ‘출석인원’ 열을 기준으로 현재 주·월·연도의 누적 참석 인원을 계산합니다.
+ * 같은 사람이 다른 주에 출석한 경우 실제 출석 횟수만큼 각각 집계됩니다.
+ */
+function getAttendanceHeadcountSummary(yearValue) {
+  const now = new Date();
+  const year = Number(yearValue) || now.getFullYear();
+  const month = now.getMonth() + 1;
+  const currentWeekIndex = getMonthWeekIndex(now);
+  const weekRanges = getMonthWeekRanges(year, month);
+  const weekCounts = {};
+  weekRanges.forEach(function (week) { weekCounts[week.index] = 0; });
+
+  let monthAttendees = 0;
+  let yearAttendees = 0;
+  getAttendanceRows().forEach(function (row) {
+    const date = toLocalCalendarDate(row[0]);
+    const count = Number(row[2]);
+    if (!date || !Number.isFinite(count) || count <= 0) return;
+    const attendees = Math.floor(count);
+    if (date.getFullYear() !== year) return;
+    yearAttendees += attendees;
+    if (date.getMonth() + 1 !== month) return;
+    monthAttendees += attendees;
+    const weekIndex = getMonthWeekIndex(date);
+    if (weekCounts[weekIndex] !== undefined) weekCounts[weekIndex] += attendees;
+  });
+
+  const currentWeek = weekRanges.find(function (week) { return week.index === currentWeekIndex; }) || { index: currentWeekIndex, start: formatDateKey(now), end: formatDateKey(now) };
+  return {
+    year: year,
+    month: month,
+    currentWeek: {
+      index: currentWeek.index,
+      start: currentWeek.start,
+      end: currentWeek.end,
+      attendees: weekCounts[currentWeek.index] || 0,
+    },
+    monthAttendees: monthAttendees,
+    yearAttendees: yearAttendees,
+    weeks: weekRanges.map(function (week) {
+      return { index: week.index, start: week.start, end: week.end, attendees: weekCounts[week.index] || 0 };
+    }),
+  };
 }
 
 function submitAttendance(payload) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildGasUrl, makeLegacyMonthlyStatuses, normalizeAttendanceStatuses, normalizeMonthlyAttendanceStatuses } from "./attendanceStatus";
+import { buildGasUrl, makeLegacyMonthlyStatuses, normalizeAttendanceHeadcountSummary, normalizeAttendanceStatuses, normalizeMonthlyAttendanceStatuses } from "./attendanceStatus";
 
 describe("normalizeAttendanceStatuses", () => {
   it("헤더 행과 잘못된 값을 제외하고 주차별 완료 상태를 정규화한다", () => {
@@ -61,6 +61,32 @@ describe("buildGasUrl", () => {
     expect(url.searchParams.get("mode")).toBe("getMonthlyAttendanceStatus");
     expect(url.searchParams.get("year")).toBe("2026");
     expect(url.searchParams.get("month")).toBe("8");
+  });
+});
+
+describe("normalizeAttendanceHeadcountSummary", () => {
+  it("현재 주·월·연 누적 참석 인원과 주차별 인원을 정규화한다", () => {
+    expect(normalizeAttendanceHeadcountSummary({
+      year: "2026",
+      month: "8",
+      currentWeek: { index: 3, start: "2026-08-09", end: "2026-08-15", attendees: "17" },
+      monthAttendees: "42",
+      yearAttendees: 216,
+      weeks: [
+        { index: 2, start: "2026-08-02", end: "2026-08-08", attendees: 12 },
+        { index: 3, start: "2026-08-09", end: "2026-08-15", attendees: 17 },
+      ],
+    })).toEqual({
+      year: 2026,
+      month: 8,
+      currentWeek: { index: 3, start: "2026-08-09", end: "2026-08-15", attendees: 17 },
+      monthAttendees: 42,
+      yearAttendees: 216,
+      weeks: [
+        { index: 2, start: "2026-08-02", end: "2026-08-08", attendees: 12 },
+        { index: 3, start: "2026-08-09", end: "2026-08-15", attendees: 17 },
+      ],
+    });
   });
 });
 

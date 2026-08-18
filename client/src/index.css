@@ -384,6 +384,27 @@ button { font: inherit; }
 .program-detail-editor__actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 22px; border-top: 1px solid #000; font-size: .8125rem; font-weight: 700; }
 .program-detail-editor__actions .reference-button { border: 0; cursor: pointer; }
 .program-detail-editor__actions button:disabled { opacity: .55; cursor: wait; }
+.admin-headcount-summary { margin: 18px 0 22px; border: 1px solid #000; background: #fff; }
+.admin-headcount-summary__heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px; border-bottom: 1px solid #000; }
+.admin-headcount-summary__heading h3 { margin: 7px 0 0; font-size: 1.25rem; font-weight: 800; letter-spacing: -.04em; }
+.admin-headcount-summary__heading p:not(.reference-label) { margin: 6px 0 0; font-size: .8125rem; font-weight: 600; line-height: 1.5; }
+.admin-headcount-summary__metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); }
+.admin-headcount-summary__metrics > div { position: relative; min-height: 112px; padding: 16px 18px; border-right: 1px solid #000; }
+.admin-headcount-summary__metrics > div:last-child { border-right: 0; }
+.admin-headcount-summary__metrics small,.admin-headcount-summary__metrics span { display: block; font-size: .75rem; font-weight: 700; line-height: 1.45; }
+.admin-headcount-summary__metrics strong { display: block; margin-top: 9px; font-size: 2rem; font-weight: 800; letter-spacing: -.06em; line-height: 1; }
+.admin-headcount-summary__metrics em { margin-left: 3px; font-size: .875rem; font-style: normal; letter-spacing: 0; }
+.admin-headcount-summary__metrics span { margin-top: 8px; color: #555; }
+.admin-headcount-summary__weeks { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); border-top: 1px solid #000; }
+.admin-headcount-summary__weeks span { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 10px 12px; border-right: 1px solid #000; font-size: .8125rem; font-weight: 700; }
+.admin-headcount-summary__weeks span:last-child { border-right: 0; }
+.admin-headcount-summary__weeks b { font-size: .75rem; }
+.admin-headcount-unavailable { margin: 18px 0 22px; padding: 12px 14px; border: 1px solid #000; font-size: .8125rem; font-weight: 700; }
+.admin-program-guidance { display: grid; grid-template-columns: max-content minmax(0,1fr); gap: 6px 14px; margin: -6px 0 20px; padding: 14px 16px; border-left: 4px solid #000; background: #f4f4f4; font-size: .8125rem; line-height: 1.55; }
+.admin-program-guidance strong { font-weight: 800; }
+.admin-program-guidance span { font-weight: 600; }
+.admin-save-dialog__mark { display: grid; width: 40px; height: 40px; place-items: center; color: #fff; background: #000; }
+.admin-save-dialog__button { border: 0; cursor: pointer; }
 
 @media (max-width: 767px) {
   .program-admin-header { height: 64px; width: min(var(--krds-content-max), calc(100% - (var(--krds-margin-mobile) * 2))); }
@@ -427,6 +448,13 @@ button { font: inherit; }
   .program-detail-editor__span-2 { grid-column: auto; }
   .program-detail-editor__actions { align-items: stretch; flex-direction: column; padding: 15px 16px; }
   .program-detail-editor__actions .reference-button { justify-content: center; }
+  .admin-headcount-summary__metrics { grid-template-columns: 1fr; }
+  .admin-headcount-summary__metrics > div { min-height: 96px; border-right: 0; border-bottom: 1px solid #000; }
+  .admin-headcount-summary__metrics > div:last-child { border-bottom: 0; }
+  .admin-headcount-summary__weeks { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .admin-headcount-summary__weeks span:nth-child(3) { border-right: 0; }
+  .admin-headcount-summary__weeks span:nth-child(n+4) { border-top: 1px solid #000; }
+  .admin-program-guidance { grid-template-columns: 1fr; gap: 2px; margin-bottom: 18px; }
 }
 
 @media (max-width: 1023px) { .reference-hero { grid-template-columns: repeat(8, minmax(0, 1fr)); } .reference-hero > :first-child { grid-column: span 4; } .reference-art { grid-column: 5 / span 4; } .reference-monthly__inner > :first-child { grid-column: span 3; } .reference-monthly__content { grid-column: span 5; } }

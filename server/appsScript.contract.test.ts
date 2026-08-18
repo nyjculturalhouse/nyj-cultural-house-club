@@ -9,6 +9,7 @@ describe("Google Apps Script 배포 코드 계약", () => {
   it("출석·대관·외부활동·프로그램의 공개 조회 모드를 제공한다", () => {
     expect(script).toContain('case "getAttendanceStatus"');
     expect(script).toContain('case "getMonthlyAttendanceStatus"');
+    expect(script).toContain('case "getAttendanceHeadcountSummary"');
     expect(script).toContain('case "getBookings"');
     expect(script).toContain('case "getActivities"');
     expect(script).toContain('case "getPrograms"');
@@ -45,5 +46,12 @@ describe("Google Apps Script 배포 코드 계약", () => {
     expect(script).toContain("신청 링크");
     expect(script).toContain("사진 URL");
     expect(script).toContain("공개 여부");
+  });
+
+  it("출석 인원 열을 기준으로 현재 주·월·연 누적 참석 인원을 계산한다", () => {
+    expect(script).toContain("function getAttendanceHeadcountSummary");
+    expect(script).toContain("const count = Number(row[2])");
+    expect(script).toContain("monthAttendees");
+    expect(script).toContain("yearAttendees");
   });
 });

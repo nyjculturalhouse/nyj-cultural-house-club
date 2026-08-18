@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, publicProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { fetchAttendanceStatuses, fetchMonthlyAttendanceStatuses } from "./attendanceStatus";
+import { fetchAttendanceHeadcountSummary, fetchAttendanceStatuses, fetchMonthlyAttendanceStatuses } from "./attendanceStatus";
 import {
   APPLICATION_PROVIDERS,
   buildProgramIcs,
@@ -60,6 +60,7 @@ export const appRouter = router({
   }),
   attendance: router({
     status: publicProcedure.query(async () => fetchAttendanceStatuses()),
+    headcountSummary: publicProcedure.query(async () => fetchAttendanceHeadcountSummary()),
     monthlyStatus: publicProcedure
       .input(z.object({ year: z.number().int().min(2000).max(2100), month: z.number().int().min(1).max(12) }))
       .query(async ({ input }) => fetchMonthlyAttendanceStatuses(input.year, input.month)),

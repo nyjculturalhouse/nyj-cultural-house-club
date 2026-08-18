@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PhoneNumberAutoFormatter } from "@/components/PhoneNumberAutoFormatter";
+import { AdminAttendanceHeadcount, AdminProgramEntryGuidance, ProgramSaveSuccessDialog } from "@/components/AdminProgramEnhancements";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -41,6 +42,9 @@ function App() {
       >
         <TooltipProvider>
           <PhoneNumberAutoFormatter />
+          <AdminAttendanceHeadcount />
+          <AdminProgramEntryGuidance />
+          <ProgramSaveSuccessDialog />
           <Toaster />
           <Router />
         </TooltipProvider>
