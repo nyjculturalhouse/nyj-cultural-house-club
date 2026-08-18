@@ -5,6 +5,7 @@ const root = path.resolve(import.meta.dirname, "..");
 const output = path.join(root, "dist", "github-pages");
 const staticStyleVersion = "20260818-03";
 const adminGridStyleVersion = "20260818-02";
+const adminSaveFlowVersion = "20260818-01";
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 await cp(path.join(root, "client", "public"), output, { recursive: true });
@@ -26,7 +27,10 @@ async function rewriteHtmlLinks(directory) {
       `href="./assets/krds-static.css?v=${staticStyleVersion}"`,
     );
     const withAdminGrid = entry.name === "admin.html"
-      ? withFreshStaticStyles.replace(/<\/head>/i, `<link rel="stylesheet" href="./assets/admin-grid.css?v=${adminGridStyleVersion}"></head>`)
+      ? withFreshStaticStyles.replace(
+        /<\/head>/i,
+        `<link rel="stylesheet" href="./assets/admin-grid.css?v=${adminGridStyleVersion}"><script src="./assets/admin-save-flow.js?v=${adminSaveFlowVersion}" defer></script></head>`,
+      )
       : withFreshStaticStyles;
     const staticBrand = '<a class="brand" href="./index.html"><span>N</span><span class="brand-copy"><strong>남양주시 문화의집</strong><small>웹시스템</small></span></a>';
     const rewritten = withAdminGrid
