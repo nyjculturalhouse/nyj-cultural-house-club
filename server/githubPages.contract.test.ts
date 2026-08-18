@@ -33,5 +33,6 @@ describe("GitHub Pages 정적 운영 계약", () => {
     expect(build).toContain("dist", "github-pages");
     expect(build).toContain("href=\"/\"");
     expect(build).toContain("krds-static.css");
+    expect(build).toContain("const staticBrand");
   });
 });

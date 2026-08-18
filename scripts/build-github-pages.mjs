@@ -16,12 +16,13 @@ async function rewriteHtmlLinks(directory) {
     if (!entry.name.endsWith(".html")) return;
     const source = await readFile(file, "utf8");
     const withRelativeHome = source.replaceAll('href="/"', 'href="./index.html"');
-    const rewritten = withRelativeHome.includes("krds-static.css")
+    const withTypography = withRelativeHome.includes("krds-static.css")
       ? withRelativeHome
-      : withRelativeHome.replace(
-          /(<link\s+rel=["']stylesheet["']\s+href=["']\.\/assets\/site\.css["']\s*\/?>)/i,
-          '$1<link rel="stylesheet" href="./assets/krds-static.css">',
-        );
+      : withRelativeHome.replace(/<\/head>/i, '<link rel="stylesheet" href="./assets/krds-static.css"></head>');
+    const staticBrand = '<a class="brand" href="./index.html"><span>N</span><span class="brand-copy"><strong>남양주시 문화의집</strong><small>웹시스템</small></span></a>';
+    const rewritten = withTypography
+      .replaceAll('<a class="brand" href="./index.html"><span>N</span>남양주시 문화의집</a>', staticBrand)
+      .replaceAll('<a class="brand" href="./index.html"><span>N</span>남양주시 문화의집 운영 관리</a>', staticBrand);
     if (rewritten !== source) await writeFile(file, rewritten, "utf8");
   }));
 }

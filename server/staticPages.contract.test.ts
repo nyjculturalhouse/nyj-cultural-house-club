@@ -82,11 +82,16 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(styles).toContain('[data-state="error"]');
   });
 
-  it("모든 정적 하위 화면의 홈 링크가 존재하지 않는 index.html 대신 루트 메인으로 이동한다", () => {
-    ["attendance.html", "booking.html", "calendar.html", "external.html"].forEach((file) => {
+  it("기존 정적 화면은 루트 메인으로, GitHub Pages용 일정·대관 화면은 정적 홈페이지로 복귀한다", () => {
+    ["attendance.html", "external.html"].forEach((file) => {
       const html = read(`client/public/${file}`);
       expect(html).toContain('href="/"');
       expect(html).not.toContain('href="index.html"');
+    });
+
+    ["booking.html", "calendar.html"].forEach((file) => {
+      const html = read(`client/public/${file}`);
+      expect(html).toContain('href="./index.html"');
     });
   });
 

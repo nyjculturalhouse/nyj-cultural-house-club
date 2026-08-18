@@ -15,17 +15,17 @@
 </head>
 <body class="text-gray-900 min-h-screen antialiased relative">
   <a href="#main-content" class="skip-link">본문 바로가기</a>
-  <header class="bg-white border-b border-black sticky top-0 z-50">
-    <div class="max-w-[1200px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
-      <h1 class="magazine-title text-primary text-xl">남양주시 문화의집</h1>
-      <a href="/" class="p-2 text-primary" aria-label="메인으로 이동"><span class="material-symbols-outlined" aria-hidden="true">home_app_logo</span></a>
+  <header class="static-page-header">
+    <div class="static-page-header__inner">
+      <a class="static-page-brand" href="./index.html"><span class="static-page-brand__mark">N</span><span><strong>남양주시 문화의집</strong><small>웹시스템</small></span></a>
+      <nav class="static-page-nav" aria-label="빠른 이동"><a href="./index.html">홈</a><a href="./admin.html">관리자</a></nav>
     </div>
   </header>
-  <main id="main-content" class="max-w-[1200px] mx-auto px-4 md:px-6 py-10">
-    <div class="mb-8 border-b border-black pb-5">
-      <p class="text-sm font-semibold tracking-[0.08em]">공간 이용</p>
-      <h2 class="magazine-title text-3xl text-primary mt-2">대관 확인</h2>
-      <p class="text-gray-700 mt-2 text-sm">등록된 공간 이용 일정을 캘린더에서 확인하세요.</p>
+  <main id="main-content" class="static-page-main">
+    <div class="static-page-heading">
+      <p class="static-page-heading__label">공간 이용</p>
+      <h2>대관 확인</h2>
+      <p>등록된 공간 이용 일정을 캘린더에서 확인하세요.</p>
     </div>
     <section aria-label="대관 일정 캘린더" class="bg-white border border-black p-3 md:p-6">
       <div id="calendar" aria-label="대관 캘린더"></div>

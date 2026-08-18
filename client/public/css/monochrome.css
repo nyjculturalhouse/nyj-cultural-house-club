@@ -37,7 +37,15 @@ button:hover *, .btn:hover *, a:hover .card * { color: var(--mono-white) !import
 @media (min-width: 768px) { .modal-backdrop .modal-panel::before { margin: -2rem -2rem 2rem; } }
 input:not([type="checkbox"]):not([type="radio"]), select, textarea { min-height: 44px; border-width: 1px !important; }
 input:not([type="checkbox"]):not([type="radio"]):focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid var(--mono-black) !important; outline-offset: 3px; }
-.fc .fc-button-primary, .fc .fc-button-primary:hover { background: var(--mono-black) !important; border-color: var(--mono-black) !important; }
+.fc .fc-button-primary { color: var(--mono-black) !important; background: var(--mono-white) !important; border-color: var(--mono-black) !important; }
+.fc .fc-button-primary:hover, .fc .fc-button-primary:focus-visible { color: var(--mono-white) !important; background: var(--mono-black) !important; border-color: var(--mono-black) !important; }
+.fc .fc-button-primary:disabled { color: var(--mono-black) !important; background: var(--mono-white) !important; border-color: var(--mono-black) !important; opacity: .45; }
+.fc .fc-button-primary .fc-icon { color: currentColor !important; }
+.fc .fc-button-primary.fc-button-active { color: var(--mono-white) !important; background: var(--mono-black) !important; border-color: var(--mono-black) !important; }
+.fc .fc-prev-button .fc-icon,
+.fc .fc-next-button .fc-icon { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; font-size: 0 !important; }
+.fc .fc-prev-button .fc-icon::before { content: "←"; font-size: 18px; font-weight: 700; line-height: 1; }
+.fc .fc-next-button .fc-icon::before { content: "→"; font-size: 18px; font-weight: 700; line-height: 1; }
 .fc .fc-toolbar-title, .fc th { color: var(--mono-black) !important; font-family: 'SUIT', sans-serif !important; }
 .fc .fc-event { background: var(--mono-black) !important; border-color: var(--mono-black) !important; color: var(--mono-white) !important; }
 .fc { --fc-event-bg-color: #000000; --fc-event-border-color: #000000; --fc-event-text-color: #ffffff; }
@@ -93,3 +101,26 @@ a[aria-label="메인으로 이동"]:hover { color: var(--mono-white) !important;
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 @media (max-width: 480px) { .booking-tab-button { min-width: 84px; padding-inline: 14px; } }
 @media (max-width: 767px) { body > header > div, body > main, body > footer > div { width: calc(100% - 32px) !important; } }
+
+/* GitHub Pages 정적 일정·대관 화면의 공통 에디토리얼 헤더와 캘린더 외형 */
+.static-page-header { height: 76px; border-bottom: 1px solid var(--mono-black); background: var(--mono-white); }
+.static-page-header__inner { width: min(1200px, calc(100% - 48px)); height: 100%; display: flex; align-items: center; justify-content: space-between; margin: 0 auto; }
+.static-page-brand { display: flex; align-items: center; gap: 9px; color: var(--mono-black); text-decoration: none; }
+.static-page-brand__mark { display: grid; width: 32px; height: 32px; place-items: center; color: var(--mono-white); background: var(--mono-black); font-size: 17px; font-weight: 900; letter-spacing: -.12em; }
+.static-page-brand strong { display: block; font-size: .9375rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.35; }
+.static-page-brand small { display: block; margin-top: 1px; font-size: .8125rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.5; }
+.static-page-nav { display: flex; align-items: center; gap: 12px; }
+.static-page-nav a { display: inline-flex; align-items: center; min-height: 38px; padding: 0 13px; border: 1px solid var(--mono-black); color: var(--mono-black); background: var(--mono-white); font-size: .875rem; font-weight: 700; text-decoration: none; }
+.static-page-nav a:last-child { color: var(--mono-white); background: var(--mono-black); }
+.static-page-nav a:hover { color: var(--mono-white); background: var(--mono-black); }
+.static-page-main { width: min(1200px, calc(100% - 48px)); margin: 0 auto; padding: 40px 0 64px; }
+.static-page-heading { margin-bottom: 30px; }
+.static-page-heading__label { display: flex; align-items: center; gap: 8px; margin: 0; font-size: .875rem; font-weight: 700; line-height: 1.5; }
+.static-page-heading__label::before { width: 19px; height: 2px; background: var(--mono-black); content: ""; }
+.static-page-heading h2 { margin: 11px 0 0; font-size: clamp(1.75rem, 3.1vw, 2.688rem); font-weight: 800; letter-spacing: -.055em; line-height: 1.25; }
+.static-page-heading > p:last-child { margin: 9px 0 0; font-size: .9375rem; font-weight: 500; line-height: 1.6; }
+.calendar-surface { padding: 18px !important; }
+.fc .fc-toolbar { gap: 12px; margin-bottom: 18px !important; }
+.fc .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 800 !important; letter-spacing: -.04em !important; }
+.fc .fc-button { min-height: 38px; padding: 0 11px !important; font-size: .875rem !important; font-weight: 700 !important; }
+@media (max-width: 767px) { .static-page-header { height: 64px; } .static-page-header__inner,.static-page-main { width: calc(100% - 32px); } .static-page-nav { gap: 7px; } .static-page-nav a { min-height: 34px; padding: 0 10px; font-size: 11px; } .static-page-brand strong { font-size: .875rem; } .static-page-brand small { font-size: .75rem; } .static-page-main { padding: 32px 0 56px; } .static-page-heading { margin-bottom: 24px; } .static-page-heading h2 { font-size: 1.75rem; } .calendar-surface { padding: 12px !important; } .fc .fc-toolbar { align-items: flex-start; flex-wrap: wrap; } .fc .fc-toolbar-chunk { display: flex; flex-wrap: wrap; gap: 6px; } }
