@@ -69,11 +69,7 @@ export default function Programs() {
 
       <main id="main-content" className="program-page reference-width">
         <a href="/" className="monthly-page__back">← 홈으로 돌아가기</a>
-        <div className="program-page__heading">
-          <p className="reference-label"><span />프로그램</p>
-          <h1>문화로 만나는<br />이번의 시간</h1>
-          <p>남양주시 문화의집에서 공개한 프로그램을 살펴보고, 각 프로그램의 공식 신청처로 바로 이동할 수 있습니다.</p>
-        </div>
+        <p className="reference-label"><span />프로그램</p>
 
         <section className="program-filter" aria-labelledby="program-filter-title">
           <div className="program-filter__heading"><Filter size={18} strokeWidth={1.8} /><strong id="program-filter-title">프로그램 찾아보기</strong></div>

@@ -1,1 +1,28 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>프로그램 안내 | 남양주시 문화의집</title><link rel="stylesheet" href="./assets/site.css"></head><body><header class="top"><div class="wrap"><a class="brand" href="./index.html"><span>N</span>남양주시 문화의집</a><a class="button" href="./admin.html">관리자</a></div></header><main class="wrap section"><p class="eyebrow">프로그램</p><h1>프로그램 안내</h1><p>남양주시 문화의집에서 진행하는 프로그램을 확인하세요.</p><div id="list" class="program-grid"><p class="notice">프로그램을 불러오는 중입니다.</p></div></main><script type="module">import{gasGet,formatDate,imageMarkup}from'./assets/gas.js';const list=document.querySelector('#list');try{const items=await gasGet('getPrograms');list.innerHTML=items.length?items.map(p=>`<a class="program" href="./program.html?id=${encodeURIComponent(p.externalId)}">${imageMarkup(p)}<div><p class="meta">${p.category||'프로그램'} · ${formatDate(p.startAt)}</p><h2>${p.title}</h2><p>${p.summary}</p></div></a>`).join(''):'<p class="empty">현재 공개된 프로그램이 없습니다.</p>'}catch(e){list.innerHTML=`<p class="notice error">${e.message}</p>`}</script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>프로그램 안내 | 남양주시 문화의집</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body>
+  <header class="top"><div class="wrap"><a class="brand" href="./index.html"><span>N</span>남양주시 문화의집</a><a class="button" href="./admin.html">관리자</a></div></header>
+  <main class="wrap section">
+    <p class="eyebrow">프로그램</p>
+    <div id="list" class="program-grid"><p class="notice">프로그램을 불러오는 중입니다.</p></div>
+  </main>
+  <script type="module">
+    import { gasGet, formatDate, imageMarkup } from './assets/gas.js';
+    const list = document.querySelector('#list');
+    try {
+      const items = await gasGet('getPrograms');
+      list.innerHTML = items.length
+        ? items.map((p) => `<a class="program" href="./program.html?id=${encodeURIComponent(p.externalId)}">${imageMarkup(p)}<div><p class="meta">${p.category || '프로그램'} · ${formatDate(p.startAt)}</p><h2>${p.title}</h2><p>${p.summary}</p></div></a>`).join('')
+        : '<p class="empty">현재 공개된 프로그램이 없습니다.</p>';
+    } catch (error) {
+      list.innerHTML = `<p class="notice error">${error.message}</p>`;
+    }
+  </script>
+</body>
+</html>

@@ -42,15 +42,17 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(calendar).toContain('id="activity-calendar-status"');
   });
 
-  it("공간 이용 예약은 남양주문화재단으로 연결하고 대관 확인은 캘린더 탭을 직접 연다", () => {
+  it("공간 이용 예약은 남양주문화재단으로 연결하고 대관 확인은 캘린더 전용 화면을 연다", () => {
     const home = read("client/src/pages/Home.tsx");
     const booking = read("client/public/booking.html");
 
     expect(home).toContain('href="https://www.nyjcf.or.kr/www/114"');
     expect(home).toContain('href="/booking.html?tab=calendar"');
     expect(home).toContain('>대관 확인<');
-    expect(booking).toContain("new URLSearchParams(window.location.search).get('tab')");
-    expect(booking).toContain("showBookingTab(requestedBookingTab)");
+    expect(booking).toContain('id="calendar"');
+    expect(booking).toContain('initCalendar()');
+    expect(booking).not.toContain('대관 신청서');
+    expect(booking).not.toContain('시간표');
   });
 
   it("출석과 일정의 우선 상호작용 요소를 무라운드 경계·딤드 계층으로 구분한다", () => {
