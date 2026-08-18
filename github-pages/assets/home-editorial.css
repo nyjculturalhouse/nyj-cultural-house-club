@@ -33,7 +33,7 @@
   .home-service h2 { font-size: 22px; }
   .home-service p { margin: 6px 0 12px; font-size: 14px; line-height: 1.6; }
   .home-action { font-size: 14px; }
-  .home-utilities { grid-template-columns: 1fr; margin-bottom: 40px; }
+  .home-utilities { grid-template-columns: 1fr; margin: 40px 0; }
   .home-utility { min-height: 88px; border-right: 0; border-bottom: 1px solid #000; font-size: 14px; }
   .home-utility:last-child { border-bottom: 0; }
   .home-utility__icon { width: 36px; height: 36px; }
