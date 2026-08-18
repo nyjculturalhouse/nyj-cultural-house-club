@@ -3,6 +3,7 @@ import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
 const output = path.join(root, "dist", "github-pages");
+const staticStyleVersion = "20260818-03";
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 await cp(path.join(root, "client", "public"), output, { recursive: true });
@@ -19,8 +20,12 @@ async function rewriteHtmlLinks(directory) {
     const withTypography = withRelativeHome.includes("krds-static.css")
       ? withRelativeHome
       : withRelativeHome.replace(/<\/head>/i, '<link rel="stylesheet" href="./assets/krds-static.css"></head>');
+    const withFreshStaticStyles = withTypography.replace(
+      /href="\.\/assets\/krds-static\.css(?:\?[^\"]*)?"/g,
+      `href="./assets/krds-static.css?v=${staticStyleVersion}"`,
+    );
     const staticBrand = '<a class="brand" href="./index.html"><span>N</span><span class="brand-copy"><strong>남양주시 문화의집</strong><small>웹시스템</small></span></a>';
-    const rewritten = withTypography
+    const rewritten = withFreshStaticStyles
       .replaceAll('<a class="brand" href="./index.html"><span>N</span>남양주시 문화의집</a>', staticBrand)
       .replaceAll('<a class="brand" href="./index.html"><span>N</span>남양주시 문화의집 운영 관리</a>', staticBrand);
     if (rewritten !== source) await writeFile(file, rewritten, "utf8");
