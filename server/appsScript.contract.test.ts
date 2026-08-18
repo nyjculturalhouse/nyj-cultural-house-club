@@ -58,6 +58,12 @@ describe("Google Apps Script 배포 코드 계약", () => {
     expect(script).toContain("function initializeSheets");
   });
 
+  it("행사 시작일시가 없는 기존 외부활동 5열 행은 등록일과 레거시 식별자로 표시한다", () => {
+    expect(script).toContain('"등록일시", "타임스탬프"');
+    expect(script).toContain('"legacy-activity"');
+    expect(script).toContain("dateTime: eventStartAt || registeredAt");
+  });
+
   it("datetime-local 형식의 대관·외부활동 일시를 명시적으로 해석한다", () => {
     expect(script).toContain("function parseLocalDateTime");
     expect(script).toContain("[T\\s]");

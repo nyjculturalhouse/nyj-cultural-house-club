@@ -548,6 +548,7 @@ function getActivities() {
   const values = getSheetValues(sheet);
   if (values.length < 2) return [];
   const headers = values[0];
+  const registeredIndex = findColumn(headers, ["등록일", "등록일시", "타임스탬프", "timestamp", "createdAt"], 0);
   const clubIndex = findColumn(headers, ["동아리", "동아리명", "club"], 1);
   const phoneIndex = findColumn(headers, ["연락처", "phone"], 2);
   const eventIndex = findColumn(headers, ["행사명", "활동명", "event", "title"], 3);
@@ -555,19 +556,27 @@ function getActivities() {
   const startIndex = findColumn(headers, ["행사시작일시", "행사일시", "dateTime", "시작일시"], 5);
   const endIndex = findColumn(headers, ["행사종료일시", "종료일시", "endDateTime"], 6);
   const allDayIndex = findColumn(headers, ["종일여부", "종일", "allDay"], 7);
+  const requestIndex = findColumn(headers, ["요청ID", "uid", "requestId"], -1);
 
-  return values.slice(1).map(function (row) {
+  return values.slice(1).map(function (row, rowIndex) {
+    const registeredAt = formatDateTimeValue(row[registeredIndex]);
+    const eventStartAt = formatDateTimeValue(row[startIndex]);
+    const requestId = requestIndex >= 0 ? normaliseText(row[requestIndex]) : "";
+    const club = normaliseText(row[clubIndex]);
+    const event = normaliseText(row[eventIndex]);
     return {
-      club: normaliseText(row[clubIndex]),
+      // 기존 5열 시트에는 행사시작일시가 없으므로 등록일을 표시용 일정으로 사용합니다.
+      id: requestId || ["legacy-activity", rowIndex + 2, registeredAt, club, event].join("-"),
+      club: club,
       phone: normaliseText(row[phoneIndex]),
-      event: normaliseText(row[eventIndex]),
+      event: event,
       content: normaliseText(row[contentIndex]),
-      dateTime: formatDateTimeValue(row[startIndex]),
+      dateTime: eventStartAt || registeredAt,
       endDateTime: formatDateTimeValue(row[endIndex]),
       allDay: normaliseText(row[allDayIndex]).toLowerCase() === "true" || normaliseText(row[allDayIndex]) === "예",
     };
   }).filter(function (record) {
-    return record.dateTime;
+    return record.dateTime && (record.club || record.event);
   });
 }
 
