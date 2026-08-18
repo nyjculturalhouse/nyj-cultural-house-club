@@ -15,6 +15,7 @@ import {
   saveManagedProgram,
   uploadManagedProgramImage,
 } from "./programs";
+import { getDriveUploadStatus } from "./driveUpload";
 
 const managementProgramInput = z.object({
   externalId: z.string().trim().min(1).max(128).regex(/^[a-zA-Z0-9가-힣-]+$/, "프로그램 ID는 한글·영문·숫자·하이픈만 사용할 수 있습니다."),
@@ -84,6 +85,7 @@ export const appRouter = router({
         return { filename: `남양주시-문화의집-${item.id}.ics`, content: buildProgramIcs(item) };
       }),
     adminList: adminProcedure.query(async () => listManagedPrograms()),
+    driveUploadStatus: adminProcedure.query(() => getDriveUploadStatus()),
     adminSave: adminProcedure
       .input(managementProgramInput)
       .mutation(async ({ input }) => saveManagedProgram(input)),

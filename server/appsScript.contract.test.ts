@@ -25,6 +25,16 @@ describe("Google Apps Script 배포 코드 계약", () => {
     expect(script).toContain("LockService.getScriptLock");
   });
 
+  it("관리자 사진을 Google Drive에 자동 저장하고 공개 이미지 주소를 반환한다", () => {
+    expect(script).toContain('case "uploadProgramImage"');
+    expect(script).toContain("function uploadProgramImage");
+    expect(script).toContain("function requireDriveUploadToken");
+    expect(script).toContain("GAS_DRIVE_UPLOAD_TOKEN");
+    expect(script).toContain("DriveApp.Access.ANYONE_WITH_LINK");
+    expect(script).toContain("https://drive.google.com/thumbnail?id=");
+    expect(script).toContain("5 * 1024 * 1024");
+  });
+
   it("대관·외부활동의 기존 시트 헤더를 찾아 달력 데이터로 정규화한다", () => {
     expect(script).toContain("function getBookings");
     expect(script).toContain("function getActivities");

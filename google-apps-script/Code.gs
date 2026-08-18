@@ -6,7 +6,7 @@
  */
 
 const APP = Object.freeze({
-  version: "2026-08-18",
+  version: "2026-08-18-drive-upload",
   timeZone: "Asia/Seoul",
   sheets: {
     clubs: "동아리정보",
@@ -14,6 +14,11 @@ const APP = Object.freeze({
     bookings: "대관신청",
     activities: "외부활동",
     programs: "프로그램",
+  },
+  drive: {
+    programImageFolderName: "남양주시 문화의집 프로그램 사진",
+    programImageFolderProperty: "PROGRAM_IMAGE_FOLDER_ID",
+    uploadTokenProperty: "GAS_DRIVE_UPLOAD_TOKEN",
   },
   clubColumns: {
     day: ["요일", "활동요일", "day"],
@@ -71,6 +76,8 @@ function doPost(e) {
         return json(submitBooking(payload));
       case "submitExternal":
         return json(submitExternal(payload));
+      case "uploadProgramImage":
+        return json(uploadProgramImage(payload));
       default:
         return json({ error: "지원하지 않는 요청입니다." });
     }
@@ -101,6 +108,75 @@ function safeErrorMessage(error) {
 
 function normaliseText(value) {
   return String(value == null ? "" : value).trim();
+}
+
+function requireDriveUploadToken(payload) {
+  const expected = normaliseText(PropertiesService.getScriptProperties().getProperty(APP.drive.uploadTokenProperty));
+  const received = normaliseText(payload && payload.uploadToken);
+  if (!expected) throw new Error("Google Drive 업로드 토큰이 설정되지 않았습니다. 스크립트 속성을 확인해 주세요.");
+  if (!received || received !== expected) throw new Error("사진 업로드 권한을 확인해 주세요.");
+}
+
+function getProgramImageFolder() {
+  const properties = PropertiesService.getScriptProperties();
+  const savedId = normaliseText(properties.getProperty(APP.drive.programImageFolderProperty));
+  if (savedId) {
+    try {
+      return DriveApp.getFolderById(savedId);
+    } catch (_error) {
+      properties.deleteProperty(APP.drive.programImageFolderProperty);
+    }
+  }
+
+  const candidates = DriveApp.getFoldersByName(APP.drive.programImageFolderName);
+  const folder = candidates.hasNext() ? candidates.next() : DriveApp.createFolder(APP.drive.programImageFolderName);
+  properties.setProperty(APP.drive.programImageFolderProperty, folder.getId());
+  return folder;
+}
+
+function safeImageName(value) {
+  const cleaned = normaliseText(value).replace(/[^a-zA-Z0-9가-힣._-]/g, "-").replace(/-+/g, "-");
+  return cleaned || "program-image";
+}
+
+function dataUrlToImageBlob(dataUrl, fileName, contentType) {
+  const match = /^data:([^;,]+);base64,([a-zA-Z0-9+/=\s]+)$/.exec(normaliseText(dataUrl));
+  if (!match) throw new Error("사진 데이터 형식을 확인해 주세요.");
+  const mimeType = normaliseText(contentType || match[1]).toLowerCase();
+  if (["image/jpeg", "image/png", "image/webp"].indexOf(mimeType) === -1) throw new Error("대표 사진은 JPG, PNG, WEBP 파일만 올릴 수 있습니다.");
+  const bytes = Utilities.base64Decode(match[2].replace(/\s/g, ""));
+  if (!bytes.length) throw new Error("사진 파일을 읽을 수 없습니다.");
+  if (bytes.length > 5 * 1024 * 1024) throw new Error("사진은 5MB 이하로 준비해 주세요.");
+  return Utilities.newBlob(bytes, mimeType, safeImageName(fileName));
+}
+
+function getDriveImageUrl(file) {
+  const id = encodeURIComponent(file.getId());
+  const resourceKey = normaliseText(file.getResourceKey());
+  const query = resourceKey ? "&resourcekey=" + encodeURIComponent(resourceKey) : "";
+  return "https://drive.google.com/thumbnail?id=" + id + "&sz=w1600" + query;
+}
+
+function uploadProgramImage(payload) {
+  requireDriveUploadToken(payload);
+  const blob = dataUrlToImageBlob(payload.dataUrl, payload.fileName, payload.contentType);
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const folder = getProgramImageFolder();
+    const timestampedName = Utilities.formatDate(new Date(), APP.timeZone, "yyyyMMdd-HHmmss") + "-" + blob.getName();
+    const file = folder.createFile(blob).setName(timestampedName);
+    file.setDescription("남양주시 문화의집 프로그램 대표 사진");
+    try {
+      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    } catch (_sharingError) {
+      file.setTrashed(true);
+      throw new Error("Google Drive의 외부 공유 권한을 확인해 주세요. 사진 파일을 공개 링크 보기로 설정할 수 없습니다.");
+    }
+    return { ok: true, fileId: file.getId(), fileName: file.getName(), imageUrl: getDriveImageUrl(file) };
+  } finally {
+    lock.releaseLock();
+  }
 }
 
 function normaliseDay(value) {

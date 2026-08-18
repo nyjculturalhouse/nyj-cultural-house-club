@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { programs } from "../drizzle/schema";
 import { getDb } from "./db";
 import { buildGasUrl } from "./attendanceStatus";
-import { storagePut } from "./storage";
+import { getDriveUploadToken, normalizeDriveUploadResponse } from "./driveUpload";
 
 export const PROGRAM_STATUSES = ["upcoming", "open", "closing-soon", "closed"] as const;
 export const APPLICATION_PROVIDERS = ["nyjcf", "naver", "other", "none"] as const;
@@ -293,9 +293,33 @@ export function decodeProgramImage(dataUrl: string, contentType: string) {
 }
 
 export async function uploadManagedProgramImage(input: { fileName: string; contentType: string; dataUrl: string }) {
-  const bytes = decodeProgramImage(input.dataUrl, input.contentType);
-  const safeName = input.fileName.replace(/[^a-zA-Z0-9._-]/g, "-") || "program-image";
-  return storagePut(`programs/${Date.now()}-${safeName}`, bytes, input.contentType);
+  decodeProgramImage(input.dataUrl, input.contentType);
+  const uploadToken = getDriveUploadToken();
+  if (uploadToken.length < 32) throw new Error("Google Drive 자동 업로드 설정이 아직 완료되지 않았습니다.");
+
+  try {
+    const response = await axios.post(
+      buildGasUrl("uploadProgramImage"),
+      JSON.stringify({
+        mode: "uploadProgramImage",
+        uploadToken,
+        fileName: input.fileName,
+        contentType: input.contentType,
+        dataUrl: input.dataUrl,
+      }),
+      {
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        httpsAgent: ipv4Agent,
+        maxBodyLength: 8 * 1024 * 1024,
+        maxContentLength: 8 * 1024 * 1024,
+      },
+    );
+    const payload = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
+    return normalizeDriveUploadResponse(payload);
+  } catch (error) {
+    if (error instanceof Error) throw error;
+    throw new Error("Google Drive 사진 업로드에 실패했습니다.");
+  }
 }
 
 export async function getProgramById(id: string, now = new Date()) {

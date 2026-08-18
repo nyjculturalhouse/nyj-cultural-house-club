@@ -34,7 +34,7 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("프로그램 시트");
     expect(page).toContain("새 프로그램");
     expect(page).toContain("program-compact-table");
-    expect(page).toContain("저장하면 프로그램에 연결됩니다.");
+    expect(page).toContain("사진을 Google Drive에 저장했습니다.");
   });
 
   it("관리자 화면이 출석 완료 현황 탭과 저장 전 프로그램 입력 예시 행을 제공한다", () => {
