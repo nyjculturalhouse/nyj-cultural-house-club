@@ -1,6 +1,7 @@
 import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, ExternalLink, Filter, MapPin, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import { trpc } from "@/lib/trpc";
+import "./programs-spacing.css";
 
 const statusLabel = {
   upcoming: "예정",
@@ -68,7 +69,9 @@ export default function Programs() {
       </header>
 
       <main id="main-content" className="program-page reference-width">
-        <a href="/" className="monthly-page__back">← 홈으로 돌아가기</a>
+        <div className="program-page__back-row">
+          <a href="/" className="monthly-page__back">← 홈으로 돌아가기</a>
+        </div>
         <p className="reference-label"><span />프로그램</p>
 
         <section className="program-filter" aria-labelledby="program-filter-title">

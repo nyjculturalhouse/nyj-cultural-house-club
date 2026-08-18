@@ -1,0 +1,9 @@
+.program-page__back-row {
+  margin-bottom: 40px;
+}
+
+@media (max-width: 767px) {
+  .program-page__back-row {
+    margin-bottom: 28px;
+  }
+}

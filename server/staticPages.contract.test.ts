@@ -114,4 +114,12 @@ describe("정적 출석·대관·일정 화면 계약", () => {
     expect(styles).toContain(".reference-service { min-height: 184px; padding: 15px 16px; }");
     expect(styles).not.toContain(".reference-service--active { color: #fff; background: #000; }");
   });
+
+  it("프로그램 안내는 홈 복귀 링크와 필터 영역을 분리해 표시한다", () => {
+    const page = read("client/src/pages/Programs.tsx");
+    const styles = read("client/src/pages/programs-spacing.css");
+    expect(page).toContain('className="program-page__back-row"');
+    expect(styles).toMatch(/\.program-page__back-row\s*\{\s*margin-bottom:\s*40px;/);
+    expect(styles).toMatch(/\.program-page__back-row\s*\{\s*margin-bottom:\s*28px;/);
+  });
 });
