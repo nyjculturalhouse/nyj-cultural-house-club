@@ -9,10 +9,14 @@ describe("GitHub Pages 정적 운영 계약", () => {
   it("공개 프로그램·관리자 화면이 Apps Script API만 호출한다", () => {
     const gas = read("github-pages/assets/gas.js");
     const admin = read("github-pages/admin.html");
+    const programs = read("github-pages/programs.html");
+    const mobileProgramGrid = read("github-pages/assets/mobile-program-grid.css");
     expect(gas).toContain("script.google.com/macros");
     expect(admin).toContain("verifyAdminPassword");
     expect(admin).toContain("adminSaveProgram");
     expect(admin).toContain("adminUploadProgramImage");
+    expect(programs).toContain("mobile-program-grid.css");
+    expect(mobileProgramGrid).toContain("repeat(2, minmax(0, 1fr))");
   });
 
   it("GitHub Pages 배포 작업과 정적 빌드가 준비되어 있다", () => {

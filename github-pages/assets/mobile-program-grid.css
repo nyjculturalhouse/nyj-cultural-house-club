@@ -1,0 +1,18 @@
+/* 휴대폰에서는 프로그램 카드를 한 화면에 두 개씩 읽을 수 있도록 정보 밀도를 조정합니다. */
+@media (max-width: 800px) {
+  .program-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .program div { padding: 10px; }
+  .program h2 { margin: 5px 0; font-size: 16px; letter-spacing: -.055em; line-height: 1.25; }
+  .program .meta,
+  .program div > p { font-size: 11px; line-height: 1.45; }
+}
+
+@media (max-width: 360px) {
+  .program-grid { gap: 6px; }
+  .program div { padding: 8px; }
+  .program h2 { font-size: 15px; }
+}

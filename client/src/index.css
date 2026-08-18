@@ -496,3 +496,18 @@ button { font: inherit; }
   .reference-service__action-spacer { height: 22px; }
   .reference-service b { font-size: .875rem; }
 }
+
+/* 프로그램 안내는 휴대폰에서도 좌우 두 장씩 비교할 수 있게 카드 밀도를 별도로 조정합니다. */
+@media (max-width: 767px) {
+  .program-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .program-card__body { padding: 12px; }
+  .program-card__visual span { right: 10px; bottom: 9px; left: 10px; font-size: 1rem; }
+  .program-card__meta { align-items: flex-start; flex-direction: column; gap: 5px; font-size: .75rem; }
+  .program-card h2 { margin-top: 12px; font-size: 1.125rem; letter-spacing: -.045em; }
+  .program-card__body > p { margin: 7px 0 12px; font-size: .75rem; line-height: 1.5; }
+  .program-card dl { gap: 6px; padding-top: 10px; }
+  .program-card dl > div { grid-template-columns: 42px minmax(0, 1fr); gap: 4px; }
+  .program-card dt,
+  .program-card dd { font-size: .6875rem; line-height: 1.4; }
+  .program-card__link { margin-top: 14px; font-size: .75rem; }
+}
