@@ -1,0 +1,20 @@
+@import url('https://cdn.jsdelivr.net/gh/sunn-us/SUIT/fonts/static/woff2/SUIT.css');
+
+:root { font-family: 'SUIT', sans-serif; color: #000; background: #fff; }
+body { font-family: 'SUIT', sans-serif; font-size: 16px; font-weight: 500; letter-spacing: -.01em; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.wrap { width: min(1200px, calc(100% - 48px)); max-width: none; padding: 0; }
+.top { height: 76px; padding: 0; }
+.top .wrap { height: 100%; }
+.brand { gap: 9px; }
+.brand span:first-child { width: 32px; height: 32px; margin-right: 0; }
+.brand-copy strong { display: block; font-size: 15px; font-weight: 800; letter-spacing: -.03em; line-height: 1.35; }
+.brand-copy small { display: block; margin-top: 1px; font-size: 13px; font-weight: 700; letter-spacing: -.02em; line-height: 1.5; }
+.button,button { padding: 10px 13px; font-size: 14px; font-weight: 700; line-height: 1.5; }
+
+@media (max-width: 767px) {
+  .wrap { width: min(1200px, calc(100% - 32px)); }
+  .top { height: 64px; }
+  .brand-copy strong { font-size: 14px; }
+  .brand-copy small { font-size: 12px; }
+  .button,button { padding: 8px 10px; font-size: 11px; }
+}

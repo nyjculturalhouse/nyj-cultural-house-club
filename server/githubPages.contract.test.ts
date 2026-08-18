@@ -17,6 +17,7 @@ describe("GitHub Pages 정적 운영 계약", () => {
     expect(admin).toContain("adminSaveProgram");
     expect(admin).toContain("adminUploadProgramImage");
     expect(home).toContain("home-editorial.css");
+    expect(home).toContain("krds-static.css");
     expect(home).toContain("동아리 활동 일정 확인");
     expect(programs).toContain("mobile-program-grid.css");
     expect(mobileProgramGrid).toContain("repeat(2, minmax(0, 1fr))");
@@ -31,5 +32,6 @@ describe("GitHub Pages 정적 운영 계약", () => {
     expect(workflow).toContain("needs: build");
     expect(build).toContain("dist", "github-pages");
     expect(build).toContain("href=\"/\"");
+    expect(build).toContain("krds-static.css");
   });
 });

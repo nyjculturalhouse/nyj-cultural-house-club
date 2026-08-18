@@ -15,7 +15,13 @@ async function rewriteHtmlLinks(directory) {
     if (entry.isDirectory()) return rewriteHtmlLinks(file);
     if (!entry.name.endsWith(".html")) return;
     const source = await readFile(file, "utf8");
-    const rewritten = source.replaceAll('href="/"', 'href="./index.html"');
+    const withRelativeHome = source.replaceAll('href="/"', 'href="./index.html"');
+    const rewritten = withRelativeHome.includes("krds-static.css")
+      ? withRelativeHome
+      : withRelativeHome.replace(
+          /(<link\s+rel=["']stylesheet["']\s+href=["']\.\/assets\/site\.css["']\s*\/?>)/i,
+          '$1<link rel="stylesheet" href="./assets/krds-static.css">',
+        );
     if (rewritten !== source) await writeFile(file, rewritten, "utf8");
   }));
 }
