@@ -1,0 +1,28 @@
+.program-sheet-wrap {
+  --program-sheet-columns: 76px minmax(250px, 2.2fr) minmax(160px, 1.35fr) 94px 100px 84px 62px 62px 58px 58px;
+}
+
+.program-sheet-wrap .program-sheet-head,
+.program-sheet-wrap .program-sheet-top {
+  grid-template-columns: var(--program-sheet-columns) !important;
+  column-gap: 0 !important;
+}
+
+.program-sheet-wrap .program-sheet-head > span,
+.program-sheet-wrap .program-sheet-top > * {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.program-sheet-wrap .program-sheet-cell,
+.program-sheet-wrap .program-action {
+  min-height: 108px;
+  margin: 0;
+}
+
+.program-sheet-wrap .program-sheet-cell input,
+.program-sheet-wrap .program-sheet-cell select,
+.program-sheet-wrap .program-sheet-cell textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
