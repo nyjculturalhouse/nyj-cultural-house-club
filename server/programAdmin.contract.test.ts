@@ -101,4 +101,14 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(page).toContain("프로그램 제목을 입력해 주세요");
     expect(guidance).toContain("자동 보완");
   });
+
+  it("프로그램을 비공개로 임시저장하고 공개 전 미리보기 모달을 제공한다", () => {
+    const page = read("client/src/pages/ProgramAdmin.tsx");
+    const preview = read("client/src/components/ProgramDraftPreviewDialog.tsx");
+    expect(page).toContain("saveDraft");
+    expect(page).toContain("임시저장");
+    expect(page).toContain("ProgramDraftPreviewDialog");
+    expect(preview).toContain("공개 전 미리보기");
+    expect(preview).toContain("작성으로 돌아가기");
+  });
 });

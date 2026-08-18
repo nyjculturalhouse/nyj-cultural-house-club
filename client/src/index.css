@@ -405,6 +405,27 @@ button { font: inherit; }
 .admin-program-guidance span { font-weight: 600; }
 .admin-save-dialog__mark { display: grid; width: 40px; height: 40px; place-items: center; color: #fff; background: #000; }
 .admin-save-dialog__button { border: 0; cursor: pointer; }
+.program-sheet-draft,.program-sheet-preview { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 38px; height: 38px; padding: 0 8px; border: 1px solid #000; background: #fff; color: #000; font-size: .75rem; font-weight: 800; cursor: pointer; }
+.program-sheet-preview { width: 38px; padding: 0; }
+.program-sheet-draft:hover,.program-sheet-preview:hover { background: #000; color: #fff; }
+.program-sheet-draft:disabled,.program-sheet-preview:disabled { opacity: .45; cursor: wait; }
+.program-preview-dialog { max-width: 780px !important; }
+.program-preview-dialog__topline { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid #000; font-size: .75rem; font-weight: 800; }
+.program-preview-dialog__topline button { display: grid; width: 32px; height: 32px; place-items: center; border: 1px solid #000; background: #fff; cursor: pointer; }
+.program-preview-dialog__topline button:hover { background: #000; color: #fff; }
+.program-preview-dialog__body { display: grid; grid-template-columns: minmax(210px,.76fr) minmax(0,1.24fr); }
+.program-preview-dialog__image { display: grid; aspect-ratio: 4 / 5; place-items: center; overflow: hidden; background: #efefef; color: #555; font-size: .8125rem; font-weight: 700; }
+.program-preview-dialog__image span { display: grid; place-items: center; gap: 9px; }
+.program-preview-dialog__image img { width: 100%; height: 100%; object-fit: cover; }
+.program-preview-dialog__content { padding: 26px; }
+.program-preview-dialog__title { margin-top: 6px; font-size: clamp(1.65rem,4vw,2.5rem); font-weight: 800; letter-spacing: -.06em; line-height: 1.08; }
+.program-preview-dialog__summary { font-size: .9375rem; line-height: 1.65; color: #222; }
+.program-preview-dialog__meta { display: grid; gap: 8px; margin: 20px 0 12px; font-size: .8125rem; font-weight: 700; }
+.program-preview-dialog__meta span { display: flex; align-items: center; gap: 7px; }
+.program-preview-dialog__category { display: inline-block; padding: 4px 8px; border: 1px solid #000; font-size: .75rem; font-weight: 800; }
+.program-preview-dialog__description { margin: 18px 0; white-space: pre-line; font-size: .875rem; line-height: 1.7; }
+.program-preview-dialog__application { padding: 11px 12px; border-top: 1px solid #000; border-bottom: 1px solid #000; font-size: .8125rem; font-weight: 700; }
+.program-preview-dialog__footer { padding: 14px 16px; border-top: 1px solid #000; }
 
 @media (max-width: 767px) {
   .program-admin-header { height: 64px; width: min(var(--krds-content-max), calc(100% - (var(--krds-margin-mobile) * 2))); }
@@ -455,6 +476,10 @@ button { font: inherit; }
   .admin-headcount-summary__weeks span:nth-child(3) { border-right: 0; }
   .admin-headcount-summary__weeks span:nth-child(n+4) { border-top: 1px solid #000; }
   .admin-program-guidance { grid-template-columns: 1fr; gap: 2px; margin-bottom: 18px; }
+  .program-preview-dialog__body { grid-template-columns: 1fr; }
+  .program-preview-dialog__image { max-height: 300px; }
+  .program-preview-dialog__content { padding: 20px; }
+  .program-detail-editor__actions > div { display: grid; grid-template-columns: 1fr; gap: 8px; width: 100%; }
 }
 
 @media (max-width: 1023px) { .reference-hero { grid-template-columns: repeat(8, minmax(0, 1fr)); } .reference-hero > :first-child { grid-column: span 4; } .reference-art { grid-column: 5 / span 4; } .reference-monthly__inner > :first-child { grid-column: span 3; } .reference-monthly__content { grid-column: span 5; } }
