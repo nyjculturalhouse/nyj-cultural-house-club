@@ -32,6 +32,10 @@ Apps Script에서 **배포 → 배포 관리 → 연필 아이콘 → 새 버전
 
 저장소의 `main` 브랜치에 최신 변경이 올라간 뒤 GitHub 저장소에서 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 선택합니다. 이후 `main`에 변경을 올릴 때마다 `GitHub Pages 배포` 작업이 자동 실행됩니다.
 
+이 저장소의 배포 작업은 GitHub의 Ubuntu 실행기에서만 동작합니다. 먼저 `client/public`과 `github-pages`를 정적 결과 폴더로 복사하고, 이어서 GitHub Pages용 공식 산출물로 업로드한 다음 별도 배포 작업이 공개합니다. 즉, 실제 운영 시에는 Manus 서버·데이터베이스·파일 저장소를 사용하지 않으며, 공개 페이지는 GitHub Pages에서 Apps Script를 직접 호출합니다.
+
+> GitHub Pages 서비스 자체의 첫 활성화는 저장소 관리자 권한이 필요한 한 번의 설정입니다. 이 권한이 없는 경우 Actions가 빌드·산출물 업로드까지는 완료해도, 마지막 Pages 공개 단계는 404로 중단됩니다. 활성화 후에는 새 코드 반영이나 Actions 화면의 **Run workflow**만으로 재배포할 수 있습니다.
+
 배포 작업이 완료되면 기본 주소는 다음과 같습니다.
 
 > `https://nyjculturalhouse.github.io/nyj-cultural-house-club/`

@@ -18,7 +18,10 @@ describe("GitHub Pages 정적 운영 계약", () => {
   it("GitHub Pages 배포 작업과 정적 빌드가 준비되어 있다", () => {
     const workflow = read(".github/workflows/github-pages.yml");
     const build = read("scripts/build-github-pages.mjs");
+    expect(workflow).toContain("actions/configure-pages@v5");
+    expect(workflow).toContain("actions/upload-pages-artifact@v4");
     expect(workflow).toContain("actions/deploy-pages@v4");
+    expect(workflow).toContain("needs: build");
     expect(build).toContain("dist", "github-pages");
     expect(build).toContain("href=\"/\"");
   });
