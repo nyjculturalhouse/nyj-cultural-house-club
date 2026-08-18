@@ -16,6 +16,10 @@ describe("GitHub Pages 정적 운영 계약", () => {
     expect(admin).toContain("verifyAdminPassword");
     expect(admin).toContain("adminSaveProgram");
     expect(admin).toContain("adminUploadProgramImage");
+    expect(admin).toContain("getAttendanceStatus");
+    expect(admin).toContain("getAttendanceHeadcountSummary");
+    expect(admin).toContain("attendance-tab");
+    expect(admin).toContain("프로그램 시트");
     expect(home).toContain("home-editorial.css");
     expect(home).toContain("krds-static.css");
     expect(home).toContain("동아리 활동 일정 확인");
