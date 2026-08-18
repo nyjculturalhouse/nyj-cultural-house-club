@@ -19,3 +19,31 @@ body { font-family: 'SUIT', sans-serif; font-size: 16px; font-weight: 500; lette
   .brand-copy small { font-size: 12px; }
   .button,button { padding: 8px 10px; font-size: 11px; }
 }
+
+/* 관리자 프로그램 시트: 머리글·입력 행이 동일한 10개 열을 공유한다. */
+.program-sheet-wrap {
+  --program-sheet-columns: 76px minmax(250px, 2.2fr) minmax(160px, 1.35fr) 94px 100px 84px 62px 62px 58px 58px;
+}
+.program-sheet-head,
+.program-sheet-top {
+  grid-template-columns: var(--program-sheet-columns);
+  column-gap: 0;
+}
+.program-sheet-head > span,
+.program-sheet-top > * {
+  min-width: 0;
+  box-sizing: border-box;
+}
+.program-sheet-cell,
+.program-action {
+  margin: 0;
+  min-height: 108px;
+}
+.program-sheet-cell input,
+.program-sheet-cell select,
+.program-sheet-cell textarea {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+.program-sheet-head span:nth-child(1),
+.program-sheet-top > :nth-child(1) { border-left: 0; }
