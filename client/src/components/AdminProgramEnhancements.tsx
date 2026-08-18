@@ -91,7 +91,8 @@ export function AdminProgramEntryGuidance() {
   if (!target) return null;
   return createPortal(
     <aside className="admin-program-guidance">
-      <strong>등록 필수</strong><span>프로그램 ID · 제목 · 한 줄 소개</span>
+      <strong>등록 필수</strong><span>프로그램 제목</span>
+      <strong>자동 보완</strong><span>프로그램 ID와 한 줄 소개는 비워 두면 제목을 기준으로 자동 생성됩니다.</span>
       <strong>상세 입력은 선택</strong><span>사진, 장소, 대상, 일정, 신청 링크, 상세 소개는 저장 후에도 <b>상세 편집</b>에서 보완할 수 있습니다.</span>
     </aside>,
     target,

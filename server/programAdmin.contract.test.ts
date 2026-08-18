@@ -93,4 +93,12 @@ describe("관리자 프로그램 등록 화면 계약", () => {
     expect(enhancements).toContain("프로그램 등록 완료");
     expect(enhancements).toContain("상세 입력은 선택");
   });
+
+  it("제목만 입력한 새 프로그램도 ID와 한 줄 소개를 자동 보완해 저장한다", () => {
+    const page = read("client/src/pages/ProgramAdmin.tsx");
+    const guidance = read("client/src/components/AdminProgramEnhancements.tsx");
+    expect(page).toContain("prepareProgramRowForSave");
+    expect(page).toContain("프로그램 제목을 입력해 주세요");
+    expect(guidance).toContain("자동 보완");
+  });
 });
